@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Check your BMI health score to see how it affects your insurance premiums.">
+    <meta property="og:title" content="BMI Health Check | Insurance Corner">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
+    <title>BMI Health Check | Insurance Corner</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+        <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Insurance<span>Corner</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quotes.html">Products</a></li>
+                <li><a href="bmi.html">BMI Tool</a></li>
+                <li id="auth-btn-container" style="display: flex; align-items: center; gap: 8px;"></li>
+                <li><a href="contactus.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main style="padding-top: 100px; padding-bottom: 60px;">
+        <div class="container" style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+            
+            <!-- Left Side: Form -->
+            <div class="card animate-fade-up" style="flex: 1; min-width: 300px; max-width: 400px;">
+                <h2 style="margin-bottom: 24px;">Check Your BMI</h2>
+                <form id="bmiForm">
+                    <div class="form-group">
+                        <label class="form-label">Weight (kg)</label>
+                        <input type="number" id="weight" class="form-input" required min="20" max="300" step="0.1" placeholder="e.g. 70">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Height (cm)</label>
+                        <input type="number" id="height" class="form-input" required min="50" max="250" placeholder="e.g. 175">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Calculate BMI</button>
+                </form>
+            </div>
+
+            <!-- Right Side: SVG Gauge Results -->
+            <div id="bmiResults" class="card glass-panel" style="flex: 1; min-width: 300px; max-width: 400px; display: none; text-align: center;">
+                <h3 style="margin-bottom: 24px;">Health Status</h3>
+                
+                <div style="position: relative; width: 150px; height: 150px; margin: 0 auto 20px;">
+                    <!-- SVG Gauge Background -->
+                    <svg width="150" height="150" viewBox="0 0 100 100" style="transform: rotate(-90deg);">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--bg-elevated)" stroke-width="10"/>
+                        <circle id="gaugeCircle" cx="50" cy="50" r="45" fill="none" stroke="var(--primary-color)" stroke-width="10" stroke-linecap="round" class="gauge-progress"/>
+                    </svg>
+                    <!-- Center Text -->
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        <span id="bmiValueDisplay" style="font-size: 2.5rem; font-weight: 800; line-height: 1; font-family: 'Outfit';">0</span>
+                    </div>
+                </div>
+
+                <h4 id="bmiCategoryDisplay" style="font-size: 1.5rem; margin-bottom: 8px;">--</h4>
+                <p id="bmiAdviceDisplay" style="color: var(--text-muted); font-size: 0.9rem;">
+                    A healthy BMI indicates standard premium rates.
+                </p>
+                
+                <a href="quotes.html" class="btn btn-outline" style="margin-top: 24px; width: 100%;">Check Impact on Premiums</a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/bmi.js"></script>
+</body>
+</html>

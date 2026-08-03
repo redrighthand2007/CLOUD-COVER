@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate your insurance premium instantly without agent bias.">
+    <meta property="og:title" content="Policy Finder | Insurance Corner">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
+    <title>Policy Finder | Insurance Corner</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+        <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Insurance<span>Corner</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quotes.html">Products</a></li>
+                <li><a href="bmi.html">BMI Tool</a></li>
+                <li id="auth-btn-container" style="display: flex; align-items: center; gap: 8px;"></li>
+                <li><a href="contactus.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main style="padding-top: 100px; padding-bottom: 60px;">
+        <div class="container">
+            <div class="card animate-fade-up" style="max-width: 800px; margin: 0 auto 40px;">
+                <h2 style="margin-bottom: 24px; text-align: center;">Find Your Perfect Policy</h2>
+                
+                <form id="quoteForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Your Age</label>
+                        <input type="number" id="clientAge" class="form-input" required min="18" max="100" placeholder="e.g. 25">
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Insurance Type</label>
+                        <select id="policyType" class="form-input" required>
+                            <option value="health">Health Insurance</option>
+                            <option value="auto">Auto Insurance</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Coverage (₹)</label>
+                        <input type="number" id="coverageAmount" class="form-input" required min="50000" step="10000" placeholder="500000">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="height: 48px;">Calculate</button>
+                </form>
+            </div>
+
+            <div id="resultsSection" style="display: none;">
+                <h3 style="margin-bottom: 24px;">Recommended For You</h3>
+                <div id="resultsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
+                    <!-- JS injects cards here -->
+                </div>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="registrationform.html" class="btn btn-outline">Proceed to Registration →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/quotes.js"></script>
+</body>
+</html>

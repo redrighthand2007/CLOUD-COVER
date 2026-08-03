@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap');
+
+/* =========================================================
+   CORE VARIABLES & RESET
+   ========================================================= */
+:root {
+    --primary-color: #4dbfa8;
+    --primary-glow: rgba(77, 191, 168, 0.4);
+    --secondary-color: #3aa08e;
+    --accent-color: #F6C343;
+    
+    /* Dark Theme Surface Hierarchy */
+    --bg-base: #0b111a;         /* Deepest background */
+    --bg-surface: #141d2b;      /* Main cards */
+    --bg-elevated: #1e2a3b;     /* Hover states */
+    --bg-glass: rgba(20, 29, 43, 0.7); /* Glassmorphism */
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.08);
+    
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-pill: 99px;
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+body { 
+    background-color: var(--bg-base); 
+    color: var(--text-main); 
+    font-family: 'Inter', sans-serif; 
+    line-height: 1.6; 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+/* =========================================================
+   GLASSMORPHISM & COMPONENTS
+   ========================================================= */
+.glass-panel {
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    border-color: var(--primary-glow);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(11, 17, 26, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 5%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.logo {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-main);
+    font-size: 1.6rem;
+    font-weight: 800;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo span {
+    color: var(--primary-color);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: var(--radius-pill);
+    transition: all 0.2s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--primary-color);
+    background: transparent;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: var(--radius-pill);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #000;
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background: var(--bg-elevated);
+    border-color: var(--text-muted);
+}
+
+/* =========================================================
+   FORMS & INPUTS
+   ========================================================= */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(77, 191, 168, 0.15);
+}
+
+.form-input::placeholder {
+    color: #475569;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 6px;
+    display: none;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+footer {
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    padding: 40px 0 20px;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-brand h3 {
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    margin-bottom: 12px;
+}
+
+.footer-brand p {
+    color: var(--text-muted);
+    max-width: 300px;
+    font-size: 0.9rem;
+}
+
+.footer-links h4 {
+    color: var(--text-main);
+    margin-bottom: 16px;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+.footer-bottom {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}

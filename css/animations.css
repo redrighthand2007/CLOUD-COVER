@@ -1,0 +1,88 @@
+/* =========================================================
+   ANIMATION KEYFRAMES & UTILITIES
+   ========================================================= */
+
+.animate-fade-up {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(77, 191, 168, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(77, 191, 168, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(77, 191, 168, 0); }
+}
+
+.pulse-btn {
+    animation: pulseGlow 2s infinite;
+}
+
+/* For the BMI Gauge */
+@keyframes sweep {
+    from { stroke-dashoffset: 283; }
+    to { stroke-dashoffset: var(--target-offset, 0); }
+}
+
+.gauge-progress {
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    animation: sweep 1.5s ease-out forwards;
+}
+
+/* Floating background blobs */
+.blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.4;
+    animation: floatBlob 10s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+    width: 400px;
+    height: 400px;
+    background: rgba(77, 191, 168, 0.15);
+    top: -100px;
+    right: -100px;
+}
+
+.blob-2 {
+    width: 300px;
+    height: 300px;
+    background: rgba(246, 195, 67, 0.1);
+    bottom: -50px;
+    left: -100px;
+    animation-delay: -5s;
+}
+
+@keyframes floatBlob {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 50px) scale(1.1); }
+}

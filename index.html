@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Insurance Corner - Modern, bias-free, client-side insurance matching architecture.">
+    <meta property="og:title" content="Insurance Corner | Protect What Matters">
+    <meta property="og:description" content="Instant Quotes. Zero Agent Bias. Discover the perfect insurance policy in seconds.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
+    <title>Insurance Corner | Protect What Matters</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+        <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Insurance<span>Corner</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quotes.html">Products</a></li>
+                <li><a href="bmi.html">BMI Tool</a></li>
+                <li id="auth-btn-container" style="display: flex; align-items: center; gap: 8px;"></li>
+                <li><a href="contactus.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main style="flex: 1; padding-top: 80px; display: flex; align-items: center; justify-content: center;">
+        <div class="container text-center animate-fade-up" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <h1 style="font-size: 3.5rem; margin-bottom: 15px; line-height: 1.2;">
+                Instant Quotes.<br>
+                <span style="color: var(--primary-color);">Zero Agent Bias.</span>
+            </h1>
+            <p style="color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto 30px;">
+                Discover the perfect insurance policy in seconds using our client-side algorithm. No spam calls, just pure data.
+            </p>
+            <div style="display: flex; justify-content: center;">
+                <a href="quotes.html" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </main>
+
+    <footer style="padding: 20px 0 10px; margin-top: 0;">
+        <div class="container">
+            <div class="footer-content" style="margin-bottom: 20px;">
+                <div class="footer-brand">
+                    <h3>Insurance Corner</h3>
+                    <p>Next-generation client-side insurance matching architecture.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Tools</h4>
+                    <span style="color: var(--text-muted); display: block; margin-bottom: 8px; font-size: 0.9rem;">Premium Calculator</span>
+                    <span style="color: var(--text-muted); display: block; margin-bottom: 8px; font-size: 0.9rem;">BMI Checker</span>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <span style="color: var(--text-muted); display: block; margin-bottom: 8px; font-size: 0.9rem;">Privacy Policy</span>
+                    <span style="color: var(--text-muted); display: block; margin-bottom: 8px; font-size: 0.9rem;">Terms of Service</span>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 Insurance Corner (VIT BCSE203E Project). Designed for AWS Cognito.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Insurance Corner support and read our Frequently Asked Questions.">
+    <meta property="og:title" content="Contact & FAQ | Insurance Corner">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
+    <title>Contact & FAQ | Insurance Corner</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            cursor: pointer;
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-family: 'Outfit';
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            padding-top: 0;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* arbitrary max height for transition */
+            padding-top: 12px;
+        }
+        .faq-item .icon {
+            transition: transform 0.3s;
+        }
+        .faq-item.active .icon {
+            transform: rotate(45deg);
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+        <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Insurance<span>Corner</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quotes.html">Products</a></li>
+                <li><a href="bmi.html">BMI Tool</a></li>
+                <li id="auth-btn-container" style="display: flex; align-items: center; gap: 8px;"></li>
+                <li><a href="contactus.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main style="padding-top: 100px; padding-bottom: 60px;">
+        <div class="container" style="max-width: 800px;">
+            <div class="card animate-fade-up" style="margin-bottom: 40px;">
+                <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 30px;">
+                    <h2>Support & Document Upload</h2>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Upload your KYC documents or reach out to our team.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+                    <!-- Contact Info -->
+                    <div>
+                        <h3 style="margin-bottom: 20px;">Get in Touch</h3>
+                        <div style="margin-bottom: 20px;">
+                            <span style="color: var(--primary-color); font-size: 0.9rem;">Phone Support</span>
+                            <p style="font-size: 1.1rem; font-weight: 500;">+91 98765 43210</p>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <span style="color: var(--primary-color); font-size: 0.9rem;">Email Address</span>
+                            <p style="font-size: 1.1rem; font-weight: 500;">support@insurancecorner.com</p>
+                        </div>
+                    </div>
+
+                    <!-- Upload Zone -->
+                    <div>
+                        <h3 style="margin-bottom: 20px;">Document Upload</h3>
+                        <label for="photoUpload" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 160px; border: 2px dashed var(--border-color); border-radius: var(--radius-md); background: var(--bg-base); cursor: pointer; transition: all 0.3s;">
+                            <span style="font-size: 2rem; margin-bottom: 10px;">📄</span>
+                            <span style="font-weight: 500;">Click to browse files</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">JPG, PNG up to 5MB</span>
+                        </label>
+                        <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="card glass-panel animate-fade-up delay-200">
+                <h2 style="margin-bottom: 24px; text-align: center;">Frequently Asked Questions</h2>
+                
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">How are my premiums calculated? <span class="icon">+</span></div>
+                        <div class="faq-answer">Your premium is calculated instantly in your browser using an algorithm based on your age, policy type, and selected coverage amount. No data is sent to external servers during quoting.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Will an agent call me after checking a quote? <span class="icon">+</span></div>
+                        <div class="faq-answer">No! Insurance Corner guarantees a bias-free and spam-free experience. Since calculations are client-side, we don't store your details until you explicitly decide to register.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Does BMI affect my health insurance? <span class="icon">+</span></div>
+                        <div class="faq-answer">Yes, individuals with a normal BMI generally qualify for standard premium rates, while those in obese categories may face higher premiums depending on the insurer.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How will you secure my data? <span class="icon">+</span></div>
+                        <div class="faq-answer">We are currently migrating to AWS Cognito for enterprise-grade authentication and Multi-Factor Authentication (MFA) to ensure your data remains strictly confidential.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // FAQ Accordion Logic
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                // Close all
+                document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+                // Toggle current
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
