@@ -1,4 +1,4 @@
-# 🛡️ Insurance Corner
+# 🛡️ CloudCover
 
 > A modern, client-side insurance portal featuring dynamic premium calculation, BMI health checking, and AWS Cognito-ready architecture.
 
@@ -9,7 +9,7 @@
 
 ## 📖 Overview
 
-Insurance Corner is a fully responsive, static web application designed to eliminate quoting delays and agent bias in the insurance selection process. Built as a showcase of modern frontend development, it leverages pure HTML, CSS (Glassmorphism), and JavaScript to deliver instant, algorithm-driven policy recommendations.
+CloudCover is a fully responsive, static web application designed to eliminate quoting delays and agent bias in the insurance selection process. Built as a showcase of modern frontend development, it leverages pure HTML, CSS (Glassmorphism), and JavaScript to deliver instant, algorithm-driven policy recommendations.
 
 ## ✨ Features
 
