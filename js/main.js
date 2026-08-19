@@ -18,14 +18,14 @@ window.updateAuthUI = () => {
     // Ensure AuthModule is loaded before calling
     if (typeof AuthModule !== 'undefined') {
         if (AuthModule.isAuthenticated()) {
-            authBtnContainer.innerHTML = \
+            authBtnContainer.innerHTML = `
                 <a href="#dashboard" class="nav-item" data-page="dashboard" style="color: white; text-decoration: none; padding: 8px 16px; font-weight: 500;">Dashboard</a>
                 <button onclick="AuthModule.signOut()" class="btn btn-outline" style="padding: 6px 16px; margin-left: 8px;">Log Out</button>
-            \;
+            `;
         } else {
-            authBtnContainer.innerHTML = \
+            authBtnContainer.innerHTML = `
                 <a href="#auth" class="nav-item" data-page="auth" style="color: white; text-decoration: none; padding: 8px 16px; font-weight: 500;">Sign In</a>
-            \;
+            `;
         }
     }
 };

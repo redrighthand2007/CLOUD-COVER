@@ -231,7 +231,7 @@ h1, h2, h3, h4, h5, h6 {
 footer {
     background: var(--bg-surface);
     border-top: 1px solid var(--border-color);
-    padding: 40px 0 20px;
+    padding: 24px 0 12px;
     margin-top: auto;
 }
 
@@ -239,8 +239,8 @@ footer {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 40px;
-    margin-bottom: 40px;
+    gap: 24px;
+    margin-bottom: 16px;
 }
 
 .footer-brand h3 {
