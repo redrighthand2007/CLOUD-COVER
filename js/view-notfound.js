@@ -1,6 +1,6 @@
 window.ViewNotfound = {
     render: () => {
-        return \
+        return ` 
 <main style="padding-top: 150px; min-height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center;">
         <div class="container animate-fade-up">
             <h1 style="font-size: 8rem; color: var(--primary-color); margin-bottom: 10px; line-height: 1;">404</h1>
@@ -11,10 +11,11 @@ window.ViewNotfound = {
             <a href="#home" class="btn btn-primary pulse-btn">Return Home</a>
         </div>
     </main>
-        \;
+        `;
     },
     init: () => {
         console.log("notfound view initialized");
     }
 };
+
 

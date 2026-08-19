@@ -1,6 +1,6 @@
 window.ViewBmi = {
     render: () => {
-        return \
+        return ` 
 <main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container" style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
             
@@ -46,7 +46,7 @@ window.ViewBmi = {
 
         </div>
     </main>
-        \;
+        `;
     },
     init: () => { 
     const form = document.getElementById('bmiForm');
@@ -108,6 +108,8 @@ window.ViewBmi = {
             resultsContainer.classList.add('animate-fade-up');
          }
 };
+
+
 
 
 

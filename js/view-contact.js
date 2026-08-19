@@ -1,6 +1,6 @@
 window.ViewContact = {
     render: () => {
-        return \
+        return ` 
 <main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container" style="max-width: 800px;">
             <div class="card animate-fade-up" style="margin-bottom: 40px;">
@@ -62,11 +62,12 @@ window.ViewContact = {
 
         </div>
     </main>
-        \;
+        `;
     },
     init: () => {
         // Initialization logic for contact goes here
         console.log("contact view initialized");
     }
 };
+
 

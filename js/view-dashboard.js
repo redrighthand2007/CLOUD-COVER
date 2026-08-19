@@ -1,6 +1,6 @@
 window.ViewDashboard = {
     render: () => {
-        return \
+        return ` 
 <main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container" style="display: grid; grid-template-columns: 250px 1fr; gap: 30px;">
             
@@ -60,12 +60,13 @@ window.ViewDashboard = {
 
         </div>
     </main>
-        \;
+        `;
     },
     init: () => {
         // Initialization logic for dashboard goes here
         console.log("dashboard view initialized");
     }
 };
+
 
 

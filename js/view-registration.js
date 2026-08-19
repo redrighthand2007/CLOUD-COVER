@@ -1,6 +1,6 @@
 window.ViewRegistration = {
     render: () => {
-        return \
+        return ` 
 <main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container" style="max-width: 800px;">
             <div class="card glass-panel animate-fade-up">
@@ -53,7 +53,7 @@ window.ViewRegistration = {
             </div>
         </div>
     </main>
-        \;
+        `;
     },
     init: () => { 
     const form = document.getElementById('applicantForm');
@@ -85,5 +85,7 @@ window.ViewRegistration = {
     }
  }
 };
+
+
 
 

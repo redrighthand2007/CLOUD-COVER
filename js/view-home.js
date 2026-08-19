@@ -1,6 +1,6 @@
 window.ViewHome = {
     render: () => {
-        return \
+        return ` 
 <main style="flex: 1; padding-top: 80px; display: flex; align-items: center; justify-content: center;">
         <div class="container text-center animate-fade-up" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <h1 style="font-size: 3.5rem; margin-bottom: 15px; line-height: 1.2;">
@@ -15,11 +15,12 @@ window.ViewHome = {
             </div>
         </div>
     </main>
-        \;
+        `;
     },
     init: () => {
         // Initialization logic for home goes here
         console.log("home view initialized");
     }
 };
+
 
