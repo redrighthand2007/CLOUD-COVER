@@ -44,7 +44,7 @@ const AuthModule = {
     signOut: () => {
         localStorage.removeItem('ic_session_token');
         localStorage.removeItem('ic_user_email');
-        window.location.href = 'index.html';
+        window.location.hash = '#home';
     },
 
     // Helper: Protect Routes

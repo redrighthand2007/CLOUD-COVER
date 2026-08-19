@@ -1,32 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO & Metadata -->
-    <meta name="description" content="CloudCover - User Dashboard.">
-    <meta property="og:title" content="Dashboard | CloudCover">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
-    <title>Dashboard | CloudCover</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
-</head>
-<body>
-        <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">Cloud<span>Cover</span></a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="quotes.html">Products</a></li>
-                <li><a href="bmi.html">BMI Tool</a></li>
-                <li id="auth-btn-container" style="display: flex; align-items: center; gap: 8px;"></li>
-                <li><a href="contactus.html">Contact Us</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <main style="padding-top: 100px; padding-bottom: 60px;">
+window.ViewDashboard = {
+    render: () => {
+        return \
+<main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container" style="display: grid; grid-template-columns: 250px 1fr; gap: 30px;">
             
             <!-- Sidebar -->
@@ -40,8 +15,8 @@
                 <ul style="list-style: none;">
                     <li style="margin-bottom: 10px;"><a href="#" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent; background: var(--bg-elevated); color: var(--primary-color);">📊 Overview</a></li>
                     <li style="margin-bottom: 10px;"><a href="#" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">🛡️ My Policies</a></li>
-                    <li style="margin-bottom: 10px;"><a href="quotes.html" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">🔍 Find Quotes</a></li>
-                    <li><a href="bmi.html" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">❤️ Health Check</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#quotes" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">🔍 Find Quotes</a></li>
+                    <li><a href="#bmi" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">❤️ Health Check</a></li>
                 </ul>
             </aside>
 
@@ -85,20 +60,12 @@
 
         </div>
     </main>
+        \;
+    },
+    init: () => {
+        // Initialization logic for dashboard goes here
+        console.log("dashboard view initialized");
+    }
+};
 
-    <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Protect this route! (AWS Prep)
-            AuthModule.requireAuth();
 
-            // Display user info
-            const email = localStorage.getItem('ic_user_email');
-            if(email) {
-                document.getElementById('dashUserName').textContent = email.split('@')[0];
-            }
-        });
-    </script>
-</body>
-</html>

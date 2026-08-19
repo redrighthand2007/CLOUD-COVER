@@ -1,4 +1,86 @@
-document.addEventListener('DOMContentLoaded', () => {
+window.ViewAuth = {
+    render: () => {
+        return \
+<div class="auth-container">
+        <div class="auth-left animate-fade-in">
+            <div style="text-align: center; max-width: 400px;">
+                <a href="#home" class="logo" style="justify-content: center; margin-bottom: 40px; font-size: 2rem;">Cloud<span>Cover</span></a>
+                <h2 style="margin-bottom: 20px; font-size: 2.5rem;">Protect what matters.</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Secure, bias-free, and lightning fast. Powered by modern web architecture.</p>
+            </div>
+        </div>
+
+        <div class="auth-right">
+            <div class="card animate-fade-up" style="width: 100%; max-width: 450px; position: relative; overflow: hidden;">
+                
+                <!-- Feedback Messages -->
+                <div id="formErrors" class="glass-panel" style="display:none; color: #ef4444; padding: 12px; border-color: rgba(239, 68, 68, 0.3); margin-bottom: 20px; font-size: 0.85rem;"></div>
+                <div id="successMessage" class="glass-panel" style="display:none; color: #10b981; padding: 12px; border-color: rgba(16, 185, 129, 0.3); margin-bottom: 20px; font-size: 0.85rem;">Success! Redirecting...</div>
+
+                <!-- SIGN IN FORM -->
+                <div id="loginSection">
+                    <h2 style="margin-bottom: 24px;">Sign In</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label">Email or Phone</label>
+                            <input type="text" id="loginId" class="form-input" placeholder="name@example.com or 9876543210" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="loginPassword" class="form-input" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Sign In</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                        Don't have an account? <span class="toggle-link" id="showSignup">Create Account</span>
+                    </p>
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.9rem;">
+                        <a href="#home" style="color: var(--text-muted); text-decoration: none;">← Back to Home</a>
+                    </p>
+                </div>
+
+                <!-- SIGN UP FORM (Hidden initially) -->
+                <div id="signupSection" style="display: none;">
+                    <h2 style="margin-bottom: 24px;">Create Account</h2>
+                    <form id="signupForm">
+                        <div class="form-group">
+                            <label class="form-label">Full Name (As per PAN)</label>
+                            <input type="text" id="fullName" class="form-input" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="emailId" class="form-input" placeholder="name@example.com" required>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label class="form-label">Mobile Number</label>
+                                <input type="tel" id="phoneNum" class="form-input" placeholder="10 digits" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">PAN Number</label>
+                                <input type="text" id="panNum" class="form-input" placeholder="ABCDE1234F" maxlength="10" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="password" class="form-input" placeholder="Min 8 chars, 1 Uppercase, 1 Number" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Sign Up & Verify</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                        Already have an account? <span class="toggle-link" id="showLogin">Sign In</span>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+        \;
+    },
+    init: () => { 
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
     const loginSection = document.getElementById('loginSection');
@@ -50,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 successMsg.style.display = 'block';
                 
                 setTimeout(() => {
-                    window.location.href = 'index.html'; // Redirect to Homepage
+                    window.location.hash = '#home'; // Redirect to Homepage
                 }, 1000);
 
             } catch (err) {
@@ -121,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     // Auto login and redirect to Homepage
                     AuthModule.signIn(email, password).then(() => {
-                        window.location.href = 'index.html'; // Redirect to Homepage
+                        window.location.hash = '#home'; // Redirect to Homepage
                     });
                 }, 1500);
 
@@ -134,4 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+}); }
+};
+
+
+
+
+

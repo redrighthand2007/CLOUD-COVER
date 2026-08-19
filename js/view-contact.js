@@ -1,66 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Contact CloudCover support and read our Frequently Asked Questions.">
-    <meta property="og:title" content="Contact & FAQ | CloudCover">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/jpeg" href="assets/favicon.jpg">
-    <title>Contact & FAQ | CloudCover</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <style>
-        .faq-item {
-            border-bottom: 1px solid var(--border-color);
-            padding: 16px 0;
-            cursor: pointer;
-        }
-        .faq-question {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-family: 'Outfit';
-            font-size: 1.1rem;
-            color: var(--text-main);
-        }
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            padding-top: 0;
-        }
-        .faq-item.active .faq-answer {
-            max-height: 200px; /* arbitrary max height for transition */
-            padding-top: 12px;
-        }
-        .faq-item .icon {
-            transition: transform 0.3s;
-        }
-        .faq-item.active .icon {
-            transform: rotate(45deg);
-            color: var(--primary-color);
-        }
-    </style>
-</head>
-<body>
-        <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">Cloud<span>Cover</span></a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="quotes.html">Products</a></li>
-                <li><a href="bmi.html">BMI Tool</a></li>
-                <li id="auth-btn-container" style="display: flex; align-items: center; gap: 8px;"></li>
-                <li><a href="contactus.html">Contact Us</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <main style="padding-top: 100px; padding-bottom: 60px;">
+window.ViewContact = {
+    render: () => {
+        return \
+<main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container" style="max-width: 800px;">
             <div class="card animate-fade-up" style="margin-bottom: 40px;">
                 <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 30px;">
@@ -121,25 +62,11 @@
 
         </div>
     </main>
+        \;
+    },
+    init: () => {
+        // Initialization logic for contact goes here
+        console.log("contact view initialized");
+    }
+};
 
-    <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-        // FAQ Accordion Logic
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const isActive = item.classList.contains('active');
-                // Close all
-                document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
-                // Toggle current
-                if (!isActive) {
-                    item.classList.add('active');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
-
-
-<!-- dsfbsfbsdjf -->
