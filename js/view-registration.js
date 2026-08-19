@@ -55,7 +55,8 @@ window.ViewRegistration = {
     </main>
         `;
     },
-    init: () => { 
+    init: () => {
+
     const form = document.getElementById('applicantForm');
     const errorBox = document.getElementById('formErrors');
 
@@ -83,9 +84,6 @@ window.ViewRegistration = {
             }
         });
     }
- }
+
+    }
 };
-
-
-
-

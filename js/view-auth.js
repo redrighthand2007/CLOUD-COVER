@@ -80,7 +80,8 @@ window.ViewAuth = {
         </div>
         `;
     },
-    init: () => { 
+    init: () => {
+
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
     const loginSection = document.getElementById('loginSection');
@@ -216,5 +217,6 @@ window.ViewAuth = {
             }
         });
     }
-} };
 
+    }
+};

@@ -48,7 +48,8 @@ window.ViewBmi = {
     </main>
         `;
     },
-    init: () => { 
+    init: () => {
+
     const form = document.getElementById('bmiForm');
     const resultsContainer = document.getElementById('bmiResults');
     const resultValue = document.getElementById('bmiValueDisplay');
@@ -106,10 +107,8 @@ window.ViewBmi = {
             
             resultsContainer.style.display = 'block';
             resultsContainer.classList.add('animate-fade-up');
-         }
+        });
+    }
+
+    }
 };
-
-
-
-
-
