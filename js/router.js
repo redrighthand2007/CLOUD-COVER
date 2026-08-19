@@ -5,12 +5,13 @@ const routes = {
     '#bmi': window.ViewBmi,
     '#dashboard': window.ViewDashboard,
     '#contact': window.ViewContact,
-    '#auth': window.ViewAuth
+    '#auth': window.ViewAuth,
+    '#registration': window.ViewRegistration
 };
 
 const router = () => {
     let hash = window.location.hash;
-    let view = routes[hash] || routes['#home'];
+    let view = routes[hash] || window.ViewNotfound || routes['#home'];
     
     const app = document.getElementById('app');
     
@@ -44,3 +45,4 @@ const router = () => {
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
+
