@@ -24,7 +24,7 @@ window.updateAuthUI = () => {
             `;
         } else {
             authBtnContainer.innerHTML = `
-                <a href="#auth" class="nav-item" data-page="auth" style="color: white; text-decoration: none; padding: 8px 16px; font-weight: 500;">Sign In</a>
+                <button onclick="AuthModule.signIn()" class="btn btn-outline" style="padding: 6px 16px; margin-left: 8px;">Sign In</button>
             `;
         }
     }
