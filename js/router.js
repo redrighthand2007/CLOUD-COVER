@@ -11,6 +11,17 @@ const routes = {
 
 const router = () => {
     let hash = window.location.hash;
+
+    // Redirect auth routes to Cognito Hosted UI
+    if (hash === '#auth') {
+        AuthModule.signIn();
+        return;
+    }
+    if (hash === '#registration') {
+        AuthModule.signUp();
+        return;
+    }
+
     let view = routes[hash] || window.ViewNotfound || routes['#home'];
     
     const app = document.getElementById('app');
