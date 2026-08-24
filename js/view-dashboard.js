@@ -98,7 +98,7 @@ window.ViewDashboard = {
                     const idToken = localStorage.getItem('ic_session_token');
                     if (!idToken) throw new Error('No session token. Please sign in again.');
 
-                    const response = await fetch('https://nwmdojx1m4.execute-api.ap-south-1.amazonaws.com/prod/users', {
+                    const response = await fetch('https://1gj1qu9yai.execute-api.ap-south-1.amazonaws.com/prod/users', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -127,3 +127,4 @@ window.ViewDashboard = {
         }
     }
 };
+
