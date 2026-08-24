@@ -17,11 +17,14 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="#home" class="logo">Cloud<span>Cover</span></a>
-            <ul class="nav-links">
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#quotes">Products</a></li>
                 <li><a href="#bmi">BMI Tool</a></li>
-                <li id="auth-btn-container" style="display: flex; align-items: center; gap: 8px;"></li>
+                <li id="auth-btn-container"></li>
                 <li><a href="#contact">Contact Us</a></li>
             </ul>
         </div>
@@ -74,8 +77,42 @@
     <script src="js/view-registration.js"></script>
     <script src="js/view-notfound.js"></script>
 
+    <!-- Mobile nav overlay backdrop -->
+    <div class="nav-overlay" id="nav-overlay"></div>
+
     <!-- SPA Router -->
     <script src="js/router.js"></script>
+
+    <!-- Mobile hamburger menu -->
+    <script>
+        (function() {
+            const hamburger = document.getElementById('hamburger');
+            const navLinks  = document.getElementById('nav-links');
+            const overlay   = document.getElementById('nav-overlay');
+
+            function closeMenu() {
+                hamburger.classList.remove('open');
+                navLinks.classList.remove('open');
+                overlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            hamburger.addEventListener('click', function() {
+                const isOpen = navLinks.classList.toggle('open');
+                hamburger.classList.toggle('open', isOpen);
+                overlay.classList.toggle('open', isOpen);
+                document.body.style.overflow = isOpen ? 'hidden' : '';
+            });
+
+            // Close when tapping backdrop
+            overlay.addEventListener('click', closeMenu);
+
+            // Close when a nav link is tapped
+            navLinks.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', closeMenu);
+            });
+        })();
+    </script>
 </body>
 </html>
 
