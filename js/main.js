@@ -13,18 +13,20 @@ window.addEventListener('scroll', () => {
 // 2. Auth State UI Update
 window.updateAuthUI = () => {
     const authBtnContainer = document.getElementById('auth-btn-container');
+    const dashboardBtn = document.getElementById('nav-dashboard-btn');
     if(!authBtnContainer) return;
     
     // Ensure AuthModule is loaded before calling
     if (typeof AuthModule !== 'undefined') {
         if (AuthModule.isAuthenticated()) {
+            if (dashboardBtn) dashboardBtn.style.display = 'block';
             authBtnContainer.innerHTML = `
-                <a href="#dashboard" class="nav-item" data-page="dashboard" style="color: white; text-decoration: none; padding: 8px 16px; font-weight: 500;">Dashboard</a>
-                <button onclick="AuthModule.signOut()" class="btn btn-outline" style="padding: 6px 16px; margin-left: 8px;">Log Out</button>
+                <button onclick="AuthModule.signOut()" class="btn btn-outline" style="padding: 6px 16px;">Log Out</button>
             `;
         } else {
+            if (dashboardBtn) dashboardBtn.style.display = 'none';
             authBtnContainer.innerHTML = `
-                <button onclick="AuthModule.signIn()" class="btn btn-outline" style="padding: 6px 16px; margin-left: 8px;">Sign In</button>
+                <button onclick="AuthModule.signIn()" class="btn btn-outline" style="padding: 6px 16px;">Sign In</button>
             `;
         }
     }
