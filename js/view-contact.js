@@ -1,12 +1,12 @@
-window.ViewContact = {
+﻿window.ViewContact = {
     render: () => {
         return ` 
 <main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container" style="max-width: 800px;">
             <div class="card animate-fade-up" style="margin-bottom: 40px;">
                 <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 30px;">
-                    <h2>Support & Document Upload</h2>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Upload your KYC documents or reach out to our team.</p>
+                    <h2>Support & Contact Info</h2>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Reach out to our team or visit our corporate office.</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
@@ -23,15 +23,22 @@ window.ViewContact = {
                         </div>
                     </div>
 
-                    <!-- Upload Zone -->
+                    <!-- Firm Card -->
                     <div>
-                        <h3 style="margin-bottom: 20px;">Document Upload</h3>
-                        <label for="photoUpload" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 160px; border: 2px dashed var(--border-color); border-radius: var(--radius-md); background: var(--bg-base); cursor: pointer; transition: all 0.3s;">
-                            <span style="font-size: 2rem; margin-bottom: 10px;">📄</span>
-                            <span style="font-weight: 500;">Click to browse files</span>
-                            <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">JPG, PNG up to 5MB</span>
-                        </label>
-                        <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                        <h3 style="margin-bottom: 20px;">Corporate Office</h3>
+                        <div style="display: flex; flex-direction: column; justify-content: center; height: 160px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: linear-gradient(145deg, var(--bg-elevated), var(--bg-base)); padding: 24px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary-color);"></div>
+                            <h4 style="color: var(--text-main); font-size: 1.2rem; margin-bottom: 12px; font-weight: 600;">Insurance Corner</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.1rem;">📍</span> 123 Cloud Avenue, Tech Park
+                            </p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.1rem;">🏢</span> Mumbai, MH 400001
+                            </p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.1rem;">🕒</span> Mon - Fri, 9:00 AM - 6:00 PM
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,15 +66,11 @@ window.ViewContact = {
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
         `;
     },
     init: () => {
-        // Initialization logic for contact goes here
         console.log("contact view initialized");
     }
 };
-
-
