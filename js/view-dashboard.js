@@ -12,12 +12,28 @@ window.ViewDashboard = {
                     <p style="color: var(--text-muted); font-size: 0.85rem;">Premium Member</p>
                 </div>
                 
-                <ul style="list-style: none;">
-                    <li style="margin-bottom: 10px;"><a href="#" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent; background: var(--bg-elevated); color: var(--primary-color);">📊 Overview</a></li>
-                    <li style="margin-bottom: 10px;"><a href="#" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">🛡️ My Policies</a></li>
-                    <li style="margin-bottom: 10px;"><a href="#quotes" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">🔍 Find Quotes</a></li>
-                    <li><a href="#bmi" class="btn btn-outline" style="width: 100%; text-align: left; justify-content: flex-start; border-color: transparent;">❤️ Health Check</a></li>
-                </ul>
+                <ul style="list-style: none; max-height: 200px; overflow-y: auto; padding-right: 10px;" class="custom-scroll">
+                        <li style="padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
+                            <span>Checked BMI Health Score</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Today</span>
+                        </li>
+                        <li style="padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
+                            <span>Generated Health Insurance Quote</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Yesterday</span>
+                        </li>
+                        <li style="padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
+                            <span>Account created securely via AWS Cognito</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">2 Days Ago</span>
+                        </li>
+                        <li style="padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
+                            <span>Browsed Auto Insurance Catalog</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">3 Days Ago</span>
+                        </li>
+                        <li style="padding: 15px 0; display: flex; justify-content: space-between;">
+                            <span>Updated Contact Preferences</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Last Week</span>
+                        </li>
+                    </ul>
             </aside>
 
             <!-- Main Content -->
@@ -41,7 +57,7 @@ window.ViewDashboard = {
 
                 <div class="card">
                     <h3 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Recent Activity</h3>
-                    <ul style="list-style: none;">
+                    <ul style="list-style: none; max-height: 200px; overflow-y: auto; padding-right: 10px;" class="custom-scroll">
                         <li style="padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
                             <span>Checked BMI Health Score</span>
                             <span style="color: var(--text-muted); font-size: 0.85rem;">Today</span>
@@ -50,9 +66,17 @@ window.ViewDashboard = {
                             <span>Generated Health Insurance Quote</span>
                             <span style="color: var(--text-muted); font-size: 0.85rem;">Yesterday</span>
                         </li>
-                        <li style="padding: 15px 0; display: flex; justify-content: space-between;">
+                        <li style="padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
                             <span>Account created securely via AWS Cognito</span>
                             <span style="color: var(--text-muted); font-size: 0.85rem;">2 Days Ago</span>
+                        </li>
+                        <li style="padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;">
+                            <span>Browsed Auto Insurance Catalog</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">3 Days Ago</span>
+                        </li>
+                        <li style="padding: 15px 0; display: flex; justify-content: space-between;">
+                            <span>Updated Contact Preferences</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Last Week</span>
                         </li>
                     </ul>
                 </div>
@@ -130,5 +154,6 @@ window.ViewDashboard = {
         }
     }
 };
+
 
 

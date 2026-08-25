@@ -31,6 +31,22 @@
     padding: 0; 
 }
 
+/* Custom Scrollbar */
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: var(--bg-base);
+    border-radius: 4px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
 body { 
     background-color: var(--bg-base); 
     color: var(--text-main); 
@@ -678,6 +694,7 @@ footer {
     .card { padding: 16px 14px; }
     .container { padding: 0 12px; }
 }
+
 
 
 
