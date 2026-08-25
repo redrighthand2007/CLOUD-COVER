@@ -78,11 +78,14 @@ window.ViewDashboard = {
         // Enforce Authentication — redirect to Cognito if not logged in
         if (typeof AuthModule !== 'undefined') AuthModule.requireAuth();
 
-        // Display logged-in user's email from decoded JWT
+        // Display logged-in user's first name derived from email
         const email = localStorage.getItem('ic_user_email');
         const nameEl = document.getElementById('dashUserName');
         if (email && nameEl) {
-            nameEl.innerText = email;
+            // Extract part before @, then split by any dot/underscore/hyphen, and capitalize the first letter
+            let firstName = email.split('@')[0].split(/[._-]/)[0];
+            firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+            nameEl.innerText = firstName;
         }
 
         // AWS API Gateway + Lambda + DynamoDB Integration
