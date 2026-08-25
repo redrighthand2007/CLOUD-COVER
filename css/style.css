@@ -161,11 +161,11 @@ h1, h2, h3, h4, h5, h6 {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: #000;
-    box-shadow: 0 4px 15px var(--primary-glow);
+    
 }
 
 .btn-primary:hover {
-    box-shadow: 0 6px 20px var(--primary-glow);
+    
     transform: translateY(-2px);
 }
 
@@ -289,6 +289,7 @@ footer {
 
 /* Page Load Transition (Pure CSS) */
 main {
+    min-height: 100vh;
     animation: pageLoad 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0; /* Prevents flash before animation starts */
 }
