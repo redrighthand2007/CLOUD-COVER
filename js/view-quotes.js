@@ -1,7 +1,7 @@
-﻿window.ViewQuotes = {
+window.ViewQuotes = {
     render: () => {
-        return ` 
-<main style="padding-top: 100px; padding-bottom: 60px;">
+        return `
+    <main style="padding-top: 100px; padding-bottom: 60px;">
         <div class="container">
             <div class="card animate-fade-up" style="max-width: 800px; margin: 0 auto 40px;">
                 <h2 style="margin-bottom: 24px; text-align: center;">Find Your Perfect Policy</h2>
@@ -72,7 +72,7 @@
                 
                 const filtered = policyDatabase.filter(p => p.type === cat);
                 filtered.forEach(p => {
-                    policySelect.innerHTML += <option value=" + p.id + "> + p.name + </option>;
+                    policySelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
                 });
                 
                 policyWrapper.style.display = 'block';
@@ -98,27 +98,27 @@
                 if (policy) {
                     const premium = Math.round(coverage * policy.rate);
                     
-                    const cardHTML = 
+                    const cardHTML = `
                         <div class="card glass-panel animate-fade-up">
-                            <h3 style="color: var(--primary-color); margin-bottom: 12px; font-family: 'Outfit';"> + policy.name + </h3>
+                            <h3 style="color: var(--primary-color); margin-bottom: 12px; font-family: 'Outfit';">${policy.name}</h3>
                             <div style="margin-bottom: 16px;">
-                                <p style="font-size: 0.85rem; color: var(--text-muted);">Ideal for Ages:  + policy.minAge + - + policy.maxAge +  yrs</p>
-                                <p style="font-size: 0.85rem; color: var(--text-muted);">Coverage: ₹ + coverage.toLocaleString() + </p>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Ideal for Ages: ${policy.minAge}-${policy.maxAge} yrs</p>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Coverage: ₹${coverage.toLocaleString()}</p>
                             </div>
                             
                             <ul style="list-style: none; margin-bottom: 24px; font-size: 0.9rem;">
-                                 + policy.features.map(f => <li style="margin-bottom: 6px;"><span style="color:var(--primary-color);">✓</span>  + f + </li>).join('') + 
+                                ${policy.features.map(f => `<li style="margin-bottom: 6px;"><span style="color:var(--primary-color);">✓</span> ${f}</li>`).join('')}
                             </ul>
                             
                             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;">
                                 <div>
                                     <span style="font-size: 0.8rem; color: var(--text-muted);">Annual Premium</span><br>
-                                    <strong style="color: var(--accent-color); font-size: 1.2rem;">₹ + premium.toLocaleString() + </strong>
+                                    <strong style="color: var(--accent-color); font-size: 1.2rem;">₹${premium.toLocaleString()}</strong>
                                 </div>
-                                <button class="btn btn-primary" onclick="alert('Proceeding with  + policy.name + ')" style="padding: 8px 16px; font-size: 0.85rem;">Select</button>
+                                <button class="btn btn-primary" onclick="alert('Proceeding with ${policy.name}')" style="padding: 8px 16px; font-size: 0.85rem;">Select</button>
                             </div>
                         </div>
-                    ;
+                    `;
                     resultsGrid.innerHTML = cardHTML;
                 }
                 
