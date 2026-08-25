@@ -1,7 +1,7 @@
 window.ViewQuotes = {
     render: () => {
         return `
-    <main style="padding-top: 100px; padding-bottom: 60px;">
+    <main style="width: 100%; max-width: 100%;">
         <div class="container">
             <div class="card animate-fade-up" style="max-width: 800px; margin: 0 auto 40px;">
                 <h2 style="margin-bottom: 24px; text-align: center;">Find Your Perfect Policy</h2>
@@ -127,3 +127,4 @@ window.ViewQuotes = {
         }
     }
 };
+

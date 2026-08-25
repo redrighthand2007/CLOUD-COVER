@@ -1,7 +1,7 @@
 window.ViewHome = {
     render: () => {
         return ` 
-<main style="flex: 1; padding-top: 80px; display: flex; align-items: center; justify-content: center;">
+<main style="width: 100%; max-width: 100%;">
         <div class="container text-center animate-fade-up" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <h1 style="font-size: 3.5rem; margin-bottom: 15px; line-height: 1.2;">
                 Instant Quotes.<br>
@@ -22,5 +22,6 @@ window.ViewHome = {
         console.log("home view initialized");
     }
 };
+
 
 

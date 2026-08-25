@@ -1,7 +1,7 @@
 window.ViewDashboard = {
     render: () => {
         return `
-<main style="padding-top: 100px; padding-bottom: 60px;">
+<main style="width: 100%; max-width: 100%;">
         <div class="container" style="display: grid; grid-template-columns: 250px 1fr; gap: 30px;">
             
             <!-- Sidebar -->
@@ -130,4 +130,5 @@ window.ViewDashboard = {
         }
     }
 };
+
 

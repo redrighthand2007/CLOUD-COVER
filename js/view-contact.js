@@ -1,7 +1,7 @@
-﻿window.ViewContact = {
+window.ViewContact = {
     render: () => {
         return ` 
-<main style="padding-top: 100px; padding-bottom: 60px; display: flex; align-items: flex-start; justify-content: center; width: 100%;">
+<main style="width: 100%; max-width: 100%;">
         <div class="container" style="display: flex; flex-wrap: wrap; gap: 40px; max-width: 1200px; width: 100%;">
             
             <!-- Left Side: Contact Info (75%) -->
@@ -32,13 +32,13 @@
                             <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary-color);"></div>
                             <h4 style="color: var(--text-main); font-size: 1.2rem; margin-bottom: 12px; font-weight: 600;">Insurance Corner</h4>
                             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 1.1rem;">📍</span> 123 Cloud Avenue, Tech Park
+                                <span style="font-size: 1.1rem;">??</span> 123 Cloud Avenue, Tech Park
                             </p>
                             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 1.1rem;">🏢</span> Mumbai, MH 400001
+                                <span style="font-size: 1.1rem;">??</span> Mumbai, MH 400001
                             </p>
                             <p style="color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 1.1rem;">🕒</span> Mon - Fri, 9:00 AM - 6:00 PM
+                                <span style="font-size: 1.1rem;">??</span> Mon - Fri, 9:00 AM - 6:00 PM
                             </p>
                         </div>
                     </div>
@@ -98,3 +98,4 @@
         });
     }
 };
+

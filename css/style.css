@@ -284,15 +284,23 @@ footer {
     font-size: 0.85rem;
     padding-top: 20px;
     border-top: 1px solid var(--border-color);
-}/* =========================================================
+}
+
+/* =========================================================
    ANIMATION KEYFRAMES & UTILITIES
    ========================================================= */
 
 /* Page Load Transition (Pure CSS) */
 #app {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 100px 0 60px;
     animation: pageLoad 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0; /* Prevents flash before animation starts */
+    opacity: 0;
 }
 
 @keyframes pageLoad {
@@ -663,4 +671,5 @@ footer {
     .card { padding: 16px 14px; }
     .container { padding: 0 12px; }
 }
+
 

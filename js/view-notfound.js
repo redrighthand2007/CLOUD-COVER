@@ -1,7 +1,7 @@
 window.ViewNotfound = {
     render: () => {
         return ` 
-<main style="padding-top: 150px; min-height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center;">
+<main style="width: 100%; max-width: 100%;">
         <div class="container animate-fade-up">
             <h1 style="font-size: 8rem; color: var(--primary-color); margin-bottom: 10px; line-height: 1;">404</h1>
             <h2 style="font-size: 2rem; margin-bottom: 20px;">Out of Coverage Area</h2>
@@ -17,5 +17,6 @@ window.ViewNotfound = {
         console.log("notfound view initialized");
     }
 };
+
 
 

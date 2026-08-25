@@ -1,7 +1,7 @@
-﻿window.ViewBmi = {
+window.ViewBmi = {
     render: () => {
         return ` 
-<main style="padding-top: 80px; padding-bottom: 60px; display: flex; align-items: center; justify-content: center; width: 100%;">
+<main style="width: 100%; max-width: 100%;">
         <div class="container" style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; width: 100%;">
             
             <!-- Left Side: Form -->
@@ -104,3 +104,4 @@
         }
     }
 };
+

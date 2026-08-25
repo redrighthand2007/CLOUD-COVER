@@ -1,7 +1,7 @@
 window.ViewRegistration = {
     render: () => {
         return ` 
-<main style="padding-top: 100px; padding-bottom: 60px;">
+<main style="width: 100%; max-width: 100%;">
         <div class="container" style="max-width: 800px;">
             <div class="card glass-panel animate-fade-up">
                 <h2 style="margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">Applicant Details</h2>
@@ -87,3 +87,4 @@ window.ViewRegistration = {
 
     }
 };
+
