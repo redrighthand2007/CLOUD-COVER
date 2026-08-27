@@ -1,6 +1,6 @@
-window.ViewDashboard = {
+﻿window.ViewDashboard = {
     render: () => {
-        return ` 
+        return \ 
 <main style="width: 100%; max-width: 100%;">
         <div class="container" style="max-width: 900px; margin: 0 auto; width: 100%;">
             
@@ -11,7 +11,7 @@ window.ViewDashboard = {
                     <!-- 25% Left Side -->
                     <div style="flex: 0 0 25%; display: flex; justify-content: center;">
                         <div style="width: 100px; height: 100px; background: var(--bg-elevated); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 2px solid var(--border-color);">
-                            👤
+                            &#128100;
                         </div>
                     </div>
                     <!-- 75% Right Side -->
@@ -69,8 +69,8 @@ window.ViewDashboard = {
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 16px;">
                         <div>
-                            <h3 style="margin: 0;">☁️ Cloud Sync</h3>
-                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">AWS Lambda ➔ DynamoDB</p>
+                            <h3 style="margin: 0;">Cloud Sync</h3>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">AWS Lambda -> DynamoDB</p>
                         </div>
                         <button id="syncAwsBtn" class="btn btn-primary" style="padding: 6px 16px; font-size: 0.85rem;">Sync to DynamoDB</button>
                     </div>
@@ -80,20 +80,17 @@ window.ViewDashboard = {
 
         </div>
     </main>
-        `;
+        \;
     },
     init: () => {
-        // Enforce Authentication - redirect to Cognito if not logged in
         if (typeof AuthModule !== 'undefined') AuthModule.requireAuth();
 
-        // Display logged-in user details
         const email = localStorage.getItem('ic_user_email');
         const nameEl = document.getElementById('dashUserName');
         const emailEl = document.getElementById('dashUserEmail');
         
         if (email) {
             if (nameEl) {
-                // Extract part before @, then split by any dot/underscore/hyphen, and capitalize the first letter
                 let firstName = email.split('@')[0].split(/[._-]/)[0];
                 firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
                 nameEl.innerText = firstName;
@@ -103,7 +100,6 @@ window.ViewDashboard = {
             }
         }
 
-        // AWS API Gateway + Lambda + DynamoDB Integration
         const syncBtn = document.getElementById('syncAwsBtn');
         const statusText = document.getElementById('syncStatusText');
 
@@ -120,7 +116,7 @@ window.ViewDashboard = {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': idToken  // Cognito JWT Authorizer
+                            'Authorization': idToken
                         },
                         body: JSON.stringify({
                             email: email || 'unknown',
@@ -132,11 +128,11 @@ window.ViewDashboard = {
                     if (!response.ok) throw new Error('AWS Error: ' + response.status + ' ' + response.statusText);
 
                     const data = await response.json();
-                    statusText.innerHTML = '<span style="color: #4dbfa8;">✓ Successfully synced to DynamoDB via AWS Lambda!</span>';
+                    statusText.innerHTML = '<span style="color: #4dbfa8;">Successfully synced to DynamoDB via AWS Lambda!</span>';
 
                 } catch (error) {
                     console.error('Sync error:', error);
-                    statusText.innerHTML = `<span style="color: #ef4444;">❌ Sync failed: </span>`;
+                    statusText.innerHTML = '<span style="color: #ef4444;">Sync failed.</span>';
                 } finally {
                     syncBtn.innerText = 'Sync to DynamoDB';
                     syncBtn.disabled = false;
