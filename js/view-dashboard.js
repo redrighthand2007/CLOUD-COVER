@@ -1,6 +1,6 @@
-﻿window.ViewDashboard = {
+window.ViewDashboard = {
     render: () => {
-        return \ 
+        return `
 <main style="width: 100%; max-width: 100%;">
         <div class="container" style="max-width: 900px; margin: 0 auto; width: 100%;">
             
@@ -80,7 +80,7 @@
 
         </div>
     </main>
-        \;
+        `;
     },
     init: () => {
         if (typeof AuthModule !== 'undefined') AuthModule.requireAuth();
