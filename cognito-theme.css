@@ -1,0 +1,40 @@
+.background-customizable {
+    background-color: #0b111a;
+}
+.banner-customizable {
+    padding: 20px;
+    background-color: #141d2b;
+}
+.submitButton-customizable {
+    background-color: #4dbfa8;
+    color: #000;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+}
+.submitButton-customizable:hover {
+    background-color: #3aa08e;
+}
+.inputField-customizable {
+    background-color: #141d2b;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+    border-radius: 6px;
+}
+.inputField-customizable:focus {
+    border-color: #4dbfa8;
+}
+.textDescription-customizable {
+    color: #94a3b8;
+}
+.label-customizable {
+    color: #f8fafc;
+    font-weight: 500;
+}
+.legalText-customizable {
+    color: #94a3b8;
+}
+.redirect-customizable {
+    color: #4dbfa8;
+}
