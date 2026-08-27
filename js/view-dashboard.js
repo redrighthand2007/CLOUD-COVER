@@ -1,4 +1,4 @@
-﻿window.ViewDashboard = {
+window.ViewDashboard = {
     render: () => {
         return ` 
 <main style="width: 100%; max-width: 100%;">
@@ -136,7 +136,7 @@
 
                 } catch (error) {
                     console.error('Sync error:', error);
-                    statusText.innerHTML = <span style="color: #ef4444;">❌ Sync failed: </span>;
+                    statusText.innerHTML = `<span style="color: #ef4444;">❌ Sync failed: </span>`;
                 } finally {
                     syncBtn.innerText = 'Sync to DynamoDB';
                     syncBtn.disabled = false;
