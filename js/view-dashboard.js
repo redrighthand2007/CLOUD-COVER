@@ -1,4 +1,4 @@
-﻿window.ViewDashboard = {
+window.ViewDashboard = {
     render: () => {
         return \
 <main style="width: 100%; max-width: 100%;">
@@ -18,7 +18,6 @@
                         <!-- 75% Right Side -->
                         <div style="flex: 1;">
                             <h2 id="dashUserName" style="font-size: 1.8rem; margin-bottom: 4px;">Loading...</h2>
-                            <p id="dashUserEmail" style="color: var(--text-muted); font-size: 1.05rem;">loading@example.com</p>
                         </div>
                         <!-- Expand Icon -->
                         <div id="expandProfileBtn" style="position: absolute; right: 20px; top: 20px; cursor: pointer; padding: 10px; font-size: 1.2rem; color: var(--primary-color); background: rgba(77, 191, 168, 0.1); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
@@ -33,6 +32,7 @@
                             <div><strong style="color: var(--text-muted);">Full Name:</strong> <span id="detName"></span></div>
                             <div><strong style="color: var(--text-muted);">Email ID:</strong> <span id="detEmail"></span></div>
                             <div><strong style="color: var(--text-muted);">Phone No:</strong> <span id="detPhone">Not Provided</span></div>
+                            <div><strong style="color: var(--text-muted);">Gender:</strong> <span id="detGender">Not Provided</span></div>
                             <div><strong style="color: var(--text-muted);">DOB:</strong> <span>01 Jan 1990 (Sample)</span></div>
                             <div><strong style="color: var(--text-muted);">PAN No:</strong> <span>ABCDE1234F (Sample)</span></div>
                             <div><strong style="color: var(--text-muted);">Address:</strong> <span>Mumbai, MH (Sample)</span></div>
@@ -145,6 +145,17 @@
         document.getElementById('detName').innerText = fullName;
         document.getElementById('detEmail').innerText = email;
         document.getElementById('detPhone').innerText = phoneNo;
+        
+        let detGender = 'Not Provided';
+        if (idToken) {
+            try {
+                const payload = JSON.parse(atob(idToken.split('.')[1]));
+                if (payload.gender) detGender = payload.gender;
+            } catch(e) {}
+        }
+        
+        const detGenderEl = document.getElementById('detGender');
+        if(detGenderEl) detGenderEl.innerText = detGender;
 
         // Expand profile card logic
         const expandBtn = document.getElementById('expandProfileBtn');
