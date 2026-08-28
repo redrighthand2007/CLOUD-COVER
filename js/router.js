@@ -56,7 +56,7 @@ const router = () => {
     // Hide footer on specific routes
     const footer = document.getElementById('app-footer');
     if (footer) {
-        if (hash === '#quotes' || hash === '#bmi') {
+        if (hash === '#quotes' || hash === '#bmi' || hash === '#dashboard') {
             footer.style.display = 'none';
         } else {
             footer.style.display = 'block';
