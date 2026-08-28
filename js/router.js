@@ -52,6 +52,16 @@ const router = () => {
             link.classList.add('active');
         }
     });
+
+    // Hide footer on specific routes
+    const footer = document.getElementById('app-footer');
+    if (footer) {
+        if (hash === '#quotes' || hash === '#bmi') {
+            footer.style.display = 'none';
+        } else {
+            footer.style.display = 'block';
+        }
+    }
 };
 
 window.addEventListener('hashchange', router);
