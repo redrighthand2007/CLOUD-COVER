@@ -1,40 +1,44 @@
+/* 1. Page Background */
 .background-customizable {
-    background-color: #0b111a;
+    background-color: #0B111A;
 }
+
+/* 2. Logo Area */
 .banner-customizable {
-    padding: 20px;
-    background-color: #141d2b;
+    padding: 20px 0 10px 0;
+    text-align: center;
 }
-.submitButton-customizable {
-    background-color: #4dbfa8;
-    color: #000;
-    font-weight: 600;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+
+/* 3. Hide the extra "Already have an account?" text */
+.redirect-customizable {
+    display: none;
 }
-.submitButton-customizable:hover {
-    background-color: #3aa08e;
-}
-.inputField-customizable {
-    background-color: #141d2b;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #f8fafc;
-    border-radius: 6px;
-}
-.inputField-customizable:focus {
-    border-color: #4dbfa8;
-}
+
+/* 4. Fix text colors to match the dark theme */
 .textDescription-customizable {
-    color: #94a3b8;
+    color: #94A3B8;
 }
+
 .label-customizable {
-    color: #f8fafc;
+    color: #F8FAFC;
     font-weight: 500;
 }
-.legalText-customizable {
-    color: #94a3b8;
+
+/* 5. Style the input boxes */
+.inputField-customizable {
+    border-radius: 8px;
+    border: 1px solid #334155;
+    color: #0B111A;
 }
-.redirect-customizable {
-    color: #4dbfa8;
+
+/* 6. Style the submit buttons to match CloudCover green */
+.submitButton-customizable {
+    background-color: #4DBFA8;
+    color: #0B111A;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.submitButton-customizable:hover {
+    background-color: #3AA992;
 }
