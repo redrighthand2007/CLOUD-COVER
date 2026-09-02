@@ -105,3 +105,4 @@ To explore the architecture locally:
 ---
 **Tags/Keywords:** `SPA`, `Vanilla JavaScript`, `ES6+`, `HTML5`, `CSS3`, `Glassmorphism`, `Hash Router`, `AWS Cognito`, `MFA`, `AWS Lambda`, `DynamoDB`, `InsurTech`, `Dark Mode`, `Responsive`, `Zero Dependencies`, `Client-Side Routing`, `SVG Animations`, `Intersection Observer`, `Regex Validation`.
 
+
