@@ -16,13 +16,25 @@
 
 ---
 
-## ⚡ What is CloudCover?
+## ?? Project Overview
+
+### What is it?
+A completely custom-built, client-side insurance quoting web application.
+
+### Why did you build it?
+It solves the problem of biased, slow, and agent-dependent quoting by generating algorithm-driven recommendations instantly in your browser.
+
+### What does it do?
+- Instant algorithm-driven insurance quoting
+- Sub-1s page navigation via bespoke hash router
+- 8 modular views served dynamically
+- Zero node_modules or heavy framework overhead
 
 CloudCover is a completely custom-built, client-side insurance quoting web application. It solves the problem of biased, slow, and agent-dependent quoting by generating algorithm-driven recommendations instantly in your browser. 
 
 The most exciting part? **Zero dependencies.** CloudCover is built purely with HTML5, CSS3, and Vanilla JavaScript (ES6+), running off a single HTML shell with a hand-engineered hash router.
 
-## 🚀 Quantifiable Metrics & Performance
+### Tech Stack
 
 * **~40% faster** user quoting time vs. traditional multi-page flows.
 * **0 dependencies** — zero `node_modules`, zero webpack, zero framework overhead.
@@ -31,9 +43,13 @@ The most exciting part? **Zero dependencies.** CloudCover is built purely with H
 * **5+ complex regex validations** handling PAN number, phone, email, and password strength client-side.
 * **100% client-side core functionality**, eliminating server dependency for the quoting engine.
 
-## 🏗️ Technical Architecture
+### How does it work? (Architecture)
 
 CloudCover utilizes a strict SPA pattern with an AWS Serverless backend integration.
+
+## ?? Screenshots & Demo
+
+**?? Demo � Coming Soon!**
 
 ### Frontend (The Zero-Framework SPA)
 * **Logic:** Modular view system (`view-*.js`), template literals, and pure DOM manipulation.
@@ -88,3 +104,4 @@ To explore the architecture locally:
 
 ---
 **Tags/Keywords:** `SPA`, `Vanilla JavaScript`, `ES6+`, `HTML5`, `CSS3`, `Glassmorphism`, `Hash Router`, `AWS Cognito`, `MFA`, `AWS Lambda`, `DynamoDB`, `InsurTech`, `Dark Mode`, `Responsive`, `Zero Dependencies`, `Client-Side Routing`, `SVG Animations`, `Intersection Observer`, `Regex Validation`.
+
