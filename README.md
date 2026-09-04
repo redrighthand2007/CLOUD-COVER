@@ -62,9 +62,6 @@ CloudCover-Website/
 ├── css/
 │   ├── style.css           # Global UI styling and keyframe animations
 │   └── cognito-theme.css   # Custom AWS Cognito Hosted UI Theme
-├── docs/
-│   ├── CloudCover_Project_Documentation.md
-│   └── cloudcover_project_brief.pdf
 ├── js/
 │   ├── router.js           # Hand-built Hash Router
 │   ├── main.js             # Global utilities (navbar, observers)
@@ -77,24 +74,3 @@ CloudCover-Website/
     ├── generate_logo.ps1   # PowerShell Logo Generator
     └── rewrite.sh          # Git History Cleaner
 ```
-
-## 📖 Getting Started
-
-To explore the architecture locally:
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/redrighthand2007/CloudCover-Website.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd CloudCover-Website
-   ```
-3. Start a simple local server (Python example):
-   ```bash
-   python -m http.server 8000
-   ```
-4. Open `http://localhost:8000` in your web browser.
-
----
-**Tags/Keywords:** `SPA`, `Vanilla JavaScript`, `ES6+`, `HTML5`, `CSS3`, `Glassmorphism`, `Hash Router`, `AWS Cognito`, `MFA`, `AWS Lambda`, `DynamoDB`, `InsurTech`, `Dark Mode`, `Responsive`, `Zero Dependencies`, `Client-Side Routing`, `SVG Animations`, `Intersection Observer`, `Regex Validation`.
