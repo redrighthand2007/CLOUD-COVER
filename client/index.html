@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCover - Office Management</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Auth View -->
+        <div id="auth-view" class="view active">
+            <div class="login-container">
+                <h2>CloudCover Login</h2>
+                <div class="form-group" style="text-align: center; margin-top: 20px;">
+                    <button id="cognito-login-btn" class="btn btn-primary" style="padding: 15px; font-size: 1.1em;">
+                        🔒 Login with AWS Cognito (MFA)
+                    </button>
+                </div>
+                <div id="login-error" class="error-msg"></div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard View (Sidebar + Content) -->
+        <div id="main-view" class="view layout-main">
+            <nav class="sidebar">
+                <div class="logo">☁️ CloudCover</div>
+                <ul class="nav-links">
+                    <li><a href="#" data-target="dashboard-content" class="nav-active">Dashboard</a></li>
+                    <li><a href="#" data-target="customers-content">Customers</a></li>
+                    <li><a href="#" data-target="policies-content">Insurance Policies</a></li>
+                    <li><a href="#" data-target="investments-content">Investments</a></li>
+                </ul>
+                <div class="sidebar-footer">
+                    <span id="user-info"></span>
+                    <button id="logout-btn" class="btn btn-secondary btn-sm">Logout</button>
+                </div>
+            </nav>
+            
+            <main class="content-area">
+                <!-- Dashboard -->
+                <section id="dashboard-content" class="content-section active">
+                    <h2>Dashboard</h2>
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <h3>Total Customers</h3>
+                            <p id="dash-total-customers">0</p>
+                        </div>
+                        <div class="card">
+                            <h3>Active Policies</h3>
+                            <p id="dash-active-policies">0</p>
+                        </div>
+                    </div>
+                    
+                    <div class="due-queue-container">
+                        <h3>Due Queue</h3>
+                        <div class="queue-list" id="due-queue-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Customers -->
+                <section id="customers-content" class="content-section">
+                    <div class="section-header">
+                        <h2>Customers</h2>
+                        <button class="btn btn-primary" id="add-customer-btn">Add Customer</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="customers-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>PAN</th>
+                                    <th>Phone</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Policies -->
+                <section id="policies-content" class="content-section">
+                    <div class="section-header">
+                        <h2>Insurance Policies</h2>
+                    </div>
+                    <div class="table-container">
+                        <table id="policies-table">
+                            <thead>
+                                <tr>
+                                    <th>Policy</th>
+                                    <th>Customer</th>
+                                    <th>Status</th>
+                                    <th>Next Due</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Investments -->
+                <section id="investments-content" class="content-section">
+                    <div class="section-header">
+                        <h2>Investments</h2>
+                    </div>
+                    <div class="table-container">
+                        <table id="investments-table">
+                            <thead>
+                                <tr>
+                                    <th>Scheme</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
