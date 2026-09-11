@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCover - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <h2>☁️ CloudCover</h2>
+        <p class="subtitle">Internal Office Management</p>
+        
+        <div class="form-group" style="text-align: center; margin-top: 30px;">
+            <button id="cognito-login-btn" class="btn btn-primary" style="padding: 15px; font-size: 1.1em; width: 100%;">
+                🔒 Login with AWS Cognito (MFA)
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { AuthModule } from './js/auth.js';
+        
+        // If already authenticated, go to dashboard
+        if (AuthModule.isAuthenticated()) {
+            window.location.href = 'dashboard.html';
+        }
+
+        document.getElementById('cognito-login-btn').addEventListener('click', () => {
+            AuthModule.signIn();
+        });
+    </script>
+</body>
+</html>

@@ -8,7 +8,7 @@ function getAuthHeaders() {
     };
 }
 
-async function fetchAPI(endpoint, options = {}) {
+export async function fetchAPI(endpoint, options = {}) {
     try {
         const response = await fetch(`${API_URL}${endpoint}`, {
             ...options,
@@ -22,10 +22,9 @@ async function fetchAPI(endpoint, options = {}) {
         
         if (!response.ok) {
             if (response.status === 401) {
-                // Handle unauthorized globally
+                // Token invalid, force logout
                 localStorage.removeItem('cloudcover_token');
-                localStorage.removeItem('cloudcover_user');
-                window.location.reload();
+                window.location.href = 'login.html';
             }
             throw new Error(data.error || 'API Request Failed');
         }
@@ -36,12 +35,3 @@ async function fetchAPI(endpoint, options = {}) {
         throw err;
     }
 }
-
-export const api = {
-    login: (username, password) => fetchAPI('/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
-    getCustomers: () => fetchAPI('/customers'),
-    getPolicies: () => fetchAPI('/policies'),
-    getInvestments: () => fetchAPI('/investments'),
-    getDueQueue: () => fetchAPI('/due-queue'),
-    markPaid: (policyId) => fetchAPI(`/policies/${policyId}/mark-paid`, { method: 'POST' }),
-};

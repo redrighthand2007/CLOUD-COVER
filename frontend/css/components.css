@@ -1,0 +1,29 @@
+/* Buttons */
+.btn { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+.btn-primary { background: #0066cc; color: white; }
+.btn-primary:hover { background: #0052a3; }
+.btn-secondary { background: #e0e0e0; color: #333; }
+.btn-secondary:hover { background: #d0d0d0; }
+.btn-sm { padding: 5px 10px; font-size: 0.9em; }
+
+/* Due Queue */
+.queue-list { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
+.queue-item { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.queue-item:last-child { border-bottom: none; }
+.queue-item.missed { border-left: 5px solid #e74c3c; background: #fdf5f5; }
+.queue-item.upcoming { border-left: 5px solid #f1c40f; }
+.queue-info h4 { margin-bottom: 5px; color: #2c3e50; }
+.queue-info p { font-size: 0.9em; color: #666; }
+
+/* Tables */
+.table-container { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f9fafb; font-weight: 600; color: #555; }
+tr:hover { background: #f9f9f9; }
+
+/* Form Elements */
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+.error-msg { color: #e74c3c; margin-top: 10px; font-size: 0.9em; }

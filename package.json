@@ -4,8 +4,8 @@
   "description": "Backend API for CloudCover Internal Office Management",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

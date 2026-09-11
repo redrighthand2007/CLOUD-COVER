@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCover - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <div class="layout-main">
+        <nav class="sidebar">
+            <div class="logo">☁️ CloudCover</div>
+            <ul class="nav-links">
+                <li><a href="#" data-target="dashboard-content" class="nav-active">Dashboard</a></li>
+                <li><a href="#" data-target="customers-content">Customers</a></li>
+                <li><a href="#" data-target="policies-content">Insurance Policies</a></li>
+                <li><a href="#" data-target="investments-content">Investments</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <span id="user-info">Loading...</span>
+                <button id="logout-btn" class="btn btn-secondary btn-sm">Logout</button>
+            </div>
+        </nav>
+        
+        <main class="content-area">
+            <!-- Dashboard -->
+            <section id="dashboard-content" class="content-section active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Total Customers</h3>
+                        <p id="dash-total-customers">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Active Policies</h3>
+                        <p id="dash-active-policies">0</p>
+                    </div>
+                </div>
+                
+                <div class="due-queue-container">
+                    <h3>Due Queue</h3>
+                    <div class="queue-list" id="due-queue-list">
+                        <div class="queue-item"><p>Loading...</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Customers -->
+            <section id="customers-content" class="content-section">
+                <div class="section-header">
+                    <h2>Customers</h2>
+                </div>
+                <div class="table-container">
+                    <table id="customers-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>PAN</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Policies -->
+            <section id="policies-content" class="content-section">
+                <div class="section-header">
+                    <h2>Insurance Policies</h2>
+                </div>
+                <div class="table-container">
+                    <table id="policies-table">
+                        <thead>
+                            <tr>
+                                <th>Policy</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Next Due</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Investments -->
+            <section id="investments-content" class="content-section">
+                <div class="section-header">
+                    <h2>Investments</h2>
+                </div>
+                <div class="table-container">
+                    <table id="investments-table">
+                        <thead>
+                            <tr>
+                                <th>Scheme</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { AuthModule } from './js/auth.js';
+        if (!AuthModule.isAuthenticated()) {
+            window.location.href = 'login.html';
+        } else {
+            const user = JSON.parse(localStorage.getItem('cloudcover_user') || '{}');
+            document.getElementById('user-info').textContent = `${user.name || 'User'} (${user.role || 'Admin'})`;
+            
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                AuthModule.signOut();
+            });
+        }
+    </script>
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

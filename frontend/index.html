@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCover - Redirecting...</title>
+</head>
+<body>
+    <p>Redirecting...</p>
+    <script type="module">
+        import { AuthModule } from './js/auth.js';
+        
+        // If they have a token in the URL hash, AuthModule handles it.
+        // Otherwise, redirect to dashboard (which redirects to login if needed).
+        if (!window.location.hash.includes('id_token=')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

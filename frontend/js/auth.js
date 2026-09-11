@@ -1,11 +1,11 @@
 const COGNITO_DOMAIN = 'https://ap-south-1iutz7kh5h.auth.ap-south-1.amazoncognito.com';
 const CLIENT_ID = '7gp7gvu3vh23k225gr1567k810';
 
-const REDIRECT_URI = window.location.origin + window.location.pathname;
+// We want to redirect back to index.html to catch the hash, which routes properly
+const REDIRECT_URI = window.location.origin + '/index.html'; 
 
 export const AuthModule = {
     init: () => {
-        console.log("Auth initialized. Connected to AWS Cognito.");
         AuthModule.checkUrlForTokens();
     },
 
@@ -31,8 +31,8 @@ export const AuthModule = {
                 } catch(e) { console.error("Error decoding JWT", e); }
 
                 window.location.hash = '';
-                // Reload to let app.js handle state cleanly
-                window.location.reload();
+                // Redirect to dashboard after login
+                window.location.href = 'dashboard.html';
             }
         }
     },
@@ -51,7 +51,9 @@ export const AuthModule = {
         localStorage.removeItem('cloudcover_access');
         localStorage.removeItem('cloudcover_user');
         
-        const logoutUrl = `${COGNITO_DOMAIN}/logout?client_id=${CLIENT_ID}&logout_uri=${encodeURIComponent(REDIRECT_URI)}`;
+        // AWS Cognito logout redirect MUST match a registered Allowed Sign-Out URL
+        // Typically it's the base URL
+        const logoutUrl = `${COGNITO_DOMAIN}/logout?client_id=${CLIENT_ID}&logout_uri=${encodeURIComponent(window.location.origin)}`;
         window.location.href = logoutUrl;
     }
 };
