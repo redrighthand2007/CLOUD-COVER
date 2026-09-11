@@ -35,3 +35,8 @@ export async function fetchAPI(endpoint, options = {}) {
         throw err;
     }
 }
+
+export function isAdmin() {
+    const user = JSON.parse(localStorage.getItem('cloudcover_user') || '{}');
+    return user.role === 'Admin';
+}

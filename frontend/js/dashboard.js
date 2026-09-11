@@ -1,6 +1,7 @@
 import { fetchAPI } from './app.js';
-import { loadCustomers } from './customers.js';
-import { loadPolicies } from './policies.js';
+import { loadCustomers, setupCustomerEvents } from './customers.js';
+import { loadPolicies, setupPolicyEvents } from './policies.js';
+import { loadInvestments, setupInvestmentEvents } from './investments.js';
 
 // Setup navigation
 const navLinks = document.querySelectorAll('.nav-links a');
@@ -24,8 +25,13 @@ function loadSectionData(sectionId) {
     if (sectionId === 'dashboard-content') loadDashboard();
     if (sectionId === 'customers-content') loadCustomers();
     if (sectionId === 'policies-content') loadPolicies();
-    // Investments left as a stub for V1
+    if (sectionId === 'investments-content') loadInvestments();
 }
+
+// Setup Modal Events
+setupCustomerEvents();
+setupPolicyEvents();
+setupInvestmentEvents();
 
 export async function loadDashboard() {
     try {
@@ -39,6 +45,7 @@ export async function loadDashboard() {
         renderDueQueue(queue);
     } catch (err) {
         console.error('Error loading dashboard', err);
+        document.getElementById('due-queue-list').innerHTML = `<div class="queue-item" style="color:red"><p><b>Error:</b> ${err.message}</p></div>`;
     }
 }
 

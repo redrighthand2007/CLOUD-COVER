@@ -51,6 +51,10 @@
             <section id="customers-content" class="content-section">
                 <div class="section-header">
                     <h2>Customers</h2>
+                    <div>
+                        <input type="text" id="search-customers" placeholder="Search..." class="search-input" />
+                        <button id="add-customer-btn" class="btn btn-primary">Add Customer</button>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table id="customers-table">
@@ -71,6 +75,10 @@
             <section id="policies-content" class="content-section">
                 <div class="section-header">
                     <h2>Insurance Policies</h2>
+                    <div>
+                        <input type="text" id="search-policies" placeholder="Search..." class="search-input" />
+                        <button id="add-policy-btn" class="btn btn-primary">Add Policy</button>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table id="policies-table">
@@ -91,6 +99,10 @@
             <section id="investments-content" class="content-section">
                 <div class="section-header">
                     <h2>Investments</h2>
+                    <div>
+                        <input type="text" id="search-investments" placeholder="Search..." class="search-input" />
+                        <button id="add-investment-btn" class="btn btn-primary">Add Investment</button>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table id="investments-table">
@@ -105,6 +117,190 @@
                     </table>
                 </div>
             </section>
+            <!-- Modals -->
+            <div id="customer-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" data-modal="customer-modal">&times;</span>
+                    <h2 id="customer-modal-title">Add Customer</h2>
+                    <form id="customer-form">
+                        <input type="hidden" id="customer-id" />
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="customer-name" required />
+                        </div>
+                        <div class="form-group">
+                            <label>PAN *</label>
+                            <input type="text" id="customer-pan" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Phone *</label>
+                            <input type="text" id="customer-phone" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="customer-email" />
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea id="customer-address"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="customer-dob" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Customer</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="policy-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" data-modal="policy-modal">&times;</span>
+                    <h2 id="policy-modal-title">Add Policy</h2>
+                    <form id="policy-form">
+                        <input type="hidden" id="policy-id" />
+                        <div class="form-group">
+                            <label>Customer *</label>
+                            <select id="policy-customer" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Policyholder PAN</label>
+                            <input type="text" id="policy-pan" />
+                        </div>
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select id="policy-category" required>
+                                <option value="Life">Life</option>
+                                <option value="Term">Term</option>
+                                <option value="Pension">Pension</option>
+                                <option value="Health">Health</option>
+                                <option value="Mediclaim">Mediclaim</option>
+                                <option value="Motor">Motor</option>
+                                <option value="Accidental">Accidental</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Insurer *</label>
+                            <select id="policy-insurer" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Policy Name *</label>
+                            <input type="text" id="policy-name" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Policy Number *</label>
+                            <input type="text" id="policy-number" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Premium Amount *</label>
+                            <input type="number" id="policy-premium" step="0.01" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Total Tenure (Years)</label>
+                            <input type="number" id="policy-tenure" />
+                        </div>
+                        <div class="form-group">
+                            <label>Policy Start Date *</label>
+                            <input type="date" id="policy-start" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Policy End Date</label>
+                            <input type="date" id="policy-end" />
+                        </div>
+                        <div class="form-group">
+                            <label>Premium Start Date *</label>
+                            <input type="date" id="policy-prem-start" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Premium End Date</label>
+                            <input type="date" id="policy-prem-end" />
+                        </div>
+                        <div class="form-group">
+                            <label>Premium Frequency *</label>
+                            <select id="policy-frequency" required>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Half-yearly">Half-yearly</option>
+                                <option value="Yearly">Yearly</option>
+                                <option value="Single Premium">Single Premium</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Policy Status</label>
+                            <select id="policy-status">
+                                <option value="Active">Active</option>
+                                <option value="Due">Due</option>
+                                <option value="Overdue">Overdue</option>
+                                <option value="Lapsed">Lapsed</option>
+                                <option value="Matured">Matured</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="policy-notes"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Policy</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="investment-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" data-modal="investment-modal">&times;</span>
+                    <h2 id="investment-modal-title">Add Investment</h2>
+                    <form id="investment-form">
+                        <input type="hidden" id="investment-id" />
+                        <div class="form-group">
+                            <label>Customer *</label>
+                            <select id="investment-customer" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Investment Type *</label>
+                            <input type="text" id="investment-type" required />
+                        </div>
+                        <div class="form-group">
+                            <label>AMC/Company</label>
+                            <input type="text" id="investment-amc" />
+                        </div>
+                        <div class="form-group">
+                            <label>Scheme Name *</label>
+                            <input type="text" id="investment-scheme" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Folio/Account Number *</label>
+                            <input type="text" id="investment-folio" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Investment Amount *</label>
+                            <input type="number" id="investment-amount" step="0.01" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date *</label>
+                            <input type="date" id="investment-start" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select id="investment-frequency">
+                                <option value="Monthly (SIP)">Monthly (SIP)</option>
+                                <option value="Lumpsum">Lumpsum</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="investment-status">
+                                <option value="Active">Active</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="investment-notes"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Investment</button>
+                    </form>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -123,5 +319,6 @@
         }
     </script>
     <script type="module" src="./js/app.js"></script>
+    <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>
