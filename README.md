@@ -1,6 +1,6 @@
 <div align="center">
   <h1>☁️ CloudCover</h1>
-  <p><b>A minimalist, robust Internal Office Management Web Application for Insurance Corner.</b></p>
+  <p><b>An elegant, internal office management application tailored for Insurance Corner.</b></p>
   
   [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](#)
   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](#)
@@ -13,58 +13,63 @@
 
 ## 🚀 Overview
 
-**CloudCover** is built specifically for office staff to effortlessly track customers, insurance policies, and investments in one centralized system. Designed to replace scattered spreadsheets, it brings clarity and structure to the daily workflow.
+**CloudCover** is an internal, single-tenant web application explicitly designed for a small office team (3-4 members). It centralizes customer records, complex insurance policies, investments, and premium collections. 
+
+**Note:** This is *strictly* an internal administrative tool. There are no customer-facing portals, OTP logins, or mobile apps in V1.
 
 <br>
 
-## ✨ Key Features
+## ✨ Core Modules (MVP)
 
-- 👥 **Customer Management:** Maintain comprehensive profiles for all office customers in one place.
-- 🛡️ **Insurance Tracking:** Log policies across multiple providers and automatically compute the next premium due dates based on payment frequencies.
-- ⚡ **Dynamic Due Queue:** A real-time dashboard queue that highlights urgent missed premiums and upcoming payments within the next 5 days.
-- 📈 **Investment Logging:** Simple tracking for mutual funds, fixed deposits, and SIPs.
-- 🔒 **Role-Based Security:** Distinct `Admin` and `Staff` access levels to safeguard critical operations, such as record deletions.
+- 👥 **Customer Master:** Centralized repository for PAN, contact info, and linked policies/investments.
+- 🛡️ **Insurance Module:** Logs multiple categories of policies (Life, Health, Motor, etc.) and auto-computes recurring premium dates.
+- ⚡ **Dynamic Due Queue:** The heart of the dashboard. Automatically calculates and prioritizes missed premiums and upcoming dues (next 5 days) without manual tracking.
+- 📈 **Investments Module:** Lightweight tracking for Mutual Funds, FDs, and SIPs.
+- 🔍 **Global Search:** Fast internal lookups by name, PAN, phone, or policy number.
+- 🔒 **Role-Based Security:** 
+  - **Admin:** Full rights (including archival/deletion).
+  - **Staff:** Operational management (CRUD without deletion capabilities).
 
 <br>
 
-## 🛠️ Technology Stack
+## 🛠️ Architecture & Tech Stack
 
-CloudCover avoids heavy frontend frameworks to remain lean, fast, and highly maintainable:
+Per the PRD constraints, CloudCover intentionally avoids heavy frontend frameworks to keep the project close to fundamentals, highly maintainable, and aligned with the small-office scope.
 
 | Layer       | Technology |
 | ----------- | ----------- |
 | **Frontend**| HTML5, CSS3, Vanilla JavaScript (ES Modules) |
-| **Backend** | Node.js, Express.js |
-| **Database**| PostgreSQL |
-| **Security**| JWT Authentication |
+| **Backend** | Node.js, Express.js REST API |
+| **Database**| PostgreSQL (accessed via `pg`) |
+| **Security**| JWT Authentication (Server-side validation) |
 
 <br>
 
-## ⚙️ Quick Setup
+## ⚙️ Development Setup
 
-1. **Database Preparation**
-   Ensure PostgreSQL is installed. Initialize the schema and seed data using the files in the `/database` folder:
+1. **Database Initialization**
+   Ensure PostgreSQL is installed. Create a database named `cloudcover`, then initialize the schema and seed data:
    ```bash
    psql -U postgres -d cloudcover -f database/schema.sql
    psql -U postgres -d cloudcover -f database/seed.sql
    ```
 
 2. **Backend Services**
-   Install the dependencies and start the local development server:
+   Navigate to the repository root, install dependencies, and start the local dev server:
    ```bash
    npm install
    npm run dev
    ```
 
-3. **Frontend Launch**
-   The application is served directly by the backend. Simply open your browser and navigate to:
+3. **Frontend Access**
+   The application static files are served by Express. Open your browser and navigate to:
    **`http://localhost:3000`**
 
 <br>
 
-## 🔑 Default Accounts
+## 🔑 Default Seed Accounts
 
-The `seed.sql` pre-populates the database with the following test accounts:
+Use these accounts to test the role-based dashboard views:
 
 | Role | Username | Password |
 | :--- | :--- | :--- |
@@ -75,6 +80,17 @@ The `seed.sql` pre-populates the database with the following test accounts:
 
 <br>
 
+## 🔮 Future Scope (Out of V1)
+
+While CloudCover is designed to be extensible, the following are explicitly deferred to future phases:
+- Customer Portal / Mobile Apps
+- WhatsApp / SMS / Email automation
+- Insurer API integrations
+- Complex task assignment workflows
+- Full document/PDF storage vault
+
+<br>
+
 <div align="center">
-  <sub>Built for performance. Designed for simplicity.</sub>
+  <sub>Built for performance. Designed for the Insurance Corner team.</sub>
 </div>
