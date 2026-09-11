@@ -19,3 +19,7 @@ desktop.ini
 
 # Documentation drafts (keep your project repo clean of raw docx files)
 *.docx
+
+node_modules/
+.env
+
