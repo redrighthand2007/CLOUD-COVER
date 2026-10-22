@@ -117,6 +117,12 @@ Login page (Office tab)            AWS Cognito                     CloudCover se
 4. Scan the QR code with Google Authenticator or Microsoft Authenticator, and enter the 6-digit code.
 5. From then on: password + the current 6-digit code.
 
+**Note:** when MFA is set up through Cognito's login page like this, `aws cognito-idp admin-get-user`
+may show `UserMFASettingList: null` for the user. That record is not filled in by this flow; MFA is
+still enforced because the pool requires it (`MfaConfiguration: ON`) and the user has a verified
+authenticator. The real check is the login itself: after the password, it asks for the 6-digit code.
+All three office users completed this on 22 Oct 2026.
+
 ### Adding an office user
 
 1. Add them on the **Team** page (sets their role).
