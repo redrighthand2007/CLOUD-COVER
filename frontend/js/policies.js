@@ -1,12 +1,48 @@
-import { fetchAPI, isAdmin } from './app.js';
+import { fetchAPI, isAdmin, esc, formatDate, formatMoney, todayISO } from './app.js';
 
 let allPolicies = [];
 
 export async function loadPolicies() {
     try {
         allPolicies = await fetchAPI('/policies');
-        renderPolicies(allPolicies);
+        applyFilters();
     } catch(err) { console.error(err); }
+}
+
+const INACTIVE = ['Lapsed', 'Matured', 'Cancelled'];
+
+// 'missed' | 'upcoming' (next 5 days) | 'none', same rules as the due queue
+function dueState(p) {
+    if (!p.next_due_date || p.current_payment_state === 'Paid' || INACTIVE.includes(p.policy_status)) return 'none';
+    const today = todayISO();
+    const in5 = new Date();
+    in5.setDate(in5.getDate() + 5);
+    const limit = `${in5.getFullYear()}-${String(in5.getMonth() + 1).padStart(2, '0')}-${String(in5.getDate()).padStart(2, '0')}`;
+    if (p.next_due_date < today) return 'missed';
+    if (p.next_due_date <= limit) return 'upcoming';
+    return 'none';
+}
+
+// Search box + dropdown filters, all applied together
+function applyFilters() {
+    const term = (document.getElementById('search-policies').value || '').toLowerCase();
+    const due = document.getElementById('filter-policy-due').value;
+    const status = document.getElementById('filter-policy-status').value;
+    const category = document.getElementById('filter-policy-category').value;
+    const frequency = document.getElementById('filter-policy-frequency').value;
+
+    const filtered = allPolicies.filter(p =>
+        (!term || p.policy_name.toLowerCase().includes(term) ||
+            p.customer_name.toLowerCase().includes(term) ||
+            p.policy_number.toLowerCase().includes(term) ||
+            (p.insurer_name && p.insurer_name.toLowerCase().includes(term))) &&
+        (!due || dueState(p) === due) &&
+        (!status || p.policy_status === status) &&
+        (!category || p.category === category) &&
+        (!frequency || p.premium_frequency === frequency)
+    );
+    renderPolicies(filtered);
+    document.getElementById('policy-count').textContent = `${filtered.length} of ${allPolicies.length} policies`;
 }
 
 function renderPolicies(policies) {
@@ -14,15 +50,16 @@ function renderPolicies(policies) {
     if(!tbody) return;
     tbody.innerHTML = '';
     policies.forEach(p => {
-        let actions = `<button class="btn btn-secondary btn-sm" onclick="editPolicy(${p.id})">Edit</button>`;
+        let actions = `<button class="btn btn-secondary btn-sm" onclick="editPolicy(${p.id})">Edit</button>
+            <button class="btn btn-secondary btn-sm" onclick="showPayments(${p.id})">Payments</button>`;
         if(isAdmin()) {
-            actions += ` <button class="btn btn-sm" style="background:#e74c3c;color:white;" onclick="deletePolicy(${p.id})">Delete</button>`;
+            actions += ` <button class="btn btn-danger btn-sm" onclick="deletePolicy(${p.id})">Delete</button>`;
         }
         tbody.innerHTML += `<tr>
-            <td>${p.policy_name}</td>
-            <td>${p.customer_name}</td>
-            <td>${p.policy_status}</td>
-            <td>${p.next_due_date ? p.next_due_date.split('T')[0] : 'N/A'}</td>
+            <td>${esc(p.policy_name)}<br><small>${esc(p.policy_number)}</small></td>
+            <td>${esc(p.customer_name)}</td>
+            <td>${esc(p.policy_status)}</td>
+            <td>${p.next_due_date ? formatDate(p.next_due_date) : 'N/A'}</td>
             <td>${actions}</td>
         </tr>`;
     });
@@ -48,19 +85,30 @@ export function setupPolicyEvents() {
     if(span) {
         span.onclick = () => { modal.style.display = 'none'; }
     }
+    const paymentsClose = document.querySelector('.close[data-modal="payments-modal"]');
+    if(paymentsClose) {
+        paymentsClose.onclick = () => { document.getElementById('payments-modal').style.display = 'none'; }
+    }
 
-    const searchInput = document.getElementById('search-policies');
-    if(searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = allPolicies.filter(p => 
-                p.policy_name.toLowerCase().includes(term) || 
-                p.customer_name.toLowerCase().includes(term) || 
-                p.policy_number.toLowerCase().includes(term) ||
-                (p.insurer_name && p.insurer_name.toLowerCase().includes(term))
-            );
-            renderPolicies(filtered);
+    ['search-policies', 'filter-policy-due', 'filter-policy-status', 'filter-policy-category', 'filter-policy-frequency']
+        .forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener(id === 'search-policies' ? 'input' : 'change', applyFilters);
         });
+
+    const addInsurerBtn = document.getElementById('add-insurer-btn');
+    if(addInsurerBtn) {
+        addInsurerBtn.onclick = async () => {
+            const name = prompt('New insurance company name:');
+            if(!name || !name.trim()) return;
+            try {
+                const insurer = await fetchAPI('/insurers', { method: 'POST', body: JSON.stringify({ name }) });
+                await loadInsurersIntoSelect('policy-insurer');
+                document.getElementById('policy-insurer').value = insurer.id;
+            } catch(err) {
+                alert(err.message);
+            }
+        };
     }
 
     if(form) {
@@ -107,26 +155,43 @@ async function loadCustomersIntoSelect(selectId) {
         const select = document.getElementById(selectId);
         select.innerHTML = '<option value="">Select Customer</option>';
         customers.forEach(c => {
-            select.innerHTML += `<option value="${c.id}">${c.full_name} (${c.pan})</option>`;
+            select.innerHTML += `<option value="${c.id}">${esc(c.full_name)} (${esc(c.pan)})</option>`;
         });
     } catch(err) { console.error('Error loading customers for select', err); }
 }
 
 async function loadInsurersIntoSelect(selectId) {
-    // Hardcoding for MVP as per DB seed, since no API route exists yet
-    const insurers = [
-        { id: 1, name: 'LIC of India' },
-        { id: 2, name: 'HDFC Life' },
-        { id: 3, name: 'Star Health' },
-        { id: 4, name: 'ICICI Lombard' },
-        { id: 5, name: 'SBI Life' }
-    ];
-    const select = document.getElementById(selectId);
-    select.innerHTML = '<option value="">Select Insurer</option>';
-    insurers.forEach(i => {
-        select.innerHTML += `<option value="${i.id}">${i.name}</option>`;
-    });
+    try {
+        const insurers = await fetchAPI('/insurers');
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">Select Insurer</option>';
+        insurers.forEach(i => {
+            select.innerHTML += `<option value="${i.id}">${esc(i.name)}</option>`;
+        });
+    } catch(err) { console.error('Error loading insurers for select', err); }
 }
+
+window.showPayments = async (id) => {
+    try {
+        const policy = allPolicies.find(p => p.id === id) || await fetchAPI(`/policies/${id}`);
+        const payments = await fetchAPI(`/policies/${id}/payments`);
+        document.getElementById('payments-policy').textContent = policy
+            ? `${policy.policy_name} (${policy.policy_number})${policy.customer_name ? ' - ' + policy.customer_name : ''}` : '';
+        const tbody = document.querySelector('#payments-table tbody');
+        tbody.innerHTML = payments.length ? '' : '<tr><td colspan="4">No payments recorded yet.</td></tr>';
+        payments.forEach(pay => {
+            tbody.innerHTML += `<tr>
+                <td>${formatDate(pay.paid_on)}</td>
+                <td>${formatDate(pay.due_date)}</td>
+                <td>${formatMoney(pay.amount)}</td>
+                <td>${esc(pay.recorded_by_name || '—')}</td>
+            </tr>`;
+        });
+        document.getElementById('payments-modal').style.display = 'block';
+    } catch(err) {
+        alert('Error loading payments: ' + err.message);
+    }
+};
 
 window.editPolicy = async (id) => {
     try {

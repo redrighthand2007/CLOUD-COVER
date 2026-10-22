@@ -1,0 +1,65 @@
+/* Customer portal: mobile-first layout with a bottom tab bar */
+body.portal {
+    background: #f4f6f8;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+.portal-header {
+    background: #1f4e79;
+    color: white;
+    padding: calc(18px + env(safe-area-inset-top)) 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.portal-greeting { opacity: 0.8; font-size: 0.9em; }
+.portal-header h1 { font-size: 1.3em; color: white; }
+
+.portal-main { max-width: 640px; margin: 0 auto; padding: 16px; }
+.portal-main h2 { font-size: 1.05em; margin: 20px 0 10px; color: #2c3e50; }
+.portal-loading { color: #666; text-align: center; padding: 30px 0; }
+.portal-note { color: #666; font-size: 0.9em; margin-top: 10px; }
+
+.portal-section { display: none; }
+.portal-section.active { display: block; }
+
+.summary-row { display: flex; gap: 12px; }
+.summary-card {
+    flex: 1; background: white; border-radius: 12px; padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.summary-card span { display: block; font-size: 1.8em; font-weight: 700; color: #1f4e79; }
+.summary-card small { color: #666; }
+
+.item-list { display: flex; flex-direction: column; gap: 10px; }
+.item {
+    background: white; border-radius: 12px; padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.item-overdue { border-left: 4px solid #e74c3c; }
+.item-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.item-sub { color: #666; font-size: 0.88em; margin-top: 6px; flex-wrap: wrap; }
+.item-amount { font-weight: 700; white-space: nowrap; }
+.item-empty { color: #666; background: white; border-radius: 12px; padding: 16px; text-align: center; }
+
+details.item summary { list-style: none; cursor: pointer; }
+details.item summary::-webkit-details-marker { display: none; }
+details.item[open] summary { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+
+.details-grid { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; font-size: 0.92em; }
+.details-grid dt { color: #777; }
+.details-grid dd { color: #222; word-break: break-word; }
+
+.portal-nav {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; background: white;
+    border-top: 1px solid #e3e6ea;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+.portal-nav button {
+    flex: 1; border: none; background: none; padding: 8px 4px 10px;
+    font-size: 0.75em; color: #777; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    cursor: pointer;
+}
+.portal-nav button span { font-size: 1.5em; }
+.portal-nav button.active { color: #1f4e79; font-weight: 700; }

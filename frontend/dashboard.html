@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CloudCover - Dashboard</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1f4e79">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/components.css">
@@ -17,17 +20,40 @@
                 <li><a href="#" data-target="customers-content">Customers</a></li>
                 <li><a href="#" data-target="policies-content">Insurance Policies</a></li>
                 <li><a href="#" data-target="investments-content">Investments</a></li>
+                <li class="admin-only" hidden><a href="#" data-target="team-content">Team</a></li>
             </ul>
             <div class="sidebar-footer">
                 <span id="user-info">Loading...</span>
+                <button id="account-btn" class="btn btn-secondary btn-sm">My account</button>
                 <button id="logout-btn" class="btn btn-secondary btn-sm">Logout</button>
             </div>
         </nav>
-        
+
         <main class="content-area">
+            <!-- Global search -->
+            <div class="global-search">
+                <input type="search" id="global-search" class="search-input" autocomplete="off"
+                       placeholder="Search customers, PAN, phone, policy no., folio..." aria-label="Search everything" />
+                <div id="global-search-results" class="search-results" hidden></div>
+            </div>
+
             <!-- Dashboard -->
             <section id="dashboard-content" class="content-section active">
                 <h2>Dashboard</h2>
+                <div class="dashboard-cards">
+                    <div class="card card-danger">
+                        <h3>Missed Dues</h3>
+                        <p id="dash-missed">0</p>
+                    </div>
+                    <div class="card card-warning">
+                        <h3>Due in Next 5 Days</h3>
+                        <p id="dash-upcoming">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Collected This Month</h3>
+                        <p id="dash-collected">₹0</p>
+                    </div>
+                </div>
                 <div class="dashboard-cards">
                     <div class="card">
                         <h3>Total Customers</h3>
@@ -36,6 +62,14 @@
                     <div class="card">
                         <h3>Active Policies</h3>
                         <p id="dash-active-policies">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Active Investments</h3>
+                        <p id="dash-investments">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Customer App Logins</h3>
+                        <p id="dash-app-logins">0</p>
                     </div>
                 </div>
                 
@@ -63,6 +97,7 @@
                                 <th>Name</th>
                                 <th>PAN</th>
                                 <th>Phone</th>
+                                <th>App login</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -80,6 +115,30 @@
                         <button id="add-policy-btn" class="btn btn-primary">Add Policy</button>
                     </div>
                 </div>
+                <div class="filter-bar">
+                    <select id="filter-policy-due" aria-label="Filter by due state">
+                        <option value="">All due states</option>
+                        <option value="missed">Missed</option>
+                        <option value="upcoming">Due in 5 days</option>
+                        <option value="none">Nothing due</option>
+                    </select>
+                    <select id="filter-policy-status" aria-label="Filter by status">
+                        <option value="">All statuses</option>
+                        <option>Active</option><option>Due</option><option>Overdue</option>
+                        <option>Lapsed</option><option>Matured</option><option>Cancelled</option>
+                    </select>
+                    <select id="filter-policy-category" aria-label="Filter by category">
+                        <option value="">All categories</option>
+                        <option>Life</option><option>Term</option><option>Pension</option><option>Health</option>
+                        <option>Mediclaim</option><option>Motor</option><option>Accidental</option>
+                    </select>
+                    <select id="filter-policy-frequency" aria-label="Filter by premium frequency">
+                        <option value="">All frequencies</option>
+                        <option>Monthly</option><option>Quarterly</option><option>Half-yearly</option>
+                        <option>Yearly</option><option>Single Premium</option>
+                    </select>
+                    <span class="filter-count" id="policy-count"></span>
+                </div>
                 <div class="table-container">
                     <table id="policies-table">
                         <thead>
@@ -88,6 +147,7 @@
                                 <th>Customer</th>
                                 <th>Status</th>
                                 <th>Next Due</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -111,12 +171,105 @@
                                 <th>Scheme</th>
                                 <th>Customer</th>
                                 <th>Amount</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </section>
+
+            <!-- Team (Admin only) -->
+            <section id="team-content" class="content-section">
+                <div class="section-header">
+                    <h2>Office Team</h2>
+                    <div>
+                        <button id="add-user-btn" class="btn btn-primary">Add Team Member</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="team-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div id="user-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" data-modal="user-modal">&times;</span>
+                    <h2 id="user-modal-title">Add Team Member</h2>
+                    <form id="user-form">
+                        <input type="hidden" id="user-id" />
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="user-name" maxlength="100" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Username * (letters, numbers, _ or .)</label>
+                            <input type="text" id="user-username" pattern="[a-zA-Z0-9_.]{3,50}" maxlength="50" autocomplete="off" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Role *</label>
+                            <select id="user-role">
+                                <option value="Staff">Staff (no deleting)</option>
+                                <option value="Admin">Admin (full access)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="user-active-group">
+                            <label><input type="checkbox" id="user-active" style="width:auto" /> Account is active (can log in)</label>
+                        </div>
+                        <div class="form-group">
+                            <label id="user-password-label">Password * (at least 8 characters)</label>
+                            <input type="text" id="user-password" minlength="8" autocomplete="off" />
+                            <button type="button" class="btn btn-secondary btn-sm" id="user-generate" style="margin-top:8px">Generate password</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="account-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" data-modal="account-modal">&times;</span>
+                    <h2>My Account</h2>
+                    <p class="modal-subtitle" id="account-name"></p>
+                    <form id="account-password-form">
+                        <h3>Change my password</h3>
+                        <div class="form-group">
+                            <label>Current password</label>
+                            <input type="password" id="account-current" autocomplete="current-password" required />
+                        </div>
+                        <div class="form-group">
+                            <label>New password (at least 8 characters)</label>
+                            <input type="password" id="account-new" minlength="8" autocomplete="new-password" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change password</button>
+                        <p class="modal-note" id="account-msg" role="status"></p>
+                    </form>
+                    <hr class="modal-divider" />
+                    <h3>Lost a device?</h3>
+                    <p class="modal-note">Logs you out on every other PC or phone. You stay logged in here.</p>
+                    <button type="button" class="btn btn-secondary" id="account-logout-all">Log out on all other devices</button>
+                </div>
+            </div>
+
+            <div id="customer-view-modal" class="modal">
+                <div class="modal-content modal-wide">
+                    <span class="close" data-modal="customer-view-modal">&times;</span>
+                    <h2 id="customer-view-name">Customer</h2>
+                    <div id="customer-view-body"></div>
+                </div>
+            </div>
             <!-- Modals -->
             <div id="customer-modal" class="modal">
                 <div class="modal-content">
@@ -126,15 +279,15 @@
                         <input type="hidden" id="customer-id" />
                         <div class="form-group">
                             <label>Full Name *</label>
-                            <input type="text" id="customer-name" required />
+                            <input type="text" id="customer-name" maxlength="150" required />
                         </div>
                         <div class="form-group">
                             <label>PAN *</label>
-                            <input type="text" id="customer-pan" required />
+                            <input type="text" id="customer-pan" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]" maxlength="10" placeholder="ABCDE1234F" title="PAN like ABCDE1234F" style="text-transform:uppercase" required />
                         </div>
                         <div class="form-group">
-                            <label>Primary Phone *</label>
-                            <input type="text" id="customer-phone" required />
+                            <label>Mobile Number *</label>
+                            <input type="tel" id="customer-phone" inputmode="numeric" placeholder="10-digit mobile" required />
                         </div>
                         <div class="form-group">
                             <label>Email</label>
@@ -153,6 +306,51 @@
                 </div>
             </div>
 
+            <div id="app-account-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" data-modal="app-account-modal">&times;</span>
+                    <h2>Customer App Login</h2>
+                    <p class="modal-subtitle" id="app-account-customer"></p>
+                    <p class="modal-note" id="app-account-status"></p>
+                    <form id="app-account-form">
+                        <input type="hidden" id="app-account-id" />
+                        <div class="form-group">
+                            <label>Login mobile number *</label>
+                            <input type="tel" id="app-account-phone" inputmode="numeric" required />
+                        </div>
+                        <div class="form-group">
+                            <label>New password * (at least 8 characters)</label>
+                            <input type="text" id="app-account-password" minlength="8" required autocomplete="off" />
+                            <button type="button" class="btn btn-secondary btn-sm" id="app-account-generate" style="margin-top:8px">Generate password</button>
+                        </div>
+                        <p class="modal-note">Give this password to the customer. They can change it after logging in.</p>
+                        <button type="submit" class="btn btn-primary">Save login</button>
+                        <button type="button" class="btn btn-danger" id="app-account-disable" style="display:none">Turn off login</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="payments-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" data-modal="payments-modal">&times;</span>
+                    <h2>Payment History</h2>
+                    <p class="modal-subtitle" id="payments-policy"></p>
+                    <div class="table-container">
+                        <table id="payments-table">
+                            <thead>
+                                <tr>
+                                    <th>Paid on</th>
+                                    <th>For due date</th>
+                                    <th>Amount</th>
+                                    <th>Recorded by</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div id="policy-modal" class="modal">
                 <div class="modal-content">
                     <span class="close" data-modal="policy-modal">&times;</span>
@@ -165,7 +363,7 @@
                         </div>
                         <div class="form-group">
                             <label>Policyholder PAN</label>
-                            <input type="text" id="policy-pan" />
+                            <input type="text" id="policy-pan" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]" maxlength="10" placeholder="ABCDE1234F" style="text-transform:uppercase" />
                         </div>
                         <div class="form-group">
                             <label>Category *</label>
@@ -181,7 +379,10 @@
                         </div>
                         <div class="form-group">
                             <label>Insurer *</label>
-                            <select id="policy-insurer" required></select>
+                            <div class="inline-field">
+                                <select id="policy-insurer" required></select>
+                                <button type="button" class="btn btn-secondary btn-sm" id="add-insurer-btn">+ New insurer</button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Policy Name *</label>
@@ -193,11 +394,11 @@
                         </div>
                         <div class="form-group">
                             <label>Premium Amount *</label>
-                            <input type="number" id="policy-premium" step="0.01" required />
+                            <input type="number" id="policy-premium" step="0.01" min="0.01" required />
                         </div>
                         <div class="form-group">
                             <label>Total Tenure (Years)</label>
-                            <input type="number" id="policy-tenure" />
+                            <input type="number" id="policy-tenure" min="0" max="100" step="1" />
                         </div>
                         <div class="form-group">
                             <label>Policy Start Date *</label>
@@ -273,7 +474,7 @@
                         </div>
                         <div class="form-group">
                             <label>Investment Amount *</label>
-                            <input type="number" id="investment-amount" step="0.01" required />
+                            <input type="number" id="investment-amount" step="0.01" min="0.01" required />
                         </div>
                         <div class="form-group">
                             <label>Start Date *</label>
@@ -307,18 +508,15 @@
     <!-- Scripts -->
     <script type="module">
         import { AuthModule } from './js/auth.js';
-        if (!AuthModule.isAuthenticated()) {
-            window.location.href = 'login.html';
-        } else {
-            const user = JSON.parse(localStorage.getItem('cloudcover_user') || '{}');
-            document.getElementById('user-info').textContent = `${user.name || 'User'} (${user.role || 'Admin'})`;
-            
+        // Office page: only Admin and Staff. Customers are sent to their portal.
+        const user = AuthModule.requireRole('Admin', 'Staff');
+        if (user) {
+            document.getElementById('user-info').textContent = `${user.name} (${user.role})`;
             document.getElementById('logout-btn').addEventListener('click', () => {
                 AuthModule.signOut();
             });
+            import('./js/dashboard.js');
         }
     </script>
-    <script type="module" src="./js/app.js"></script>
-    <script type="module" src="./js/dashboard.js"></script>
 </body>
 </html>

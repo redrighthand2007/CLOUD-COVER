@@ -31,3 +31,8 @@ h3 { margin-bottom: 10px; color: #34495e; }
 
 .login-container h2 { margin-bottom: 5px; }
 .login-container .subtitle { color: #7f8c8d; margin-bottom: 20px; }
+
+@media (max-width: 480px) {
+    .login-page { align-items: flex-start; background: white; }
+    .login-container { padding: 32px 20px; box-shadow: none; }
+}

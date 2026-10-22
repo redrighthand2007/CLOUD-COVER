@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CloudCover - My Policies</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1f4e79">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="CloudCover">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal">
+    <header class="portal-header">
+        <div>
+            <p class="portal-greeting">Hello,</p>
+            <h1 id="portal-name">…</h1>
+        </div>
+        <button id="logout-btn" class="btn btn-secondary btn-sm">Log out</button>
+    </header>
+
+    <main class="portal-main" id="portal-main">
+        <p class="portal-loading" id="portal-loading">Loading your details…</p>
+        <p class="error-msg" id="portal-error" role="alert"></p>
+
+        <!-- Home: what's due -->
+        <section class="portal-section active" id="tab-home">
+            <div class="summary-row">
+                <div class="summary-card"><span id="sum-policies">0</span><small>Active policies</small></div>
+                <div class="summary-card"><span id="sum-investments">0</span><small>Investments</small></div>
+            </div>
+            <h2>Upcoming premiums</h2>
+            <div id="dues-list" class="item-list"></div>
+            <h2>Recent payments</h2>
+            <div id="payments-list" class="item-list"></div>
+        </section>
+
+        <section class="portal-section" id="tab-policies">
+            <h2>My policies</h2>
+            <div id="policies-list" class="item-list"></div>
+        </section>
+
+        <section class="portal-section" id="tab-investments">
+            <h2>My investments</h2>
+            <div id="investments-list" class="item-list"></div>
+        </section>
+
+        <section class="portal-section" id="tab-profile">
+            <h2>My details</h2>
+            <div class="item" id="profile-details"></div>
+            <p class="portal-note">Something wrong? Call the Insurance Corner office to update your details.</p>
+
+            <h2>Change password</h2>
+            <form id="password-form" class="item">
+                <div class="form-group">
+                    <label for="pw-current">Current password</label>
+                    <input type="password" id="pw-current" autocomplete="current-password" required />
+                </div>
+                <div class="form-group">
+                    <label for="pw-new">New password (at least 8 characters)</label>
+                    <input type="password" id="pw-new" autocomplete="new-password" minlength="8" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Change password</button>
+                <p class="portal-note" id="pw-msg" role="status"></p>
+            </form>
+
+            <h2>Lost your phone?</h2>
+            <div class="item">
+                <p class="portal-note" style="margin-top:0">Log out everywhere else. You stay logged in on this device.</p>
+                <button type="button" class="btn btn-secondary btn-block" id="logout-all-btn" style="margin-top:10px">Log out on all other devices</button>
+            </div>
+        </section>
+    </main>
+
+    <nav class="portal-nav" aria-label="Sections">
+        <button class="active" data-tab="tab-home"><span aria-hidden="true">🏠</span>Home</button>
+        <button data-tab="tab-policies"><span aria-hidden="true">🛡️</span>Policies</button>
+        <button data-tab="tab-investments"><span aria-hidden="true">📈</span>Investments</button>
+        <button data-tab="tab-profile"><span aria-hidden="true">👤</span>Profile</button>
+    </nav>
+
+    <script type="module">
+        import { AuthModule } from './js/auth.js';
+        // Customer page only. Office users are sent to the dashboard.
+        const user = AuthModule.requireRole('Customer');
+        if (user) {
+            document.getElementById('logout-btn').addEventListener('click', () => AuthModule.signOut());
+            import('./js/portal.js');
+        }
+    </script>
+</body>
+</html>

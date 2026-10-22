@@ -21,3 +21,31 @@
 .card { background: white; padding: 20px; border-radius: 8px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .card h3 { font-size: 1.1em; color: #666; margin-bottom: 10px; }
 .card p { font-size: 2em; font-weight: bold; color: #2c3e50; }
+
+/* Small screens: sidebar becomes a top bar, cards and headers stack */
+@media (max-width: 768px) {
+    .layout-main { flex-direction: column; }
+    .sidebar { width: 100%; }
+    .sidebar .logo { padding: 12px 16px; font-size: 1.2em; }
+    .nav-links { display: flex; overflow-x: auto; padding: 0; }
+    .nav-links li a { padding: 12px 14px; white-space: nowrap; border-left: none !important; }
+    .nav-links li a.nav-active { border-bottom: 3px solid #3498db; }
+    .sidebar-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 16px; }
+    .sidebar-footer button { margin-top: 0; width: auto; }
+    .content-area { padding: 16px; }
+    .dashboard-cards { flex-direction: column; gap: 12px; }
+    .section-header { flex-direction: column; align-items: stretch; gap: 10px; }
+    .section-header > div { display: flex; gap: 8px; }
+    .search-input { width: auto; flex: 1; margin-right: 0; }
+    .queue-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .modal-content { width: auto; margin: 16px; }
+    th, td { padding: 10px; }
+}
+
+.card-danger { border-top: 4px solid #e74c3c; }
+.card-warning { border-top: 4px solid #f1c40f; }
+.dashboard-cards + .dashboard-cards { margin-top: -10px; }
+@media (max-width: 768px) {
+    .filter-count { margin-left: 0; width: 100%; }
+    .inline-field { flex-direction: column; align-items: stretch; }
+}

@@ -1,7 +1,9 @@
 # CloudCover
-## Insurance Corner — Internal Office Management Web Application
+## Insurance Corner — Office Management + Customer Portal (single web app / PWA)
 
 **Product Requirements Document (PRD) + Step-by-Step Development Guide**
+
+> **Revision (Oct 2026):** Scope changed. CloudCover is now **one** web application that serves two kinds of users from one login page: the **office team** (Admin/Staff) and **customers** (read-only portal on their phones, installable as a PWA). It also keeps a **premium payment history**. Sections below are updated to match; see §25 for the architecture.
 
 **Technology constraint:** Use HTML, CSS and JavaScript wherever practical across the project. Avoid unnecessary frameworks.
 
@@ -9,9 +11,9 @@
 
 ## 1. Project Overview
 
-CloudCover is an internal web application for Insurance Corner. It is designed for a small office team of approximately 3–4 people to manage customer records, insurance policies, investments and premium/payment due work from one system.
+CloudCover is a web application for Insurance Corner. The office team (two Admins and one employee) uses it to manage customer records, insurance policies, investments and premium dues from one system.
 
-Customers are **NOT application users**. There is no customer login, customer portal or customer mobile app. The office team manages all customer information.
+Customers can also log in, mainly from their phones, to **view** their own profile, policies, investments, upcoming dues and payment history. Customers **cannot change** anything; the office team still manages all customer information.
 
 ### Primary objectives
 
@@ -21,13 +23,15 @@ Customers are **NOT application users**. There is no customer login, customer po
 - Allow office staff to mark the current premium as paid without deleting the policy record.
 - Automatically calculate the next recurring due date from premium frequency.
 - Provide fast internal search by customer and policy information.
-- Keep the system simple enough for a 3–4 person office.
+- Keep the system simple enough for a 3-person office.
+- Let customers check their own policies and dues on their phone without calling the office.
+- Keep a history of premiums paid.
 
 ### Out of scope for V1
 
-- Customer accounts/login/OTP.
-- Android/iOS application.
-- Customer-facing portal.
+- OTP/SMS login (customers use phone number + password set by the office).
+- Native Android/iOS app-store application (the PWA is installed from the browser instead).
+- Customers editing their own data or paying online.
 - Claims management.
 - Commission management.
 - Insurer API integrations.
@@ -36,24 +40,27 @@ Customers are **NOT application users**. There is no customer login, customer po
 - Family/group-member management.
 - Lead/sales CRM.
 - Complex task assignment or call-outcome workflow.
-- Historical payment ledger.
 
 ---
 
 ## 2. Users and Roles
 
-| Role | Users | Access | Delete |
-|---|---|---|---|
-| Admin | Father | Full customer, policy, investment and team management | Yes |
-| Admin | Mother | Full customer, policy, investment and team management | Yes |
-| Staff | Employee 1 | Operational management of customers, policies, investments and dues | No |
-| Staff | Employee 2 | Operational management of customers, policies, investments and dues | No |
+| Role | Users | Logs in with | Access | Delete |
+|---|---|---|---|---|
+| Admin | Father | Username + password | Full customer, policy, investment and team management; can turn off customer logins | Yes |
+| Admin | Mother | Username + password | Same as above | Yes |
+| Staff | Employee | Username + password | Manage customers, policies, investments, dues; create/reset customer logins | No |
+| Customer | Each customer the office enables | Mobile number + password | Read-only view of **their own** data | No |
+
+All roles use the same login page (tabs: **Customer** / **Office**). After login, office users land on the dashboard and customers land on the portal.
 
 ---
 
 ## 3. Core Product Structure
 
-The application is a single internal web application with role-based access.
+The application is a single web application (installable as a PWA) with role-based access.
+
+**Office area (Admin/Staff, desktop-first):**
 
 - Dashboard
 - Customers
@@ -63,12 +70,22 @@ The application is a single internal web application with role-based access.
 - Search
 - Team/User Management (Admin only)
 - Settings
+- Customer app login management (per customer)
+
+**Customer portal (Customer, mobile-first, read-only):**
+
+- Home: upcoming/overdue premiums + recent payments
+- My policies
+- My investments
+- My details + change password
 
 ### Core data relationship
 
 ```text
 Customer
+   ├── Customer App Login (0 or 1)
    ├── Insurance Policies
+   │      └── Premium Payments (history)
    └── Investments
 ```
 
@@ -90,7 +107,7 @@ The same customer master record is reused across both branches.
 - Created Date
 - Last Updated Date
 
-PAN should be treated as a unique business identifier, not as a password. Since customers do not log in, authentication is only for office users.
+PAN should be treated as a unique business identifier, never as a password. Customer logins use a separate mobile number + password stored in `customer_accounts`.
 
 ### Customer actions
 
@@ -171,17 +188,9 @@ It is generated from policy data and the next due date/current payment state.
 - Missed items appear at the top and are visually marked as urgent/red.
 - Upcoming items are those whose next due date falls within the next 5 days.
 - Upcoming items are sorted by due date ascending.
-- Queue rows show only:
-  - Customer Name
-  - Policy Name
-  - Date
-- Staff opens/searches the customer record separately to see:
-  - Phone
-  - Policy number
-  - Insurer
-  - Premium amount
-  - Other details
-- When staff marks the current due item as Paid, the current due item leaves the active queue.
+- Queue rows show customer name, policy name, due date, premium amount and customer phone (so staff can call straight from the queue).
+- Policies that are Lapsed, Matured or Cancelled never appear in the queue.
+- When staff marks the current due item as Paid, a row is saved in **payment history** and the current due item leaves the active queue.
 - For recurring frequencies, the system calculates the next due date automatically.
 - For Single Premium, there is no recurring next due date after payment.
 - No automatic WhatsApp, SMS, email or call task is created.
@@ -276,10 +285,17 @@ The most important area is the **Due Queue**, with missed items first and upcomi
 
 ## 11. Authentication and Security
 
-Only office-team accounts authenticate to CloudCover.
+Office users and customers authenticate to CloudCover through the same login endpoint.
 
 - Admin and staff accounts are created/managed internally.
-- Use secure password authentication or an appropriate office-user authentication provider.
+- Customer logins are created/reset by the office (mobile number + password). Admins can turn a customer login off.
+- Passwords are stored only as bcrypt hashes. Login tokens (JWT) are signed with a secret kept in `.env`.
+- Failed login attempts are rate-limited (10 failures per 15 minutes per network) to stop password guessing. Successful logins don't count, so the office's shared connection is never blocked by normal use.
+- **Instant session ending:** every login token carries the login's `token_version`, checked on every request. Changing a password, an Admin resetting a password, turning a login off, or "Log out on all other devices" raises it, so old sessions stop working immediately. Role changes also apply on the next request.
+- Office accounts are turned off, never deleted, so the audit log always points to a real person. The app refuses to turn off or demote the last active Admin, or your own account.
+- All inputs are validated on the server (PAN format, 10-digit Indian mobile, email, real dates, positive amounts, allowed dropdown values, date order).
+- **Customer data isolation:** customer API routes (`/api/portal/*`) take the customer id only from the login token, never from the URL or request body. A customer can never request another customer's data.
+- Customers are blocked from every office API route; office users are blocked from the portal API.
 - Use HTTPS in production.
 - Enforce role-based authorization on the backend, not only by hiding buttons in the UI.
 - Do not expose sensitive PAN information unnecessarily in lists.
@@ -293,7 +309,9 @@ Only office-team accounts authenticate to CloudCover.
 
 ## 12. UI/UX Requirements
 
-- Desktop-first responsive interface.
+- Office area: desktop-first, still usable on a phone.
+- Customer portal: mobile-first, bottom tab bar, large tap targets, installable to the home screen (PWA).
+- Customer data is never cached on the device; the PWA caches only the page shell.
 - Simple office-dashboard appearance.
 - Fast search and minimal clicks.
 - Clear table-based data views.
@@ -302,7 +320,7 @@ Only office-team accounts authenticate to CloudCover.
 - Forms should use standard HTML controls wherever possible.
 - Avoid unnecessary animations.
 - Use consistent navigation/sidebar.
-- Keep the interface usable on laptop screens; mobile responsiveness is secondary.
+- Keep the office interface usable on laptop screens first.
 
 ---
 
@@ -320,10 +338,11 @@ Because the requirement is to use HTML, CSS and JavaScript wherever possible, Cl
 | API | REST API using JavaScript |
 | Database | PostgreSQL |
 | Database access | node-postgres (`pg`) or a lightweight SQL layer |
-| Authentication | Secure server-side sessions or JWT with secure HTTP-only cookies |
+| Authentication | Own login (bcrypt + JWT), one endpoint for office users and customers |
+| Mobile | Progressive Web App (manifest + service worker), no app store |
 | Validation | JavaScript validation on both client and server |
 | Development | VS Code + integrated terminal + Git/GitHub |
-| Hosting | Any suitable static frontend host plus Node backend and managed PostgreSQL |
+| Hosting | One Node.js service (serves pages + API) plus managed PostgreSQL with daily backups |
 
 A small utility CSS file can be created in-house.
 
@@ -347,39 +366,35 @@ A framework can be introduced later if the UI becomes substantially larger.
 ```text
 cloudcover/
 │
-├── client/
-│   ├── index.html
-│   ├── css/
-│   │   ├── reset.css
-│   │   ├── main.css
-│   │   └── components.css
-│   │
+├── frontend/                 # One web app for everyone
+│   ├── index.html            # Sends each user to their home page
+│   ├── login.html            # One login page: Customer / Office tabs
+│   ├── dashboard.html        # Office area (Admin/Staff)
+│   ├── portal.html           # Customer portal (mobile-first)
+│   ├── manifest.webmanifest  # PWA: name, icons, install settings
+│   ├── sw.js                 # PWA: service worker (page shell only)
+│   ├── icons/
+│   ├── css/                  # style, components, dashboard, portal
 │   └── js/
-│       ├── app.js
-│       ├── api.js
-│       ├── auth.js
-│       ├── dashboard.js
-│       ├── customers.js
-│       ├── insurance.js
-│       ├── investments.js
-│       ├── due-queue.js
-│       ├── search.js
-│       ├── forms.js
-│       └── utils.js
+│       ├── app.js            # fetch helper, session, escaping, formatting
+│       ├── auth.js           # login/logout, role guard per page
+│       ├── dashboard.js, customers.js, policies.js, investments.js
+│       └── portal.js
 │
-├── server/
+├── backend/
 │   ├── server.js
-│   ├── routes/
-│   ├── controllers/
-│   ├── services/
-│   ├── middleware/
-│   ├── db/
-│   └── validators/
+│   ├── routes/               # URL → controller, role checks
+│   ├── controllers/          # request handling
+│   ├── services/             # due-date engine, audit log
+│   ├── middleware/           # auth (JWT + roles), rate limit
+│   └── db/                   # PostgreSQL pool + transactions
 │
 ├── database/
-│   ├── schema.sql
-│   └── seed.sql
+│   ├── schema.sql            # full schema for a new database
+│   ├── seed.sql              # dummy data only
+│   └── migrations/           # upgrades for existing databases
 │
+├── scripts/                  # reset-db.ps1, make-icons.js
 ├── .env.example
 ├── package.json
 └── README.md
@@ -396,32 +411,39 @@ cloudcover/
 - `insurers`
 - `insurance_policies`
 - `investments`
+- `customer_accounts` — customer portal logins
+- `premium_payments` — payment history
 - `audit_logs`
 
 ### Important relationships
 
 ```text
 users → audit_logs
+users → premium_payments (recorded_by)
 
+customers → customer_accounts (one login per customer)
 customers → insurance_policies
 customers → investments
+
+insurance_policies → premium_payments
 
 insurers → insurance_policies
 ```
 
 - Customers have many insurance policies.
 - Customers have many investments.
+- Customers have at most one app login.
+- Policies have many premium payments.
 - Insurers have many insurance policies.
 - Users generate audit-log entries for important actions.
 
-### V1 payment-history rule
+### Payment-history rule
 
-Do **not** create a payment-history table for V1 because the agreed scope only requires:
+Mark Paid saves one `premium_payments` row (due date, paid date, amount, which office user recorded it) **and** advances `next_due_date`, in a single database transaction. The policy keeps `current_payment_state` for the current cycle; history lives in `premium_payments`.
 
-- Current payment state
-- Next due date
+### Schema changes
 
-If historical payment tracking becomes necessary later, add it as a separate feature.
+`schema.sql` creates a new database from scratch. Existing databases are upgraded with the files in `database/migrations/` (run in number order; each is safe to run twice).
 
 ---
 
@@ -430,10 +452,29 @@ If historical payment tracking becomes necessary later, add it as a separate fea
 ### Authentication
 
 ```text
-POST /api/auth/login
-POST /api/auth/logout
+POST /api/auth/login             — { type: 'staff', username, password } or { type: 'customer', phone, password }
 GET  /api/auth/me
+POST /api/auth/change-password   — office user or customer, own password; ends other sessions, returns a new token
+POST /api/auth/logout-everywhere — ends all other sessions, returns a new token
 ```
+
+### Team (Admin only)
+
+```text
+GET  /api/users
+POST /api/users       — add office user
+PUT  /api/users/:id   — name, role, active, optional new password
+```
+
+### Search and dashboard (Admin/Staff)
+
+```text
+GET  /api/search?q=   — customers, policies, investments
+GET  /api/dashboard   — numbers for the dashboard cards
+POST /api/insurers    — add an insurance company
+```
+
+Logout is client-side (the token is deleted).
 
 ### Customers
 
@@ -443,6 +484,8 @@ GET    /api/customers/:id
 POST   /api/customers
 PUT    /api/customers/:id
 DELETE /api/customers/:id     — admin only
+PUT    /api/customers/:id/app-account   — create/reset customer login
+DELETE /api/customers/:id/app-account   — turn off customer login, admin only
 ```
 
 ### Insurance
@@ -454,6 +497,8 @@ POST   /api/policies
 PUT    /api/policies/:id
 DELETE /api/policies/:id     — admin only
 POST   /api/policies/:id/mark-paid
+GET    /api/policies/:id/payments
+GET    /api/insurers
 ```
 
 ### Due queue
@@ -474,6 +519,14 @@ POST   /api/investments
 PUT    /api/investments/:id
 DELETE /api/investments/:id     — admin only
 ```
+
+### Customer portal (Customer role only)
+
+```text
+GET /api/portal/overview   — own profile, dues, policies, investments, recent payments
+```
+
+All office routes above require Admin or Staff. The portal route requires Customer.
 
 ---
 
@@ -726,8 +779,8 @@ CloudCover V1 is complete when the office team can:
 
 # 20. Future Features — Do Not Build in V1
 
-- Customer portal/login.
-- Android/iOS app.
+- OTP login for customers.
+- Native Android/iOS app-store app.
 - Claims module.
 - Commission tracking.
 - WhatsApp integration.
@@ -735,7 +788,6 @@ CloudCover V1 is complete when the office team can:
 - Insurer API integrations.
 - Payment gateway.
 - Document vault.
-- Historical payment ledger.
 - Advanced analytics.
 - Multi-branch or multi-tenant support.
 - Automated task assignment.
@@ -767,13 +819,13 @@ Follow this order and do not jump directly into advanced features:
 
 # 22. Important Architecture Rule
 
-Keep CloudCover as a **single-tenant internal office system for Insurance Corner**.
+Keep CloudCover as a **single-tenant system for Insurance Corner**: the office manages data, and its own customers can view their own records.
 
 Do not design it as:
 
 - A generic SaaS platform.
 - A multi-company insurance marketplace.
-- A customer-facing insurance app.
+- A self-service app where customers create accounts or edit data.
 
 Only expand the architecture if the business requirements change.
 
@@ -783,16 +835,17 @@ Only expand the architecture if the business requirements change.
 
 | Area | Decision |
 |---|---|
-| Application type | Responsive internal web application |
-| Users | 3–4 office-team members only |
-| Customer accounts | No |
-| Mobile app | No |
+| Application type | One responsive web application, installable as a PWA |
+| Users | 3 office-team members + customers (read-only) |
+| Customer accounts | Yes — created by the office, mobile number + password |
+| Mobile app | PWA (Add to Home Screen), no app store |
 | Frontend | HTML5 + CSS3 + Vanilla JavaScript |
 | Backend | Node.js + Express.js |
 | Database | PostgreSQL |
 | API | REST |
-| Authentication | Office-user authentication |
-| Roles | Admin + Staff |
+| Authentication | Own bcrypt + JWT login for office users and customers |
+| Roles | Admin + Staff + Customer |
+| Payment history | Yes |
 | Insurance | Core module |
 | Investments | Basic module |
 | Due queue | Dynamic, insurance-premium focused |
@@ -800,7 +853,8 @@ Only expand the architecture if the business requirements change.
 | Commissions | Out of scope |
 | Full documents | Out of scope |
 | Insurer integrations | Out of scope |
-| Primary devices | Office laptops/desktops |
+| Primary devices | Office PCs (office area), customer phones (portal) |
+| Hosting | Online: one Node.js service + managed PostgreSQL |
 | Project name | **CloudCover** |
 
 ---
@@ -825,9 +879,9 @@ Before starting implementation, confirm:
 
 **Business:** Insurance Corner
 
-**Purpose:** Internal office management system for customers, insurance policies, investments and insurance premium dues.
+**Purpose:** Office management system for customers, insurance policies, investments and insurance premium dues, plus a read-only customer portal.
 
-**Architecture:** Single-tenant internal web application.
+**Architecture:** Single-tenant web application (PWA) with one login for office users and customers.
 
 **Frontend:** HTML5 + CSS3 + Vanilla JavaScript.
 
@@ -835,10 +889,49 @@ Before starting implementation, confirm:
 
 **Database:** PostgreSQL.
 
-**Users:** Office team only.
+**Users:** Office team (Admin/Staff) and customers (read-only).
 
-**Customer login:** None.
+**Customer login:** Mobile number + password, created by the office.
 
-**Primary V1 feature:** Dynamic insurance premium due queue with automatic recurring due-date calculation and Mark Paid workflow.
+**Primary V1 feature:** Dynamic insurance premium due queue with automatic recurring due-date calculation, Mark Paid workflow and payment history.
 
 **Development principle:** Build the simplest reliable system that solves the office's current workflow. Avoid unnecessary frameworks and future features until the V1 requirements are proven in real office use.
+
+---
+
+# 25. Architecture
+
+```text
+ Father's PC ─┐                          ┌──────────────────────────────┐
+ Mother's PC ─┼── HTTPS ──►  Node.js     │ frontend/  pages + PWA files │
+ Employee PC ─┤              Express ───►│ /api/*     JSON API          │──► PostgreSQL
+ Customer    ─┘              (1 service) └──────────────────────────────┘    (managed, backed up)
+ phones (PWA)
+```
+
+### Layers (backend)
+
+```text
+routes/       which URL goes where, and which roles may call it
+middleware/   who are you? (JWT)  are you allowed? (Admin/Staff/Customer)  rate limits
+controllers/  read the request, call services/db, shape the response
+services/     business rules: due-date engine, audit log
+db/           PostgreSQL pool, transactions
+```
+
+### Request flow examples
+
+- **Staff marks a premium paid:** `POST /api/policies/7/mark-paid` → auth (Staff ok) → controller → transaction: insert `premium_payments` row + advance `next_due_date` → audit log → updated policy.
+- **Customer opens the app:** `GET /api/portal/overview` → auth (Customer only) → customer id from token → only that customer's rows → JSON for the portal screens.
+
+### Build phases
+
+| Phase | What | Outcome |
+|---|---|---|
+| 0. Foundation ✅ | Working login, secrets in `.env`, sample data | App runs locally |
+| 1. Single app ✅ | One login, roles, customer portal, payment history, PWA | Office + customers in one app |
+| 2. Office polish ✅ | Global search, policy filters, customer full view, team management, change password, instant session ending, input validation, dashboard cards, add insurer | Ready for daily office use |
+| 2b. Before real data | Office tries it for a week with test data; fix what they find; decide investment/SIP dues in queue | Confirmed by the office |
+| 3. Go live | Host app + managed PostgreSQL, HTTPS, backups, real data entry | Office runs on it |
+| 4. Customers | Create customer logins, show customers how to install the app | Customers use the portal |
+| 5. Later | WhatsApp/SMS reminders, OTP login, documents, reports | Nice to have |

@@ -4,31 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CloudCover - Login</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1f4e79">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
 </head>
 <body class="login-page">
     <div class="login-container">
         <h2>☁️ CloudCover</h2>
-        <p class="subtitle">Internal Office Management</p>
-        
-        <div class="form-group" style="text-align: center; margin-top: 30px;">
-            <button id="cognito-login-btn" class="btn btn-primary" style="padding: 15px; font-size: 1.1em; width: 100%;">
-                🔒 Login with AWS Cognito (MFA)
-            </button>
+        <p class="subtitle">Insurance Corner</p>
+
+        <div class="login-tabs" role="tablist">
+            <button type="button" class="login-tab active" data-type="customer" role="tab" aria-selected="true">Customer</button>
+            <button type="button" class="login-tab" data-type="staff" role="tab" aria-selected="false">Office</button>
         </div>
+
+        <form id="login-form" novalidate>
+            <div class="form-group">
+                <label for="login-id" id="login-id-label">Mobile number</label>
+                <input type="tel" id="login-id" autocomplete="username" inputmode="numeric" required />
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" autocomplete="current-password" required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="login-btn">Log in</button>
+            <p class="error-msg" id="login-error" role="alert"></p>
+        </form>
+
+        <p class="login-help" id="login-help">Don't have a password? Ask the Insurance Corner office to set one up for you.</p>
     </div>
 
     <script type="module">
         import { AuthModule } from './js/auth.js';
-        
-        // If already authenticated, go to dashboard
+
+        // Already logged in: go straight to the right page
         if (AuthModule.isAuthenticated()) {
-            window.location.href = 'dashboard.html';
+            window.location.replace(AuthModule.homeFor(AuthModule.getUser()));
         }
 
-        document.getElementById('cognito-login-btn').addEventListener('click', () => {
-            AuthModule.signIn();
+        let loginType = localStorage.getItem('cloudcover_login_type') || 'customer';
+        const idInput = document.getElementById('login-id');
+        const idLabel = document.getElementById('login-id-label');
+        const help = document.getElementById('login-help');
+        const errorEl = document.getElementById('login-error');
+
+        function setType(type) {
+            loginType = type;
+            document.querySelectorAll('.login-tab').forEach(tab => {
+                const active = tab.dataset.type === type;
+                tab.classList.toggle('active', active);
+                tab.setAttribute('aria-selected', active);
+            });
+            if (type === 'staff') {
+                idLabel.textContent = 'Username';
+                idInput.type = 'text';
+                idInput.removeAttribute('inputmode');
+                help.textContent = 'Office staff only.';
+            } else {
+                idLabel.textContent = 'Mobile number';
+                idInput.type = 'tel';
+                idInput.setAttribute('inputmode', 'numeric');
+                help.textContent = "Don't have a password? Ask the Insurance Corner office to set one up for you.";
+            }
+            errorEl.textContent = '';
+        }
+
+        document.querySelectorAll('.login-tab').forEach(tab => {
+            tab.addEventListener('click', () => setType(tab.dataset.type));
+        });
+        setType(loginType);
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorEl.textContent = '';
+            const identifier = idInput.value.trim();
+            const password = document.getElementById('login-password').value;
+            if (!identifier || !password) {
+                errorEl.textContent = 'Please fill in both fields.';
+                return;
+            }
+
+            // Work out the login type from what was typed, so a username on the
+            // Customer tab (or a mobile number on the Office tab) still works
+            let type = loginType;
+            if (/[a-z]/i.test(identifier)) type = 'staff';
+            else if (identifier.replace(/\D/g, '').length >= 10) type = 'customer';
+            if (type !== loginType) setType(type);
+
+            const btn = document.getElementById('login-btn');
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+            try {
+                const user = await AuthModule.signIn(type, identifier, password);
+                localStorage.setItem('cloudcover_login_type', type);
+                window.location.replace(AuthModule.homeFor(user));
+            } catch (err) {
+                if (err.message === 'Invalid login details') {
+                    errorEl.textContent = 'Wrong details. Please check and try again.';
+                } else if (err.message === 'Failed to fetch') {
+                    errorEl.textContent = 'Cannot reach the CloudCover server. Is it running? (npm run dev)';
+                } else {
+                    errorEl.textContent = err.message;
+                }
+                btn.disabled = false;
+                btn.textContent = 'Log in';
+            }
         });
     </script>
 </body>

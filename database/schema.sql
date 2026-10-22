@@ -6,6 +6,10 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('Admin', 'Staff')),
     full_name VARCHAR(100) NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    -- Stored in login tokens; raising it ends all open sessions for this user
+    token_version INTEGER NOT NULL DEFAULT 0,
+    last_login_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -66,6 +70,36 @@ CREATE TABLE investments (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Customer logins for the customer portal (one login per customer)
+CREATE TABLE customer_accounts (
+    id SERIAL PRIMARY KEY,
+    customer_id INTEGER UNIQUE NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+    phone VARCHAR(20) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    token_version INTEGER NOT NULL DEFAULT 0,
+    last_login_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- History of premiums paid, one row each time "Mark Paid" is used
+CREATE TABLE premium_payments (
+    id SERIAL PRIMARY KEY,
+    policy_id INTEGER NOT NULL REFERENCES insurance_policies(id) ON DELETE CASCADE,
+    due_date DATE,
+    paid_on DATE NOT NULL DEFAULT CURRENT_DATE,
+    amount NUMERIC(12, 2) NOT NULL,
+    recorded_by INTEGER REFERENCES users(id),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_policies_customer ON insurance_policies(customer_id);
+CREATE INDEX idx_policies_next_due ON insurance_policies(next_due_date);
+CREATE INDEX idx_investments_customer ON investments(customer_id);
+CREATE INDEX idx_payments_policy ON premium_payments(policy_id);
+
 CREATE TABLE audit_logs (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
@@ -90,3 +124,4 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_customers_updated_at BEFORE UPDATE ON customers FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_insurance_policies_updated_at BEFORE UPDATE ON insurance_policies FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_investments_updated_at BEFORE UPDATE ON investments FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+CREATE TRIGGER update_customer_accounts_updated_at BEFORE UPDATE ON customer_accounts FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();

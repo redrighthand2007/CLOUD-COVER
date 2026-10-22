@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const dueQueueController = require('../controllers/dueQueueController');
-const { authenticate } = require('../middleware/auth');
+const { authenticate, requireStaff } = require('../middleware/auth');
 
-router.use(authenticate);
+router.use(authenticate, requireStaff);
 router.get('/', dueQueueController.getDueQueue);
 
 module.exports = router;

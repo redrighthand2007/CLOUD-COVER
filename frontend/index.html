@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudCover - Redirecting...</title>
+    <title>CloudCover</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1f4e79">
 </head>
 <body>
-    <p>Redirecting...</p>
+    <p>Loading...</p>
     <script type="module">
         import { AuthModule } from './js/auth.js';
-        
-        // If they have a token in the URL hash, AuthModule handles it.
-        // Otherwise, redirect to dashboard (which redirects to login if needed).
-        if (!window.location.hash.includes('id_token=')) {
-            window.location.href = 'dashboard.html';
-        }
+        // Send each user to their own home page, or to login
+        window.location.replace(AuthModule.homeFor(AuthModule.getUser()));
     </script>
 </body>
 </html>

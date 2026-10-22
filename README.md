@@ -31,6 +31,10 @@
 - 📈 **Investments Module:** Lightweight tracking for Mutual Funds, FDs, and SIPs.
 - 🔍 **Global Search:** Fast internal lookups by name, PAN, phone, or policy number.
 - 🔒 **Role-Based Security:** Strict `Admin` (full rights) and `Staff` (operational management, no deletion) access levels.
+- 📱 **Customer Portal (PWA):** Customers log in from their phones (mobile number + password set by the office) to view their own policies, investments, upcoming dues and payments. Installable to the home screen.
+- 🧾 **Payment History:** Every "Mark Paid" is recorded with date, amount and who recorded it.
+- 👨‍👩‍👦 **Team Management:** Admins add office users, change roles, reset passwords and turn accounts off. Everyone can change their own password.
+- 🚪 **Instant Logout:** Password changes, resets and "log out on all other devices" end old sessions immediately, on every PC and phone.
 
 ---
 
@@ -38,7 +42,7 @@
 
 **The Problem:** Small insurance offices often rely on scattered Excel spreadsheets, Word documents, and physical files. This makes it incredibly difficult to track upcoming premium dues, manage customer portfolios, and ensure nothing falls through the cracks.
 
-**The Solution:** CloudCover is a purpose-built, single-tenant internal tool designed strictly for office staff (3-4 members). It brings clarity and structure to the daily workflow by replacing manual tracking with a dynamic, automated dashboard.
+**The Solution:** CloudCover is one purpose-built web app for a small office. Office staff get a dynamic, automated dashboard in place of manual tracking, and customers get a read-only view of their own records on their phones.
 
 ---
 
@@ -61,19 +65,26 @@ cloudcover/
 ├── backend/               # Node.js Express server
 │   ├── controllers/       # Route logic and database queries
 │   ├── db/                # Database connection pool
-│   ├── middleware/        # JWT Authentication & Role checks
+│   ├── middleware/        # JWT authentication, role checks, rate limit
 │   ├── routes/            # API endpoints
+│   ├── services/          # Due-date engine, audit log
 │   └── server.js          # Entry point
-├── database/              # SQL Initialization scripts
-│   ├── schema.sql         # Table creation
-│   └── seed.sql           # Dummy test data
+├── database/              # SQL scripts
+│   ├── schema.sql         # Table creation (new database)
+│   ├── seed.sql           # Dummy test data
+│   └── migrations/        # Upgrades for an existing database
 ├── docs/                  # Documentation (PRD, plans)
-├── frontend/              # Vanilla JS Frontend (SPA)
+├── frontend/              # Vanilla JS frontend + PWA
 │   ├── css/
 │   ├── js/
-│   ├── dashboard.html     # Main application interface
-│   └── index.html         # Login gateway
-├── .env                   # Environment variables (Create this!)
+│   ├── icons/
+│   ├── login.html         # One login page (Customer / Office)
+│   ├── dashboard.html     # Office area (Admin/Staff)
+│   ├── portal.html        # Customer portal (mobile)
+│   ├── manifest.webmanifest
+│   └── sw.js              # Service worker
+├── scripts/               # reset-db.ps1, make-icons.js
+├── .env.example           # Copy to .env and fill in
 └── README.md
 ```
 
@@ -113,26 +124,28 @@ Follow these steps to set up the project locally for development.
 2. **Access the Application:**
    Open your browser and navigate to [http://localhost:3000](http://localhost:3000). The Express server will automatically serve the static frontend files.
 
+3. **Sample logins** (from `seed.sql`, password `password123` for all):
+   - Office tab: `admin_father`, `admin_mother` (Admin), `staff_emp1` (Staff)
+   - Customer tab: `9876543210` (Rahul Sharma), `9876543211` (Priya Patel)
+
+4. **Reset the local database** to fresh sample data (Windows, deletes local data):
+   ```bash
+   powershell -ExecutionPolicy Bypass -File scripts/reset-db.ps1
+   ```
+
+5. **Existing database from an older version?** Run the files in `database/migrations/` in order (001, 002, ...) instead of recreating it.
+
 ---
 
 ## 🔧 Configuration
 
-Create a `.env` file in the root of the project with the following variables:
+Copy `.env.example` to `.env` and fill in your values. The server refuses to start if `JWT_SECRET` or the database settings are missing. Generate a JWT secret with:
 
-```env
-# Server Configuration
-PORT=3000
-
-# PostgreSQL Database Configuration
-DB_USER=postgres
-DB_PASSWORD=your_password_here
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=cloudcover
-
-# Security
-JWT_SECRET=super_secret_key_change_in_production
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
+
+Never commit `.env` (it is in `.gitignore`).
 
 ---
 
@@ -154,8 +167,10 @@ CloudCover operates on a lightweight **Single Page Application (SPA)** architect
 - [x] Implement dynamic Due Queue logic
 - [x] Add Admin vs. Staff role restrictions
 - [x] Create instant search/filtering UI
-- [ ] **Comprehensive Testing** (Next Step)
-- [ ] **Production Deployment Setup**
+- [x] One login for office and customers, customer portal (PWA)
+- [x] Premium payment history and audit log
+- [x] Office polish: global search, filters, team management, input validation, instant session ending
+- [ ] **Production Deployment Setup** (hosting + managed PostgreSQL + backups)
 
 ---
 

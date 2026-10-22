@@ -1,4 +1,4 @@
-import { fetchAPI, isAdmin } from './app.js';
+import { fetchAPI, isAdmin, esc, formatMoney } from './app.js';
 
 let allInvestments = [];
 
@@ -16,12 +16,12 @@ function renderInvestments(investments) {
     investments.forEach(inv => {
         let actions = `<button class="btn btn-secondary btn-sm" onclick="editInvestment(${inv.id})">Edit</button>`;
         if(isAdmin()) {
-            actions += ` <button class="btn btn-sm" style="background:#e74c3c;color:white;" onclick="deleteInvestment(${inv.id})">Delete</button>`;
+            actions += ` <button class="btn btn-danger btn-sm" onclick="deleteInvestment(${inv.id})">Delete</button>`;
         }
         tbody.innerHTML += `<tr>
-            <td>${inv.scheme_name}</td>
-            <td>${inv.customer_name}</td>
-            <td>${inv.investment_amount}</td>
+            <td>${esc(inv.scheme_name)}</td>
+            <td>${esc(inv.customer_name)}</td>
+            <td>${formatMoney(inv.investment_amount)}</td>
             <td>${actions}</td>
         </tr>`;
     });
@@ -100,7 +100,7 @@ async function loadCustomersIntoSelect(selectId) {
         if(!select) return;
         select.innerHTML = '<option value="">Select Customer</option>';
         customers.forEach(c => {
-            select.innerHTML += `<option value="${c.id}">${c.full_name} (${c.pan})</option>`;
+            select.innerHTML += `<option value="${c.id}">${esc(c.full_name)} (${esc(c.pan)})</option>`;
         });
     } catch(err) { console.error('Error loading customers for select', err); }
 }

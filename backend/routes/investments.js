@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const investmentsController = require('../controllers/investmentsController');
-const { authenticate, requireAdmin } = require('../middleware/auth');
+const { authenticate, requireStaff, requireAdmin } = require('../middleware/auth');
 
-router.use(authenticate);
+router.use(authenticate, requireStaff);
 
 router.get('/', investmentsController.getAllInvestments);
 router.get('/:id', investmentsController.getInvestmentById);
