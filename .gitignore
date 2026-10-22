@@ -23,3 +23,6 @@ desktop.ini
 node_modules/
 .env
 
+
+# Local-only notes such as Cognito temporary passwords
+*.local.txt

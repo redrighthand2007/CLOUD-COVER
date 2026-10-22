@@ -1,13 +1,13 @@
 // Service worker: lets CloudCover install as an app and open the page shell offline.
 // Customer data (/api) is NEVER cached on the device - it always comes fresh from the server.
 
-const CACHE = 'cloudcover-v2';
+const CACHE = 'cloudcover-v3';
 const SHELL = [
     'index.html', 'login.html', 'portal.html', 'dashboard.html',
     'css/style.css', 'css/components.css', 'css/dashboard.css', 'css/portal.css',
     'js/app.js', 'js/auth.js', 'js/portal.js', 'js/dashboard.js',
     'js/customers.js', 'js/policies.js', 'js/investments.js',
-    'js/team.js', 'js/account.js', 'js/search.js',
+    'js/team.js', 'js/account.js', 'js/search.js', 'js/cognito.js',
     'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 
@@ -25,7 +25,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
-    if (event.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) {
+    // Never cache API data or the login callback (its address holds a one-time login code)
+    if (event.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')
+        || url.pathname === '/auth-callback.html') {
         return; // let the browser handle it normally
     }
 

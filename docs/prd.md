@@ -294,6 +294,7 @@ Office users and customers authenticate to CloudCover through the same login end
 - **Instant session ending:** every login token carries the login's `token_version`, checked on every request. Changing a password, an Admin resetting a password, turning a login off, or "Log out on all other devices" raises it, so old sessions stop working immediately. Role changes also apply on the next request.
 - Office accounts are turned off, never deleted, so the audit log always points to a real person. The app refuses to turn off or demote the last active Admin, or your own account.
 - All inputs are validated on the server (PAN format, 10-digit Indian mobile, email, real dates, positive amounts, allowed dropdown values, date order).
+- **Optional AWS MFA for office users** (`AUTH_PROVIDER=cognito`): office login goes through Amazon Cognito with a required authenticator-app code; office password login is then refused. Built for the AWS course project (Oct–Dec 2026); keep or drop in January 2027. Details: `docs/aws-cognito-setup.md`.
 - **Customer data isolation:** customer API routes (`/api/portal/*`) take the customer id only from the login token, never from the URL or request body. A customer can never request another customer's data.
 - Customers are blocked from every office API route; office users are blocked from the portal API.
 - Use HTTPS in production.

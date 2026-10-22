@@ -24,8 +24,22 @@ export const AuthModule = {
         return user;
     },
 
-    signOut: () => {
+    signOut: async () => {
+        const user = getUser();
         clearSession();
+        // After an AWS (Cognito) login, also end the Cognito session, otherwise the next
+        // "Log in with MFA" would go straight through without asking for the password
+        if (user && user.via === 'cognito') {
+            try {
+                const config = await fetch('/api/auth/config').then(r => r.json());
+                if (config.cognitoLogoutUrl) {
+                    window.location.href = config.cognitoLogoutUrl;
+                    return;
+                }
+            } catch (err) {
+                console.warn('Could not end the AWS session', err);
+            }
+        }
         window.location.href = 'login.html';
     },
 

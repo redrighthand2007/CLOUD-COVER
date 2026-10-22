@@ -34,16 +34,42 @@
             <p class="error-msg" id="login-error" role="alert"></p>
         </form>
 
+        <!-- Shown on the Office tab when office login goes through AWS Cognito + MFA -->
+        <div id="mfa-login" hidden>
+            <p class="login-note">Office staff log in securely with AWS: your password, then the 6-digit code from your authenticator app.</p>
+            <button type="button" class="btn btn-primary btn-block" id="mfa-login-btn">🔒 Log in with MFA</button>
+            <p class="error-msg" id="mfa-error" role="alert"></p>
+        </div>
+
         <p class="login-help" id="login-help">Don't have a password? Ask the Insurance Corner office to set one up for you.</p>
     </div>
 
     <script type="module">
         import { AuthModule } from './js/auth.js';
+        import { fetchAPI } from './js/app.js';
+        import { startCognitoLogin } from './js/cognito.js';
 
         // Already logged in: go straight to the right page
         if (AuthModule.isAuthenticated()) {
             window.location.replace(AuthModule.homeFor(AuthModule.getUser()));
         }
+
+        // Which office login does the server use? 'local' (password) or 'cognito' (AWS + MFA)
+        let authConfig = { provider: 'local' };
+        try {
+            authConfig = await fetchAPI('/auth/config');
+        } catch (err) {
+            console.warn('Could not load login settings', err);
+        }
+        const officeUsesCognito = authConfig.provider === 'cognito';
+
+        document.getElementById('mfa-login-btn').addEventListener('click', async () => {
+            try {
+                await startCognitoLogin(authConfig.cognito);
+            } catch (err) {
+                document.getElementById('mfa-error').textContent = 'Could not start secure login: ' + err.message;
+            }
+        });
 
         let loginType = localStorage.getItem('cloudcover_login_type') || 'customer';
         const idInput = document.getElementById('login-id');
@@ -69,6 +95,10 @@
                 idInput.setAttribute('inputmode', 'numeric');
                 help.textContent = "Don't have a password? Ask the Insurance Corner office to set one up for you.";
             }
+            // With AWS login on, the Office tab shows only the MFA button
+            const mfaOnly = officeUsesCognito && type === 'staff';
+            document.getElementById('login-form').hidden = mfaOnly;
+            document.getElementById('mfa-login').hidden = !mfaOnly;
             errorEl.textContent = '';
         }
 
@@ -93,6 +123,7 @@
             if (/[a-z]/i.test(identifier)) type = 'staff';
             else if (identifier.replace(/\D/g, '').length >= 10) type = 'customer';
             if (type !== loginType) setType(type);
+            if (type === 'staff' && officeUsesCognito) return; // Office tab now shows the MFA button
 
             const btn = document.getElementById('login-btn');
             btn.disabled = true;

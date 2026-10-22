@@ -11,7 +11,9 @@ const loginLimiter = rateLimit({
     message: 'Too many login attempts. Please wait 15 minutes and try again.'
 });
 
+router.get('/config', authController.getConfig);
 router.post('/login', loginLimiter, authController.login);
+router.post('/cognito', loginLimiter, authController.cognitoLogin);
 router.get('/me', authenticate, authController.getMe);
 router.post('/change-password', authenticate, loginLimiter, authController.changePassword);
 router.post('/logout-everywhere', authenticate, authController.logoutEverywhere);

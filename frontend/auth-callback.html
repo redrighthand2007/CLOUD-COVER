@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCover - Logging in</title>
+    <meta name="theme-color" content="#1f4e79">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <h2>☁️ CloudCover</h2>
+        <p class="subtitle" id="callback-status">Finishing secure login…</p>
+        <p class="error-msg" id="callback-error" role="alert"></p>
+        <p id="callback-retry" hidden><a href="login.html" class="btn btn-primary btn-block">Back to login</a></p>
+    </div>
+
+    <script type="module">
+        import { fetchAPI, saveSession } from './js/app.js';
+        import { AuthModule } from './js/auth.js';
+        import { readCallback } from './js/cognito.js';
+
+        // Remove the one-time code from the address bar and browser history
+        const search = window.location.search;
+        window.history.replaceState(null, '', 'auth-callback.html');
+
+        try {
+            const { code, verifier } = readCallback(search);
+            const { token, user } = await fetchAPI('/auth/cognito', {
+                method: 'POST',
+                body: JSON.stringify({ code, codeVerifier: verifier })
+            });
+            saveSession(token, user);
+            localStorage.setItem('cloudcover_login_type', 'staff');
+            window.location.replace(AuthModule.homeFor(user));
+        } catch (err) {
+            document.getElementById('callback-status').textContent = 'Login did not complete.';
+            document.getElementById('callback-error').textContent = err.message;
+            document.getElementById('callback-retry').hidden = false;
+        }
+    </script>
+</body>
+</html>

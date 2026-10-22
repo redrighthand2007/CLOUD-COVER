@@ -80,8 +80,60 @@ every field back (see AWS's guidance on `--cli-input-json`).
 ## Status
 
 - [x] User pool, MFA, domain, app client, login branding created and verified (login page loads)
-- [ ] Office users created in Cognito
-- [ ] App switched over: `AUTH_PROVIDER=cognito` in `.env` (code not written yet; `local` is the default)
+- [x] Office users created in Cognito: `admin_father`, `admin_mother`, `staff_emp1` (temporary passwords in the git-ignored `cognito-temp-passwords.local.txt`)
+- [x] App code: `AUTH_PROVIDER=cognito` in `.env` turns it on; `local` turns it off
+
+## How the app uses it
+
+```text
+Login page (Office tab)            AWS Cognito                     CloudCover server
+  "Log in with MFA"  ─────────►  password + authenticator code
+  (PKCE secret kept in tab)        │
+                                   ▼
+  auth-callback.html  ◄──────── one-time code
+        │  code + PKCE secret
+        └────────────────────────────────────────────────►  /api/auth/cognito
+                                                              1. swaps code at Cognito /oauth2/token
+                                                              2. verifies ID token (aws-jwt-verify)
+                                                              3. revokes Cognito refresh token
+                                                              4. finds the office user by username,
+                                                                 links/checks Cognito "sub"
+                                                              5. starts a normal CloudCover session
+```
+
+- **No MFA bypass:** with `AUTH_PROVIDER=cognito`, office username/password login is refused.
+- **Customers are unchanged:** they keep the mobile-number login.
+- **Account linking:** the first Cognito login saves the Cognito user id (`sub`) on the office user.
+  After that, only that exact Cognito account can log in as that user.
+- **Roles and access stay in CloudCover:** Admin/Staff, turning accounts off, instant logout and the
+  audit log work as before. A Cognito user with no matching active office user is refused.
+- **Logout** also ends the Cognito session, so the next login asks for the password again.
+
+### First login (each office user)
+
+1. Office tab → **Log in with MFA**.
+2. Enter the username and the temporary password from the Admin.
+3. Choose a new password (12+ characters with upper, lower, number and symbol).
+4. Scan the QR code with Google Authenticator or Microsoft Authenticator, and enter the 6-digit code.
+5. From then on: password + the current 6-digit code.
+
+### Adding an office user
+
+1. Add them on the **Team** page (sets their role).
+2. Create the same username in Cognito:
+   `powershell -ExecutionPolicy Bypass -File scripts\cognito-add-user.ps1 -Username new.person`
+3. Give them the temporary password in person (it expires in 7 days).
+
+### Lost phone / reset
+
+An Admin resets them in Cognito, then they set up the authenticator again at next login:
+
+```bash
+aws cognito-idp admin-reset-user-password --user-pool-id ap-southeast-2_tEQii9mgN --username <username>
+aws cognito-idp admin-set-user-mfa-preference --user-pool-id ap-southeast-2_tEQii9mgN --username <username> --software-token-mfa-settings Enabled=false
+```
+
+To stop someone right away, turn their account off on the Team page (ends their sessions immediately).
 
 ## Removing it (January 2027, if AWS is dropped)
 

@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../db');
 const { signToken } = require('../middleware/auth');
 const { logAudit } = require('../services/auditService');
+const cognito = require('../services/cognitoService');
 
 const INVALID = { error: 'Invalid login details' };
 const STAFF_SESSION = '10h';
@@ -29,6 +30,12 @@ exports.login = async (req, res) => {
 };
 
 async function staffLogin(username, password, res) {
+    // With Cognito on, office users must go through AWS login + MFA; a password-only
+    // path here would let anyone skip the MFA step
+    if (cognito.config.enabled) {
+        return res.status(403).json({ error: 'Office login uses AWS MFA. Use the "Log in with MFA" button.' });
+    }
+
     const { rows } = await db.query('SELECT * FROM users WHERE username = $1', [(username || '').trim().toLowerCase()]);
     const user = rows[0];
     if (!user || !user.is_active || !(await bcrypt.compare(password, user.password_hash))) {
@@ -58,6 +65,54 @@ async function customerLogin(phone, password, res) {
     const profile = customerProfile(account);
     res.json({ token: signToken({ ...profile, tv: account.token_version }, CUSTOMER_SESSION), user: profile });
 }
+
+const originOf = (req) => `${req.protocol}://${req.get('host')}`;
+
+// Tells the login page which office login to show (nothing secret)
+exports.getConfig = (req, res) => {
+    res.json({ ...cognito.publicConfig(originOf(req)), cognitoLogoutUrl: cognito.logoutUrl(originOf(req)) });
+};
+
+// Office login through AWS Cognito (password + MFA happen on Cognito's page).
+// Body: { code, codeVerifier } from the auth-callback page.
+exports.cognitoLogin = async (req, res) => {
+    if (!cognito.config.enabled) return res.status(404).json({ error: 'AWS login is not turned on' });
+
+    const { code, codeVerifier } = req.body;
+    if (typeof code !== 'string' || typeof codeVerifier !== 'string' || !code || codeVerifier.length < 43) {
+        return res.status(400).json({ error: 'Invalid login response' });
+    }
+
+    try {
+        const claims = await cognito.exchangeCode(code, codeVerifier, originOf(req));
+        const username = String(claims['cognito:username'] || '').toLowerCase();
+
+        const { rows } = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+        const user = rows[0];
+        if (!user || !user.is_active) {
+            return res.status(403).json({ error: `There is no active CloudCover office account for "${username}". Ask an Admin.` });
+        }
+
+        // First Cognito login links the account; later logins must be the same Cognito user
+        if (!user.cognito_sub) {
+            await db.query('UPDATE users SET cognito_sub = $1 WHERE id = $2 AND cognito_sub IS NULL', [claims.sub, user.id]);
+        } else if (user.cognito_sub !== claims.sub) {
+            await logAudit({ kind: 'staff', id: user.id }, 'COGNITO_SUB_MISMATCH', 'users', user.id, null, { sub: claims.sub });
+            return res.status(403).json({ error: 'This AWS account is not the one linked to this office user. Ask an Admin.' });
+        }
+
+        await db.query('UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
+        await logAudit({ kind: 'staff', id: user.id }, 'LOGIN_COGNITO_MFA', 'users', user.id);
+
+        const profile = staffProfile(user);
+        res.json({ token: signToken({ ...profile, tv: user.token_version }, STAFF_SESSION), user: { ...profile, via: 'cognito' } });
+    } catch (err) {
+        if (err instanceof cognito.CognitoLoginError) return res.status(401).json({ error: err.message });
+        if (err.code === '23505') return res.status(403).json({ error: 'This AWS account is already linked to another office user.' });
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
 
 exports.getMe = async (req, res) => {
     res.json({ user: req.user });

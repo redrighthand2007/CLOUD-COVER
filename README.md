@@ -34,6 +34,7 @@
 - 📱 **Customer Portal (PWA):** Customers log in from their phones (mobile number + password set by the office) to view their own policies, investments, upcoming dues and payments. Installable to the home screen.
 - 🧾 **Payment History:** Every "Mark Paid" is recorded with date, amount and who recorded it.
 - 👨‍👩‍👦 **Team Management:** Admins add office users, change roles, reset passwords and turn accounts off. Everyone can change their own password.
+- 🔐 **Optional AWS MFA:** Office login through Amazon Cognito with an authenticator-app code (`AUTH_PROVIDER=cognito`). See `docs/aws-cognito-setup.md`.
 - 🚪 **Instant Logout:** Password changes, resets and "log out on all other devices" end old sessions immediately, on every PC and phone.
 
 ---
@@ -125,7 +126,7 @@ Follow these steps to set up the project locally for development.
    Open your browser and navigate to [http://localhost:3000](http://localhost:3000). The Express server will automatically serve the static frontend files.
 
 3. **Sample logins** (from `seed.sql`, password `password123` for all):
-   - Office tab: `admin_father`, `admin_mother` (Admin), `staff_emp1` (Staff)
+   - Office tab: `admin_father`, `admin_mother` (Admin), `staff_emp1` (Staff). With `AUTH_PROVIDER=cognito`, office users use **Log in with MFA** instead (see `docs/aws-cognito-setup.md`).
    - Customer tab: `9876543210` (Rahul Sharma), `9876543211` (Priya Patel)
 
 4. **Reset the local database** to fresh sample data (Windows, deletes local data):
@@ -133,7 +134,7 @@ Follow these steps to set up the project locally for development.
    powershell -ExecutionPolicy Bypass -File scripts/reset-db.ps1
    ```
 
-5. **Existing database from an older version?** Run the files in `database/migrations/` in order (001, 002, ...) instead of recreating it.
+5. **Existing database from an older version?** Run the files in `database/migrations/` in order (001, 002, 003, ...) instead of recreating it.
 
 ---
 

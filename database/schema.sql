@@ -10,8 +10,12 @@ CREATE TABLE users (
     -- Stored in login tokens; raising it ends all open sessions for this user
     token_version INTEGER NOT NULL DEFAULT 0,
     last_login_at TIMESTAMP,
+    -- AWS Cognito user id, saved on first MFA login (only used when AUTH_PROVIDER=cognito)
+    cognito_sub VARCHAR(64),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX idx_users_cognito_sub ON users(cognito_sub) WHERE cognito_sub IS NOT NULL;
 
 CREATE TABLE customers (
     id SERIAL PRIMARY KEY,

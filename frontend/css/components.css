@@ -93,3 +93,6 @@ tr:hover { background: #f9f9f9; }
 .inline-field { display: flex; gap: 8px; align-items: center; }
 .inline-field select { flex: 1; }
 td small { color: #777; }
+
+/* AWS MFA login (Office tab) */
+.login-note { color: #555; font-size: 0.95em; margin-bottom: 16px; text-align: left; }
