@@ -1,0 +1,30 @@
+{
+  "start": "-P7D",
+  "widgets": [
+    { "type": "text", "x": 0, "y": 0, "width": 24, "height": 2,
+      "properties": { "markdown": "## CloudCover - Insurance Corner\nNumbers sent every 5 minutes by the CloudCover server. Daily summary email at 8 AM IST (Lambda `cloudcover-daily-summary`). Alerts go to SNS topic `cloudcover-alerts`." } },
+    { "type": "metric", "x": 0, "y": 2, "width": 12, "height": 6,
+      "properties": { "title": "Premium dues", "region": "ap-southeast-2", "view": "timeSeries", "stat": "Maximum", "period": 300,
+        "metrics": [ ["CloudCover", "MissedDues", { "label": "Missed", "color": "#d62728" }],
+                     ["CloudCover", "UpcomingDues", { "label": "Due in 5 days", "color": "#ff7f0e" }] ] } },
+    { "type": "metric", "x": 12, "y": 2, "width": 6, "height": 6,
+      "properties": { "title": "Collected this month (₹)", "region": "ap-southeast-2", "view": "singleValue", "stat": "Maximum", "period": 300,
+        "metrics": [ ["CloudCover", "CollectedThisMonth", { "label": "Collected" }] ] } },
+    { "type": "alarm", "x": 18, "y": 2, "width": 6, "height": 6,
+      "properties": { "title": "Alarms", "alarms": [
+        "arn:aws:cloudwatch:ap-southeast-2:448592647758:alarm:cloudcover-server-errors",
+        "arn:aws:cloudwatch:ap-southeast-2:448592647758:alarm:cloudcover-many-failed-logins",
+        "arn:aws:cloudwatch:ap-southeast-2:448592647758:alarm:cloudcover-daily-summary-failed" ] } },
+    { "type": "metric", "x": 0, "y": 8, "width": 12, "height": 6,
+      "properties": { "title": "Logins (per hour)", "region": "ap-southeast-2", "view": "timeSeries", "stat": "Sum", "period": 3600,
+        "metrics": [ ["CloudCover", "Logins", { "label": "Successful", "color": "#2ca02c" }],
+                     ["CloudCover", "LoginFailures", { "label": "Failed", "color": "#d62728" }] ] } },
+    { "type": "metric", "x": 12, "y": 8, "width": 12, "height": 6,
+      "properties": { "title": "Errors", "region": "ap-southeast-2", "view": "timeSeries", "stat": "Sum", "period": 3600,
+        "metrics": [ ["CloudCover", "ServerErrors", { "label": "Server errors (500)" }],
+                     ["AWS/Lambda", "Errors", "FunctionName", "cloudcover-daily-summary", { "label": "Daily summary Lambda errors" }] ] } },
+    { "type": "log", "x": 0, "y": 14, "width": 24, "height": 6,
+      "properties": { "title": "Recent server events", "region": "ap-southeast-2", "view": "table",
+        "query": "SOURCE '/cloudcover/app' | fields @timestamp, level, event, type, status, path\n| sort @timestamp desc\n| limit 50" } }
+  ]
+}

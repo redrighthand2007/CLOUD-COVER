@@ -35,6 +35,7 @@
 - 🧾 **Payment History:** Every "Mark Paid" is recorded with date, amount and who recorded it.
 - 👨‍👩‍👦 **Team Management:** Admins add office users, change roles, reset passwords and turn accounts off. Everyone can change their own password.
 - 🔐 **Optional AWS MFA:** Office login through Amazon Cognito with an authenticator-app code (`AUTH_PROVIDER=cognito`). See `docs/aws-cognito-setup.md`.
+- 📊 **AWS Monitoring:** The server reports dues, logins and errors to Amazon CloudWatch; an EventBridge-scheduled Lambda emails a daily dues summary at 8 AM; alarms email on errors (`AWS_MONITORING=on`). See `docs/aws-monitoring-setup.md`.
 - 🚪 **Instant Logout:** Password changes, resets and "log out on all other devices" end old sessions immediately, on every PC and phone.
 
 ---

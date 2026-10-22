@@ -1,0 +1,9 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "Service": "lambda.amazonaws.com" },
+    "Action": "sts:AssumeRole",
+    "Condition": { "StringEquals": { "aws:SourceAccount": "448592647758" } }
+  }]
+}

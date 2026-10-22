@@ -295,6 +295,7 @@ Office users and customers authenticate to CloudCover through the same login end
 - Office accounts are turned off, never deleted, so the audit log always points to a real person. The app refuses to turn off or demote the last active Admin, or your own account.
 - All inputs are validated on the server (PAN format, 10-digit Indian mobile, email, real dates, positive amounts, allowed dropdown values, date order).
 - **Optional AWS MFA for office users** (`AUTH_PROVIDER=cognito`): office login goes through Amazon Cognito with a required authenticator-app code; office password login is then refused. Built for the AWS course project (Oct–Dec 2026); keep or drop in January 2027. Details: `docs/aws-cognito-setup.md`.
+- **Optional AWS monitoring** (`AWS_MONITORING=on`): CloudWatch metrics/logs/alarms/dashboard, a daily 8 AM dues summary email (EventBridge Scheduler → Lambda → SNS) and a ₹50 monthly budget alert. Only counts and event names are sent, never customer details. Details: `docs/aws-monitoring-setup.md`.
 - **Customer data isolation:** customer API routes (`/api/portal/*`) take the customer id only from the login token, never from the URL or request body. A customer can never request another customer's data.
 - Customers are blocked from every office API route; office users are blocked from the portal API.
 - Use HTTPS in production.

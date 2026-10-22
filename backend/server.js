@@ -22,6 +22,7 @@ const usersRoutes = require('./routes/users');
 const searchRoutes = require('./routes/search');
 
 const path = require('path');
+const monitoring = require('./services/monitoringService');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(monitoring.middleware);   // CloudWatch counts (only when AWS_MONITORING=on)
 
 // Basic security headers
 app.use((req, res, next) => {
@@ -68,6 +70,16 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`CloudCover Server running on port ${PORT}`);
+    monitoring.start();
 });
+
+// Send the last CloudWatch numbers/logs before stopping (Ctrl+C, nodemon restart)
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGUSR2']) {
+    process.once(signal, async () => {
+        await monitoring.flush();
+        server.close(() => process.exit(0));
+        setTimeout(() => process.exit(0), 3000).unref();
+    });
+}

@@ -1,4 +1,5 @@
 const db = require('../db');
+const { getSummary } = require('../services/statsService');
 
 // Global office search: one box that finds customers, policies and investments
 // by name, PAN, phone, email, policy number, insurer, folio or scheme.
@@ -50,22 +51,7 @@ exports.search = async (req, res) => {
 // Numbers for the dashboard cards
 exports.dashboardSummary = async (req, res) => {
     try {
-        const { rows } = await db.query(`
-            SELECT
-                (SELECT COUNT(*) FROM customers)::int AS total_customers,
-                (SELECT COUNT(*) FROM insurance_policies WHERE policy_status = 'Active')::int AS active_policies,
-                (SELECT COUNT(*) FROM insurance_policies
-                  WHERE next_due_date < CURRENT_DATE AND current_payment_state <> 'Paid'
-                    AND policy_status NOT IN ('Lapsed', 'Matured', 'Cancelled'))::int AS missed_dues,
-                (SELECT COUNT(*) FROM insurance_policies
-                  WHERE next_due_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 5 AND current_payment_state <> 'Paid'
-                    AND policy_status NOT IN ('Lapsed', 'Matured', 'Cancelled'))::int AS upcoming_dues,
-                (SELECT COUNT(*) FROM investments WHERE status = 'Active')::int AS active_investments,
-                (SELECT COUNT(*) FROM customer_accounts WHERE is_active)::int AS app_logins,
-                (SELECT COALESCE(SUM(amount), 0) FROM premium_payments
-                  WHERE paid_on >= date_trunc('month', CURRENT_DATE))::numeric AS collected_this_month
-        `);
-        res.json(rows[0]);
+        res.json(await getSummary());
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error' });
