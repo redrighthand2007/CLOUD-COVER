@@ -26,3 +26,6 @@ node_modules/
 
 # Local-only notes such as Cognito temporary passwords
 *.local.txt
+
+# Patent drafts and research paper: keep local only (public repo)
+VIT-CLOUD-ARCH/
