@@ -1,0 +1,1288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudCover Learning Guide</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#d9dee5;
+  --accent:#1f4e79; --accent-soft:#e3edf7; --code-bg:#f0f2f5;
+  --c1:#2563a8; --c1s:#e2ecf8;   /* browser / frontend */
+  --c2:#2f7d4f; --c2s:#e1f2e7;   /* server */
+  --c3:#a05a12; --c3s:#f8ecdc;   /* database */
+  --c4:#7a3fa0; --c4s:#efe4f6;   /* aws */
+  --c5:#b0303a; --c5s:#f8e2e3;   /* security / danger */
+  --shadow:0 1px 2px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151b; --panel:#181e26; --ink:#e4e8ee; --muted:#9aa5b4; --line:#2c3541;
+    --accent:#7fb2e5; --accent-soft:#1d2a38; --code-bg:#0d1117;
+    --c1:#7fb2e5; --c1s:#18283a; --c2:#6fcf97; --c2s:#16291f; --c3:#e0a35c; --c3s:#2d2216;
+    --c4:#c99be8; --c4s:#271c30; --c5:#ee7d86; --c5s:#2f1a1c; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151b; --panel:#181e26; --ink:#e4e8ee; --muted:#9aa5b4; --line:#2c3541;
+  --accent:#7fb2e5; --accent-soft:#1d2a38; --code-bg:#0d1117;
+  --c1:#7fb2e5; --c1s:#18283a; --c2:#6fcf97; --c2s:#16291f; --c3:#e0a35c; --c3s:#2d2216;
+  --c4:#c99be8; --c4s:#271c30; --c5:#ee7d86; --c5s:#2f1a1c; --shadow:none;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+code,pre{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:.88em}
+code{background:var(--code-bg);padding:.1em .35em;border-radius:4px}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;line-height:1.5}
+pre code{background:none;padding:0}
+.cm{color:var(--muted)}
+
+/* layout */
+.wrap{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh}
+nav.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--panel);padding:18px 14px}
+nav.side h1{font-size:1.05rem;margin:0 0 4px}
+nav.side .sub{color:var(--muted);font-size:.8rem;margin-bottom:12px}
+nav.side input[type=search]{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);margin-bottom:10px}
+nav.side ol{list-style:none;margin:0;padding:0}
+nav.side li a{display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:6px;text-decoration:none;color:var(--ink);font-size:.88rem}
+nav.side li a:hover,nav.side li a.active{background:var(--accent-soft)}
+nav.side li a .n{color:var(--muted);font-size:.75rem;min-width:22px}
+nav.side li a .tick{margin-left:auto;font-size:.8rem;color:var(--c2)}
+.tools{display:flex;gap:6px;margin-bottom:12px}
+.tools button{flex:1;padding:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;cursor:pointer;font-size:.8rem}
+main{padding:28px clamp(16px,4vw,56px) 80px;max-width:1040px}
+.menu-btn{display:none}
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  nav.side{position:fixed;inset:0 auto 0 0;width:min(300px,85vw);z-index:20;transform:translateX(-105%);transition:transform .2s;box-shadow:0 0 30px rgba(0,0,0,.3)}
+  nav.side.open{transform:none}
+  .menu-btn{display:block;position:fixed;top:10px;right:12px;z-index:30;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+  main{padding-top:56px}
+}
+
+/* content */
+section.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px clamp(16px,3vw,32px);margin:0 0 28px;box-shadow:var(--shadow);scroll-margin-top:16px}
+section.stage > header{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px}
+section.stage h2{margin:0;font-size:1.45rem}
+.tag{font-size:.75rem;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.revised{margin-left:auto;font-size:.82rem;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+h3{font-size:1.12rem;margin:26px 0 8px}
+h4{font-size:.98rem;margin:18px 0 6px;color:var(--accent)}
+.lead{font-size:1.05rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:10px 0}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft)}
+.tbl{overflow-x:auto}
+.box{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.box.why{border-color:var(--c2);background:var(--c2s)}
+.box.warn{border-color:var(--c5);background:var(--c5s)}
+.box.mem{border-color:var(--c4);background:var(--c4s)}
+.box b:first-child{display:block;margin-bottom:2px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg)}
+.card h4{margin-top:0}
+
+/* diagram components */
+.diagram{border:1px dashed var(--line);border-radius:10px;padding:16px;margin:14px 0;background:var(--bg);overflow-x:auto}
+.diagram .cap{font-size:.8rem;color:var(--muted);margin-top:8px;text-align:center}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.node{border:1.5px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--panel);font-size:.86rem;text-align:center}
+.node small{display:block;color:var(--muted);font-size:.74rem}
+.n1{border-color:var(--c1);background:var(--c1s)} .n2{border-color:var(--c2);background:var(--c2s)}
+.n3{border-color:var(--c3);background:var(--c3s)} .n4{border-color:var(--c4);background:var(--c4s)}
+.n5{border-color:var(--c5);background:var(--c5s)}
+.arrow{color:var(--muted);font-weight:700}
+.vflow{display:flex;flex-direction:column;align-items:center;gap:4px}
+.vflow .node{min-width:min(420px,100%)}
+.vflow .down{color:var(--muted);font-weight:700}
+.dec{border-style:dashed;border-width:2px}
+.branch{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.branch > div{display:flex;flex-direction:column;align-items:center;gap:4px}
+.lbl{font-size:.75rem;color:var(--muted)}
+.seq{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:.88rem}
+.seq td{border:none;padding:6px 8px;background:var(--panel)}
+.seq td:first-child{border-radius:6px 0 0 6px;color:var(--muted);width:30px;text-align:center}
+.seq td:last-child{border-radius:0 6px 6px 0}
+.seq .who{white-space:nowrap;font-weight:600}
+.layers{display:flex;flex-direction:column;gap:6px}
+.layers .node{text-align:left;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem;margin-top:8px;justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1.5px solid}
+
+/* svg */
+svg{max-width:100%;height:auto;display:block;margin:auto}
+svg text{fill:var(--ink);font-family:system-ui,sans-serif}
+svg .t-m{fill:var(--muted)}
+svg .b1{fill:var(--c1s);stroke:var(--c1)} svg .b2{fill:var(--c2s);stroke:var(--c2)}
+svg .b3{fill:var(--c3s);stroke:var(--c3)} svg .b4{fill:var(--c4s);stroke:var(--c4)}
+svg .b5{fill:var(--c5s);stroke:var(--c5)} svg .b0{fill:var(--panel);stroke:var(--line)}
+svg .ln{stroke:var(--muted);fill:none;stroke-width:1.6}
+svg .ln4{stroke:var(--c4);fill:none;stroke-width:1.6;stroke-dasharray:5 4}
+svg .ah{fill:var(--muted)}
+.timeline{border-left:3px solid var(--accent);margin:10px 0 10px 8px;padding-left:18px}
+.timeline div{position:relative;margin-bottom:10px}
+.timeline div::before{content:"";position:absolute;left:-25px;top:7px;width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.timeline b{color:var(--accent)}
+footer{color:var(--muted);font-size:.85rem;text-align:center;margin-top:30px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<button class="menu-btn" id="menuBtn" aria-label="Open contents">☰ Contents</button>
+<div class="wrap">
+<nav class="side" id="side">
+  <h1>☁️ CloudCover</h1>
+  <div class="sub">Learning guide · from atoms to the whole system</div>
+  <div class="tools">
+    <button id="themeBtn" type="button">◐ Theme</button>
+    <button id="expandBtn" type="button">Print / all</button>
+  </div>
+  <input type="search" id="filter" placeholder="Filter sections…">
+  <ol id="toc"></ol>
+</nav>
+
+<main id="main">
+
+<!-- ============================================================ -->
+<section class="stage" id="howto" data-title="How to use this guide" data-n="★">
+<header><h2>How to use this guide</h2><span class="tag">Start here</span></header>
+<p class="lead">This page explains CloudCover the way you built it: one stage at a time, starting from the smallest pieces (what a URL is, what a database row is) and ending with the full system working together.</p>
+<div class="grid2">
+  <div class="card"><h4>📖 First read</h4>Go top to bottom. Each stage uses ideas from the stages before it. Read the diagram first, then the text under it.</div>
+  <div class="card"><h4>🔁 Revision</h4>Read only the purple <b>"Remember"</b> boxes and the diagrams, then jump to <a href="#cheat">the cheat sheet</a> at the end.</div>
+  <div class="card"><h4>✅ Tracking</h4>Each stage has a <b>"Revised"</b> tick in its corner. It's saved in this browser, and the sidebar shows ✓ next to the stages you've revised.</div>
+  <div class="card"><h4>🧭 Colours mean the same thing everywhere</h4>
+    <div class="legend" style="justify-content:flex-start">
+      <span><i style="background:var(--c1s);border-color:var(--c1)"></i>Browser / frontend</span>
+      <span><i style="background:var(--c2s);border-color:var(--c2)"></i>Node server</span>
+      <span><i style="background:var(--c3s);border-color:var(--c3)"></i>Database</span>
+      <span><i style="background:var(--c4s);border-color:var(--c4)"></i>AWS</span>
+      <span><i style="background:var(--c5s);border-color:var(--c5)"></i>Security</span>
+    </div></div>
+</div>
+<div class="box mem"><b>Remember</b>CloudCover = <b>one Node/Express server</b> that serves web pages and a JSON API, stores everything in <b>PostgreSQL</b>, and optionally uses <b>AWS</b> for MFA login (Cognito) and monitoring (CloudWatch → Lambda → SNS email).</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="big" data-title="The big picture" data-n="◎">
+<header><h2>The big picture: the whole system on one page</h2><span class="tag">Integrated view</span></header>
+<p>Before the details, here is everything CloudCover is today and how the parts are wired. Come back to this diagram after each stage. Each time, more of it will make sense.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 900 560" role="img" aria-label="CloudCover architecture">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="ah"/></marker></defs>
+  <!-- users -->
+  <rect x="20" y="30" width="190" height="80" rx="10" class="b1" stroke-width="1.5"/>
+  <text x="115" y="58" text-anchor="middle" font-weight="700" font-size="14">Office PC browser</text>
+  <text x="115" y="78" text-anchor="middle" font-size="12" class="t-m">Admin / Staff</text>
+  <text x="115" y="96" text-anchor="middle" font-size="12" class="t-m">dashboard.html</text>
+  <rect x="20" y="140" width="190" height="80" rx="10" class="b1" stroke-width="1.5"/>
+  <text x="115" y="168" text-anchor="middle" font-weight="700" font-size="14">Customer's phone</text>
+  <text x="115" y="188" text-anchor="middle" font-size="12" class="t-m">Installed PWA</text>
+  <text x="115" y="206" text-anchor="middle" font-size="12" class="t-m">portal.html + sw.js</text>
+  <!-- server -->
+  <rect x="300" y="20" width="300" height="300" rx="12" class="b2" stroke-width="1.5"/>
+  <text x="450" y="46" text-anchor="middle" font-weight="700" font-size="15">Node.js + Express server (port 3000)</text>
+  <rect x="320" y="60" width="260" height="30" rx="6" class="b0"/><text x="450" y="80" text-anchor="middle" font-size="12">Static files: frontend/ (HTML, CSS, JS)</text>
+  <rect x="320" y="98" width="260" height="30" rx="6" class="b0"/><text x="450" y="118" text-anchor="middle" font-size="12">Middleware: cors, json, headers, monitoring</text>
+  <rect x="320" y="136" width="260" height="30" rx="6" class="b5" stroke-width="1"/><text x="450" y="156" text-anchor="middle" font-size="12">authenticate + role checks (JWT)</text>
+  <rect x="320" y="174" width="260" height="30" rx="6" class="b0"/><text x="450" y="194" text-anchor="middle" font-size="12">Routes → Controllers (/api/…)</text>
+  <rect x="320" y="212" width="260" height="30" rx="6" class="b0"/><text x="450" y="232" text-anchor="middle" font-size="12">Services: dueQueue, audit, stats</text>
+  <rect x="320" y="250" width="125" height="30" rx="6" class="b4" stroke-width="1"/><text x="382" y="270" text-anchor="middle" font-size="11">cognitoService</text>
+  <rect x="455" y="250" width="125" height="30" rx="6" class="b4" stroke-width="1"/><text x="517" y="270" text-anchor="middle" font-size="11">monitoringService</text>
+  <text x="450" y="306" text-anchor="middle" font-size="11" class="t-m">.env holds secrets (never in Git)</text>
+  <!-- db -->
+  <rect x="330" y="380" width="240" height="90" rx="12" class="b3" stroke-width="1.5"/>
+  <text x="450" y="410" text-anchor="middle" font-weight="700" font-size="14">PostgreSQL "cloudcover"</text>
+  <text x="450" y="430" text-anchor="middle" font-size="11" class="t-m">users · customers · insurers · policies</text>
+  <text x="450" y="447" text-anchor="middle" font-size="11" class="t-m">investments · customer_accounts</text>
+  <text x="450" y="464" text-anchor="middle" font-size="11" class="t-m">premium_payments · audit_logs</text>
+  <!-- aws -->
+  <rect x="660" y="20" width="225" height="520" rx="12" fill="none" class="b4" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="772" y="44" text-anchor="middle" font-weight="700" font-size="14">AWS · ap-southeast-2</text>
+  <rect x="680" y="60" width="185" height="56" rx="8" class="b4"/><text x="772" y="84" text-anchor="middle" font-size="13" font-weight="600">Cognito user pool</text><text x="772" y="102" text-anchor="middle" font-size="11" class="t-m">password + MFA login page</text>
+  <rect x="680" y="150" width="185" height="56" rx="8" class="b4"/><text x="772" y="174" text-anchor="middle" font-size="13" font-weight="600">CloudWatch</text><text x="772" y="192" text-anchor="middle" font-size="11" class="t-m">metrics · logs · dashboard</text>
+  <rect x="680" y="230" width="185" height="40" rx="8" class="b4"/><text x="772" y="255" text-anchor="middle" font-size="12">3 Alarms</text>
+  <rect x="680" y="300" width="185" height="40" rx="8" class="b4"/><text x="772" y="325" text-anchor="middle" font-size="12">EventBridge Scheduler 8 AM</text>
+  <rect x="680" y="370" width="185" height="40" rx="8" class="b4"/><text x="772" y="395" text-anchor="middle" font-size="12">Lambda daily-summary</text>
+  <rect x="680" y="440" width="185" height="40" rx="8" class="b4"/><text x="772" y="465" text-anchor="middle" font-size="12">SNS topic → 📧 email</text>
+  <text x="772" y="520" text-anchor="middle" font-size="11" class="t-m">IAM roles · Budget · Tags</text>
+  <!-- arrows -->
+  <path d="M210 70 H300" class="ln" marker-end="url(#a)"/><text x="255" y="62" text-anchor="middle" font-size="10" class="t-m">HTTP + JWT</text>
+  <path d="M210 180 H300" class="ln" marker-end="url(#a)"/><text x="255" y="172" text-anchor="middle" font-size="10" class="t-m">HTTP + JWT</text>
+  <path d="M450 320 V380" class="ln" marker-end="url(#a)" marker-start="url(#a)"/><text x="490" y="355" font-size="10" class="t-m">SQL (pg pool)</text>
+  <path d="M580 265 Q630 200 680 180" class="ln4" marker-end="url(#a)"/><text x="610" y="215" font-size="10" class="t-m">metrics/logs</text>
+  <path d="M580 258 Q630 120 680 92" class="ln4" marker-end="url(#a)"/><text x="600" y="140" font-size="10" class="t-m">verify code</text>
+  <path d="M115 30 Q115 4 400 4 Q690 4 700 60" class="ln4" marker-end="url(#a)"/><text x="420" y="14" text-anchor="middle" font-size="10" class="t-m">office user redirected to Cognito for MFA</text>
+  <path d="M772 206 V230" class="ln" marker-end="url(#a)"/>
+  <path d="M772 340 V370" class="ln" marker-end="url(#a)"/>
+  <path d="M772 410 V440" class="ln" marker-end="url(#a)"/>
+  <path d="M865 250 Q895 350 865 455" class="ln" marker-end="url(#a)"/>
+  <path d="M680 385 Q650 280 680 190" class="ln" marker-end="url(#a)"/><text x="618" y="300" font-size="10" class="t-m">reads metrics</text>
+</svg>
+<div class="cap">Solid arrows = always used. Dashed purple = only when the AWS features are switched on in <code>.env</code>.</div>
+</div>
+
+<h3>The same system as layers</h3>
+<div class="diagram"><div class="layers">
+  <div class="node n1"><b>Presentation</b><span>HTML structure · CSS look · JS behaviour · PWA (manifest + service worker)</span></div>
+  <div class="node n1"><b>Client logic</b><span>ES modules · <code>fetchAPI()</code> · token in localStorage · render functions</span></div>
+  <div class="node n5"><b>Transport + identity</b><span>HTTP(S) · JSON · <code>Authorization: Bearer &lt;JWT&gt;</code> · Cognito + PKCE</span></div>
+  <div class="node n2"><b>Application</b><span>Express middleware → routes → controllers → services · validators</span></div>
+  <div class="node n3"><b>Data</b><span>PostgreSQL tables · constraints · indexes · triggers · transactions</span></div>
+  <div class="node n4"><b>Operations</b><span>CloudWatch metrics &amp; logs · alarms · Lambda · Scheduler · SNS · IAM · Budget</span></div>
+</div><div class="cap">Each layer only talks to the one next to it. That's why you can change one layer without breaking the others.</div></div>
+
+<h3>The project's history</h3>
+<div class="timeline">
+  <div><b>3 Aug 2026</b> First commit: separate HTML pages, CSS, JS (BMI, quotes, signup).</div>
+  <div><b>4 Aug</b> Page redesigns, first requirements and plan documents.</div>
+  <div><b>19 Aug</b> Rebuilt as a Single Page App with a hash router.</div>
+  <div><b>24–31 Aug</b> First AWS version: Cognito (Mumbai), API Gateway, Lambda, DynamoDB. Mobile layout.</div>
+  <div><b>11–12 Sep</b> Big rewrite: Node + Express + PostgreSQL backend, new frontend, full PRD.</div>
+  <div><b>22 Oct</b> One app for office and customers (PWA), Cognito MFA in Sydney, CloudWatch monitoring + daily Lambda email.</div>
+  <div><b>Jan 2027</b> Goal: real use at Insurance Corner.</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s0" data-title="Web foundations" data-n="0">
+<header><h2>Stage 0: How the web works (the atoms)</h2><span class="tag">Foundations</span></header>
+<p class="lead">Everything in CloudCover is built on a few basic ideas. If these are clear, every later stage is easy.</p>
+
+<h3>0.1 Client and server</h3>
+<p>A <b>client</b> asks, and a <b>server</b> answers. Your browser is a client. <code>node backend/server.js</code> starts a server. They talk by sending text messages called <b>HTTP requests</b> and <b>HTTP responses</b>.</p>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n1">Browser<small>client</small></div>
+  <span class="arrow">— request →</span>
+  <div class="node n2">Express<small>server, port 3000</small></div>
+  <span class="arrow">— SQL →</span>
+  <div class="node n3">PostgreSQL<small>port 5432</small></div>
+</div>
+<div class="flow" style="justify-content:center;margin-top:8px">
+  <div class="node n1">Browser</div><span class="arrow">← response (HTML or JSON) —</span><div class="node n2">Express</div><span class="arrow">← rows —</span><div class="node n3">PostgreSQL</div>
+</div></div>
+
+<h3>0.2 URL anatomy</h3>
+<pre><code>http://localhost:3000/api/policies/7/payments?x=1#top
+└┬─┘   └───┬───┘ └┬─┘└──────────┬─────────┘ └┬┘ └┬┘
+scheme   host   port         path         query hash</code></pre>
+<ul>
+  <li><b>host</b>: which computer. <code>localhost</code> means "this PC".</li>
+  <li><b>port</b>: which program on that computer. 3000 is Express and 5432 is PostgreSQL.</li>
+  <li><b>path</b>: which resource. Express matches it against routes.</li>
+  <li><b>hash (#)</b>: never sent to the server. Your old SPA router (Stage 3) used it to switch screens.</li>
+</ul>
+
+<h3>0.3 An HTTP request and response</h3>
+<div class="grid2">
+<pre><code><span class="cm">// REQUEST (browser → server)</span>
+POST /api/auth/login HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{"type":"staff","username":"admin_father",
+ "password":"password123"}</code></pre>
+<pre><code><span class="cm">// RESPONSE (server → browser)</span>
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Frame-Options: DENY
+
+{"token":"eyJhbGciOi...","user":{
+ "kind":"staff","role":"Admin",...}}</code></pre>
+</div>
+<h4>Methods (verbs) CloudCover uses</h4>
+<div class="tbl"><table>
+<tr><th>Method</th><th>Meaning</th><th>Example in CloudCover</th></tr>
+<tr><td>GET</td><td>Read, change nothing</td><td><code>GET /api/customers</code></td></tr>
+<tr><td>POST</td><td>Create or do an action</td><td><code>POST /api/policies/7/mark-paid</code></td></tr>
+<tr><td>PUT</td><td>Replace / update</td><td><code>PUT /api/customers/3</code></td></tr>
+<tr><td>DELETE</td><td>Remove</td><td><code>DELETE /api/investments/2</code> (Admin only)</td></tr>
+</table></div>
+<h4>Status codes you'll see in this project</h4>
+<div class="tbl"><table>
+<tr><th>Code</th><th>Meaning</th><th>When CloudCover sends it</th></tr>
+<tr><td>200</td><td>OK</td><td>Everything worked</td></tr>
+<tr><td>400</td><td>Bad request</td><td>Validation failed (wrong PAN format, missing field)</td></tr>
+<tr><td>401</td><td>Not logged in</td><td>No token, expired token, or the session was ended</td></tr>
+<tr><td>403</td><td>Forbidden</td><td>Logged in, but your role isn't allowed (Staff trying to delete)</td></tr>
+<tr><td>404</td><td>Not found</td><td>Unknown <code>/api/...</code> path or record id</td></tr>
+<tr><td>429</td><td>Too many requests</td><td>Too many failed logins from one IP</td></tr>
+<tr><td>500</td><td>Server error</td><td>A bug or crash. Counted by monitoring and triggers an alarm.</td></tr>
+</table></div>
+
+<h3>0.4 JSON</h3>
+<p>JSON is the text format the browser and server use to exchange data. It looks like a JS object, but it's just text: <code>{"id":3,"full_name":"Rahul Sharma"}</code>. In JS, <code>JSON.stringify(obj)</code> turns an object into text and <code>JSON.parse(text)</code> turns it back. <code>express.json()</code> does the parsing on the server, and <code>response.json()</code> does it in the browser.</p>
+
+<h3>0.5 Where data can live</h3>
+<div class="tbl"><table>
+<tr><th>Place</th><th>Lives on</th><th>Survives</th><th>CloudCover uses it for</th></tr>
+<tr><td>JS variable</td><td>Browser memory</td><td>Until the page reloads</td><td>Current lists on screen</td></tr>
+<tr><td>localStorage</td><td>Browser disk</td><td>Until cleared</td><td>Login token + user (<code>cloudcover_token</code>)</td></tr>
+<tr><td>sessionStorage</td><td>Browser tab</td><td>Until the tab closes</td><td>PKCE verifier + state during Cognito login</td></tr>
+<tr><td>Cache Storage</td><td>Browser (service worker)</td><td>Until the version changes</td><td>Page shell for offline use, <b>never</b> customer data</td></tr>
+<tr><td>Server memory</td><td>Node process</td><td>Until restart</td><td>Rate-limiter counts, monitoring buffers</td></tr>
+<tr><td>PostgreSQL</td><td>Server disk</td><td>Permanently</td><td>All business data</td></tr>
+<tr><td>CloudWatch</td><td>AWS</td><td>14 days (logs)</td><td>Counts and events, no personal data</td></tr>
+</table></div>
+<div class="box mem"><b>Remember</b>Browser ⇄ HTTP ⇄ Server ⇄ SQL ⇄ Database. A URL is host + port + path. Methods are verbs, status codes are outcomes, and JSON is the shared language.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s1" data-title="HTML, CSS, JS & the DOM" data-n="1">
+<header><h2>Stage 1: The first website (HTML, CSS, JS)</h2><span class="tag">3–4 Aug 2026</span></header>
+<p class="lead">You started with separate pages (<code>index.html</code>, <code>bmi.html</code>, <code>quotes.html</code>, <code>signup.html</code>…), one stylesheet and small scripts.</p>
+
+<h3>1.1 The three languages of a page</h3>
+<div class="grid2">
+  <div class="card"><h4>HTML: structure (nouns)</h4>Headings, forms, inputs, buttons. <code>&lt;input id="weight"&gt;</code> creates a box. It doesn't decide how the box looks or what it does.</div>
+  <div class="card"><h4>CSS: appearance (adjectives)</h4>Colours, spacing, layout. Selectors pick elements (<code>.btn</code>, <code>#weight</code>) and rules style them. Flexbox centres things, and media queries adapt the layout to phones.</div>
+  <div class="card"><h4>JavaScript: behaviour (verbs)</h4>"When the button is clicked, read the weight, calculate the BMI, show the result."</div>
+</div>
+
+<h3>1.2 How the browser turns files into a page</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n1">HTML text</div><span class="arrow">→ parse →</span>
+  <div class="node n1">DOM tree<small>objects in memory</small></div><span class="arrow">+</span>
+  <div class="node n1">CSS rules</div><span class="arrow">→</span>
+  <div class="node n1">Layout + paint<small>pixels on screen</small></div>
+</div>
+<div class="flow" style="justify-content:center;margin-top:10px">
+  <div class="node n1">JS</div><span class="arrow">reads / changes →</span><div class="node n1">DOM</div><span class="arrow">→ browser repaints automatically</span>
+</div></div>
+<p>The <b>DOM</b> (Document Object Model) is the live tree of objects the browser builds from your HTML. JavaScript never edits the HTML file. It edits the DOM.</p>
+
+<h3>1.3 The event loop of a calculator (BMI example)</h3>
+<div class="diagram"><div class="vflow">
+  <div class="node n1">Page loads → JS runs <code>button.addEventListener('click', calc)</code></div><span class="down">↓</span>
+  <div class="node">User types weight and height, clicks "Calculate"</div><span class="down">↓</span>
+  <div class="node n1"><code>calc()</code> reads <code>input.value</code> (always a <b>string</b>, so convert with <code>Number()</code>)</div><span class="down">↓</span>
+  <div class="node dec">Valid numbers? (not empty, &gt; 0)</div>
+  <div class="branch"><div><span class="lbl">no</span><div class="node n5">Show error text</div></div><div><span class="lbl">yes</span><div class="node n2">bmi = kg / (m × m)</div></div></div><span class="down">↓</span>
+  <div class="node n1">Write into the DOM: <code>result.textContent = bmi.toFixed(1)</code></div>
+</div></div>
+<p>Every interactive part of CloudCover follows this pattern: <b>event → read input → validate → compute or fetch → update the DOM</b>.</p>
+
+<h3>1.4 Forms and client-side validation</h3>
+<p>The signup and registration forms checked fields in JS before "submitting". This gives instant feedback, but anyone can switch JS off or send requests directly, so it is <b>never security</b>. Stage 6 adds the real check on the server.</p>
+
+<h3>1.5 The fake login with localStorage</h3>
+<p>The first <code>auth.js</code> saved a "logged-in" flag in localStorage. Anyone could type <code>localStorage.setItem(...)</code> in DevTools and be "logged in". This taught the most important security lesson: <b>the browser is controlled by the user, so only the server can decide who someone is.</b></p>
+
+<h3>1.6 Git from day one</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node">Working folder<small>you edit files</small></div><span class="arrow">git add →</span>
+  <div class="node">Staging area<small>chosen changes</small></div><span class="arrow">git commit →</span>
+  <div class="node">Local history<small>.git folder</small></div><span class="arrow">git push →</span>
+  <div class="node n4">GitHub<small>online copy</small></div>
+</div></div>
+<p><code>.gitignore</code> lists what must never be saved (secrets in <code>.env</code>, <code>node_modules</code>, OS junk). Small commits like "redesigned contact page" make it easy to find and undo a change.</p>
+<div class="box mem"><b>Remember</b>HTML = structure, CSS = look, JS = behaviour. JS changes the <b>DOM</b>, not the file. Browser checks are for convenience; only server checks are for security.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s2" data-title="Planning: PRD & roles" data-n="2">
+<header><h2>Stage 2: Planning the product (PRD)</h2><span class="tag">docs/prd.md</span></header>
+<p class="lead">Before the real build, you wrote down <b>what</b> to build. Professionals do this so the code has a target.</p>
+
+<h3>2.1 The problem</h3>
+<p>Insurance Corner tracked customers, premiums and investments in Excel sheets and paper files. Due dates got missed, and nobody could quickly answer "who owes a premium this week?"</p>
+
+<h3>2.2 What a PRD contains (and where it shows up in the code)</h3>
+<div class="tbl"><table>
+<tr><th>PRD section</th><th>Becomes in the code</th></tr>
+<tr><td>Users and roles</td><td><code>role</code> column, <code>requireAdmin</code> / <code>requireStaff</code> / <code>requireCustomer</code></td></tr>
+<tr><td>Customer master fields</td><td><code>customers</code> table + <code>validateCustomer</code></td></tr>
+<tr><td>Insurance categories, frequencies, statuses</td><td>Lists in <code>validators/index.js</code></td></tr>
+<tr><td>Dynamic due queue rules</td><td><code>dueQueueController.js</code> + <code>dueQueueService.js</code></td></tr>
+<tr><td>Search and filters</td><td><code>searchController.js</code>, <code>search.js</code>, filters in <code>policies.js</code></td></tr>
+<tr><td>Database design</td><td><code>database/schema.sql</code></td></tr>
+<tr><td>API plan</td><td><code>backend/routes/*.js</code></td></tr>
+<tr><td>Out of scope for V1</td><td>Things you deliberately <b>didn't</b> build</td></tr>
+</table></div>
+
+<h3>2.3 The three roles</h3>
+<div class="tbl"><table>
+<tr><th>Action</th><th>Admin</th><th>Staff</th><th>Customer</th></tr>
+<tr><td>View/add/edit customers, policies, investments</td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr><td>Mark premium paid</td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr><td>Delete anything</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>Manage team (users, roles, resets)</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>Turn off a customer's app login</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>See own policies, dues, payments (portal)</td><td>-</td><td>-</td><td>✅ own data only</td></tr>
+<tr><td>Change own password / log out everywhere</td><td>✅</td><td>✅</td><td>✅</td></tr>
+</table></div>
+
+<h3>2.4 Choosing the stack</h3>
+<p>Plain HTML/CSS/JS (no React), Node + Express, PostgreSQL. <b>Why:</b> a small office app with about 3 office users doesn't need a framework's complexity. Fewer tools means less to learn, less to break and easier handover. The PRD's "Why not React/Next.js for V1?" section records this decision. Writing decisions down is itself a professional habit.</p>
+<div class="box mem"><b>Remember</b>The PRD is the map: problem → roles → features → data → API → build phases. Every table, route and role check in the code comes from a line in it.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s3" data-title="Single Page App & router" data-n="3">
+<header><h2>Stage 3: Single Page App (SPA) and the hash router</h2><span class="tag">19–28 Aug 2026</span></header>
+<p class="lead">You replaced many HTML files with one <code>index.html</code>. JavaScript swapped the content, so moving between pages never reloaded.</p>
+
+<h3>3.1 Multi-page vs single-page</h3>
+<div class="grid2">
+  <div class="card"><h4>Multi-page (Stage 1)</h4>Click a link → browser asks the server for a new HTML file → whole page reloads, and JS state is lost.</div>
+  <div class="card"><h4>Single-page (Stage 3)</h4>Click a link → URL hash changes (<code>#/bmi</code>) → JS router picks a view → only the main area is replaced. Fast and smooth.</div>
+</div>
+
+<h3>3.2 How the hash router worked (<code>js/router.js</code>)</h3>
+<div class="diagram"><div class="vflow">
+  <div class="node n1">User clicks <code>&lt;a href="#/quotes"&gt;</code></div><span class="down">↓</span>
+  <div class="node n1">Browser fires a <code>hashchange</code> event (no request to the server)</div><span class="down">↓</span>
+  <div class="node n1">router reads <code>location.hash</code> → "/quotes"</div><span class="down">↓</span>
+  <div class="node dec">Is "/quotes" in the routes table?</div>
+  <div class="branch"><div><span class="lbl">yes</span><div class="node n1">ViewQuotes.render() → HTML string</div></div><div><span class="lbl">no</span><div class="node n5">ViewNotFound (404 view)</div></div></div><span class="down">↓</span>
+  <div class="node n1"><code>main.innerHTML = html</code>, then the view's <code>afterRender()</code> attaches button events</div>
+</div></div>
+<p>Each screen was a "view" object in its own file (<code>view-home.js</code>, <code>view-auth.js</code>, <code>view-dashboard.js</code>…). This is exactly what React Router and Vue Router do internally.</p>
+
+<h3>3.3 Lessons from the bug-fix commits</h3>
+<ul>
+  <li><b>Template strings</b>: building HTML with backticks (<code>`&lt;h2&gt;${name}&lt;/h2&gt;`</code>). The "fixed quote marks" and "fixed html strings" commits were mismatched quotes inside these.</li>
+  <li><b>Events must be attached after rendering</b>: an element doesn't exist until its HTML is inserted.</li>
+  <li><b>Layout</b>: <code>min-height:100vh</code>, flexbox centring and fixing footer height ("fixed screen height bug").</li>
+  <li><b>Responsive</b>: <code>@media (max-width: …)</code> rules ("made it work on phones").</li>
+</ul>
+<div class="box why"><b>Why the current app is different</b>Today CloudCover has 4 real HTML pages (<code>login</code>, <code>dashboard</code>, <code>portal</code>, <code>auth-callback</code>), and inside <code>dashboard.html</code> the sections are switched by JS (<code>showSection()</code>). That's a mix: separate pages where the <b>security context</b> changes (logged out, office, customer), and SPA-style switching inside each area.</div>
+<div class="box mem"><b>Remember</b>SPA = one page, JS swaps the content. A router maps URL → view. The hash part of a URL never goes to the server.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s4" data-title="First AWS (serverless) version" data-n="4">
+<header><h2>Stage 4: First AWS version (serverless)</h2><span class="tag">24 Aug – 4 Sep 2026</span></header>
+<p class="lead">Your first real backend lived entirely in AWS, in the Mumbai Region (<code>ap-south-1</code>).</p>
+
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n1">Browser SPA<small>GitHub Pages / Live Server</small></div><span class="arrow">① login →</span>
+  <div class="node n4">Cognito Hosted UI<small>implicit flow</small></div><span class="arrow">② tokens in URL #</span>
+  <div class="node n1">Browser</div><span class="arrow">③ POST + token →</span>
+  <div class="node n4">API Gateway<small>/prod/users</small></div><span class="arrow">→</span>
+  <div class="node n4">Lambda<small>lambda-sync.js</small></div><span class="arrow">→</span>
+  <div class="node n4">DynamoDB<small>CloudCoverUsers</small></div>
+</div><div class="cap">The serverless shape: no server of your own. AWS runs your function only when a request arrives.</div></div>
+
+<h3>4.1 Each piece</h3>
+<div class="tbl"><table>
+<tr><th>Service</th><th>What it is</th><th>What it did here</th></tr>
+<tr><td>Cognito</td><td>Managed user accounts and login pages</td><td>Sign-up and sign-in, then returned an ID token</td></tr>
+<tr><td>API Gateway</td><td>A public HTTPS front door for your code</td><td>Gave the Lambda a URL and checked the Cognito token</td></tr>
+<tr><td>Lambda</td><td>A function that runs on demand. Pay per run.</td><td>Read the request, saved the user profile</td></tr>
+<tr><td>DynamoDB</td><td>A NoSQL key → item database</td><td>Stored profiles in the <code>CloudCoverUsers</code> table</td></tr>
+</table></div>
+
+<h3>4.2 CORS: the classic first-API problem</h3>
+<p>Your page ran on one origin (e.g. <code>127.0.0.1:5500</code>) and the API on another (<code>…execute-api…amazonaws.com</code>). Browsers block such cross-origin calls unless the API answers with <code>Access-Control-Allow-Origin</code>. The browser first sends an <b>OPTIONS "preflight"</b> request, which is why <code>lambda-sync.js</code> handled <code>OPTIONS</code>.</p>
+<p>Today the frontend and API share one origin (<code>localhost:3000</code>), so cross-origin calls never happen. <code>app.use(cors())</code> is still present in <code>server.js</code>.</p>
+
+<h3>4.3 Implicit flow (old) vs code + PKCE (now)</h3>
+<p>In the implicit flow, Cognito put tokens directly in the URL hash (<code>#id_token=…</code>). They could leak through browser history or extensions. Stage 11 replaced it with the safer <b>authorization code + PKCE</b> flow.</p>
+
+<h3>4.4 SQL vs NoSQL: why you rewrote it</h3>
+<div class="grid2">
+  <div class="card"><h4>DynamoDB (NoSQL)</h4>Great for "get item by key" at huge scale. Joining data (customer → policies → payments) and ad-hoc search are awkward.</div>
+  <div class="card"><h4>PostgreSQL (SQL)</h4>Built for <b>relationships</b>: JOINs, constraints, transactions, flexible queries like "all policies due in 5 days with the customer's phone". That's exactly the office's daily question.</div>
+</div>
+<div class="box why"><b>Why throwing it away was right</b>A prototype answers "can I do this?". Once you understood the real data (customers with many policies, each with many payments), a relational design was the better fit. On 11 Sep you cleared the old files and rebuilt. This is normal and healthy.</div>
+<div class="box mem"><b>Remember</b>Serverless = Cognito + API Gateway + Lambda + DynamoDB, with no server to run. CORS appears when the page and API are on different origins. Relational data belongs in a relational database.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s5" data-title="Database (PostgreSQL)" data-n="5">
+<header><h2>Stage 5: The database (PostgreSQL)</h2><span class="tag">database/</span></header>
+<p class="lead">The database is the heart of CloudCover. Everything else is a way to put data in or show it.</p>
+
+<h3>5.1 Atoms: table, row, column, key</h3>
+<ul>
+  <li><b>Table</b>: one kind of thing (customers). <b>Row</b>: one item (Rahul Sharma). <b>Column</b>: one property (pan).</li>
+  <li><b>Primary key</b> <code>id SERIAL PRIMARY KEY</code>: a unique number per row, assigned automatically.</li>
+  <li><b>Foreign key</b> <code>customer_id REFERENCES customers(id)</code>: a link to a row in another table. The database refuses links to rows that don't exist.</li>
+</ul>
+
+<h3>5.2 The entity–relationship (ER) diagram</h3>
+<div class="diagram">
+<svg viewBox="0 0 900 470" role="img" aria-label="Database relationships">
+  <defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah"/></marker></defs>
+  <g font-size="12">
+  <rect x="340" y="20" width="220" height="112" rx="8" class="b3" stroke-width="1.5"/>
+  <text x="450" y="42" text-anchor="middle" font-weight="700">customers</text>
+  <text x="355" y="62">id (PK)</text><text x="355" y="78">full_name, pan (UNIQUE)</text><text x="355" y="94">primary_phone, email</text><text x="355" y="110">address, date_of_birth</text><text x="355" y="126" class="t-m">created_at, updated_at</text>
+
+  <rect x="20" y="190" width="250" height="150" rx="8" class="b3" stroke-width="1.5"/>
+  <text x="145" y="212" text-anchor="middle" font-weight="700">insurance_policies</text>
+  <text x="35" y="232">id (PK) · customer_id (FK)</text><text x="35" y="248">insurer_id (FK) · policy_number (UNIQUE)</text><text x="35" y="264">category, policy_name</text><text x="35" y="280">premium_amount NUMERIC(12,2)</text><text x="35" y="296">premium_frequency</text><text x="35" y="312">next_due_date ★</text><text x="35" y="328">current_payment_state, policy_status</text>
+
+  <rect x="340" y="190" width="220" height="96" rx="8" class="b3" stroke-width="1.5"/>
+  <text x="450" y="212" text-anchor="middle" font-weight="700">investments</text>
+  <text x="355" y="232">id · customer_id (FK)</text><text x="355" y="248">investment_type, scheme_name</text><text x="355" y="264">folio_number, amount</text><text x="355" y="280">frequency, status</text>
+
+  <rect x="630" y="190" width="250" height="96" rx="8" class="b3" stroke-width="1.5"/>
+  <text x="755" y="212" text-anchor="middle" font-weight="700">customer_accounts</text>
+  <text x="645" y="232">customer_id (FK, UNIQUE) · phone (UNIQUE)</text><text x="645" y="248">password_hash (bcrypt)</text><text x="645" y="264">is_active, token_version</text><text x="645" y="280">last_login_at</text>
+
+  <rect x="20" y="20" width="200" height="64" rx="8" class="b3" stroke-width="1.5"/>
+  <text x="120" y="42" text-anchor="middle" font-weight="700">insurers</text><text x="35" y="62">id · name (UNIQUE)</text>
+
+  <rect x="20" y="385" width="250" height="80" rx="8" class="b3" stroke-width="1.5"/>
+  <text x="145" y="407" text-anchor="middle" font-weight="700">premium_payments</text>
+  <text x="35" y="427">policy_id (FK) · due_date · paid_on</text><text x="35" y="443">amount · recorded_by (FK → users)</text><text x="35" y="459" class="t-m">one row per "Mark Paid"</text>
+
+  <rect x="630" y="330" width="250" height="112" rx="8" class="b5" stroke-width="1.5"/>
+  <text x="755" y="352" text-anchor="middle" font-weight="700">users (office)</text>
+  <text x="645" y="372">username (UNIQUE), password_hash</text><text x="645" y="388">role CHECK (Admin|Staff)</text><text x="645" y="404">is_active, token_version</text><text x="645" y="420">cognito_sub (unique if set)</text><text x="645" y="436" class="t-m">last_login_at</text>
+
+  <rect x="330" y="385" width="250" height="80" rx="8" class="b0" stroke-width="1.5"/>
+  <text x="455" y="407" text-anchor="middle" font-weight="700">audit_logs</text>
+  <text x="345" y="427">user_id (FK) · action · table_name</text><text x="345" y="443">record_id · old_data, new_data (JSONB)</text>
+  </g>
+  <g font-size="10">
+  <path d="M400 132 L200 190" class="ln" marker-end="url(#b)"/><text x="268" y="160" class="t-m">1 customer → many policies</text>
+  <path d="M450 132 V190" class="ln" marker-end="url(#b)"/><text x="456" y="168" class="t-m">1 → many</text>
+  <path d="M520 132 L700 190" class="ln" marker-end="url(#b)"/><text x="610" y="155" class="t-m">1 → 0 or 1 login</text>
+  <path d="M120 84 V190" class="ln" marker-end="url(#b)"/><text x="126" y="140" class="t-m">1 insurer → many</text>
+  <path d="M145 340 V385" class="ln" marker-end="url(#b)"/><text x="152" y="368" class="t-m">1 policy → many payments</text>
+  <path d="M630 430 L270 440" class="ln" marker-end="url(#b)"/><text x="590" y="478" class="t-m">recorded_by</text>
+  <path d="M630 405 L580 420" class="ln" marker-end="url(#b)"/>
+  </g>
+</svg>
+<div class="cap">The arrow points from the "one" side to the "many" side. Deleting a customer CASCADES to their policies, investments and login.</div></div>
+
+<h3>5.3 Rules the database enforces itself</h3>
+<div class="tbl"><table>
+<tr><th>Feature</th><th>Example from schema.sql</th><th>Protects against</th></tr>
+<tr><td><code>NOT NULL</code></td><td><code>full_name VARCHAR(150) NOT NULL</code></td><td>Missing required data</td></tr>
+<tr><td><code>UNIQUE</code></td><td><code>pan</code>, <code>policy_number</code>, <code>username</code></td><td>Duplicates (two customers with one PAN)</td></tr>
+<tr><td><code>CHECK</code></td><td><code>role IN ('Admin','Staff')</code></td><td>Invalid values, even from a buggy server</td></tr>
+<tr><td><code>REFERENCES</code></td><td><code>policy_id REFERENCES insurance_policies(id)</code></td><td>"Orphan" rows pointing nowhere</td></tr>
+<tr><td><code>ON DELETE CASCADE</code></td><td>policies, investments, accounts</td><td>Leftover rows after a customer is deleted</td></tr>
+<tr><td>Partial unique index</td><td><code>UNIQUE(cognito_sub) WHERE cognito_sub IS NOT NULL</code></td><td>Two office users linked to one AWS login</td></tr>
+<tr><td><code>NUMERIC(12,2)</code></td><td><code>premium_amount</code></td><td>Floating-point rounding errors on rupees</td></tr>
+</table></div>
+<div class="box why"><b>Why put rules in the database too?</b>The server validates input, but the database is the last line of defence. Even a buggy controller can't save a duplicate PAN. The server turns the database error (code <code>23505</code> = unique violation) into a friendly message.</div>
+
+<h3>5.4 Indexes</h3>
+<p>Without an index, finding "policies due soon" means reading every row. <code>CREATE INDEX idx_policies_next_due ON insurance_policies(next_due_date)</code> keeps a sorted lookup, like a book index. Indexes exist on <code>customer_id</code>, <code>next_due_date</code> and <code>policy_id</code>, the columns used in JOINs and the due queue.</p>
+
+<h3>5.5 Trigger: automatic <code>updated_at</code></h3>
+<pre><code>CREATE FUNCTION update_updated_at_column() RETURNS TRIGGER AS $$
+BEGIN NEW.updated_at = CURRENT_TIMESTAMP; RETURN NEW; END; $$ language 'plpgsql';
+
+CREATE TRIGGER update_customers_updated_at BEFORE UPDATE ON customers
+FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();</code></pre>
+<p>Before any row is updated, the database itself stamps the time, so no controller can forget.</p>
+
+<h3>5.6 Transactions (ACID)</h3>
+<p>A transaction groups queries so they <b>all</b> succeed or <b>none</b> are saved: <code>BEGIN</code> … <code>COMMIT</code>, or <code>ROLLBACK</code> on error. Mark Paid (Stage 7) inserts a payment <b>and</b> moves the due date. You never want one without the other.</p>
+<div class="tbl"><table>
+<tr><th>Letter</th><th>Meaning</th><th>In plain words</th></tr>
+<tr><td>A</td><td>Atomic</td><td>All or nothing</td></tr>
+<tr><td>C</td><td>Consistent</td><td>Rules (constraints) always hold</td></tr>
+<tr><td>I</td><td>Isolated</td><td>Two users at once don't corrupt each other (<code>FOR UPDATE</code> locks the row)</td></tr>
+<tr><td>D</td><td>Durable</td><td>Once committed, it survives a crash</td></tr>
+</table></div>
+
+<h3>5.7 schema, seed, migrations, reset</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n3">Empty DB</div><span class="arrow">schema.sql →</span><div class="node n3">Tables exist</div><span class="arrow">seed.sql →</span><div class="node n3">Sample data<small>Rahul, Priya, admin_father</small></div>
+</div>
+<div class="flow" style="justify-content:center;margin-top:8px">
+  <div class="node n3">Old DB with real data</div><span class="arrow">001 → 002 → 003 migrations →</span><div class="node n3">Up to date, data kept</div>
+</div></div>
+<ul>
+  <li><b>Migrations</b> upgrade an existing database without losing data. They use <code>IF NOT EXISTS</code>, so running one twice is harmless (<b>idempotent</b>). 001 = customer portal + payments, 002 = token_version and team columns, 003 = cognito_sub.</li>
+  <li><b><code>scripts/reset-db.ps1</code></b> drops and rebuilds the <b>local</b> database. It refuses if <code>DB_HOST</code> isn't localhost, a guard against wiping real data.</li>
+</ul>
+<div class="box mem"><b>Remember</b>Customers are the centre. Policies, investments and the login hang off a customer, and payments hang off a policy. Constraints = rules the DB enforces. Index = speed. Trigger = automatic action. Transaction = all or nothing. Migration = upgrade without losing data.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s6" data-title="Backend: Node + Express API" data-n="6">
+<header><h2>Stage 6: The backend (Node.js + Express REST API)</h2><span class="tag">backend/</span></header>
+
+<h3>6.1 Node.js in one picture</h3>
+<p>Node runs JavaScript on the server. It's <b>single-threaded but non-blocking</b>: while waiting for the database, it serves other requests. That's why database calls use <code>await</code>.</p>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n2">Request A arrives</div><span class="arrow">→</span><div class="node n2">sends SQL, <b>awaits</b></div><span class="arrow">→ meanwhile →</span><div class="node n2">Request B handled</div><span class="arrow">→</span><div class="node n2">DB answers A → A continues</div>
+</div></div>
+
+<h3>6.2 Project setup files</h3>
+<div class="tbl"><table>
+<tr><th>File</th><th>Role</th></tr>
+<tr><td><code>package.json</code></td><td>Name, scripts (<code>npm start</code>, <code>npm run dev</code>), dependency list</td></tr>
+<tr><td><code>package-lock.json</code></td><td>Exact versions, so every PC installs the same code</td></tr>
+<tr><td><code>node_modules/</code></td><td>Downloaded libraries. Never committed, because <code>npm install</code> recreates it.</td></tr>
+<tr><td><code>.env</code> / <code>.env.example</code></td><td>Secrets and settings / a template showing which ones are needed</td></tr>
+</table></div>
+<div class="tbl"><table>
+<tr><th>Library</th><th>Why it's used</th></tr>
+<tr><td>express</td><td>Web server and routing</td></tr>
+<tr><td>pg</td><td>Talks to PostgreSQL</td></tr>
+<tr><td>bcryptjs</td><td>Password hashing</td></tr>
+<tr><td>jsonwebtoken</td><td>Creates and checks login tokens</td></tr>
+<tr><td>dotenv</td><td>Loads <code>.env</code> into <code>process.env</code></td></tr>
+<tr><td>cors</td><td>Cross-origin headers</td></tr>
+<tr><td>aws-jwt-verify</td><td>Verifies Cognito tokens</td></tr>
+<tr><td>@aws-sdk/client-cloudwatch(-logs)</td><td>Sends metrics and logs</td></tr>
+<tr><td>nodemon (dev)</td><td>Auto-restart on save</td></tr>
+</table></div>
+
+<h3>6.3 Startup sequence of <code>server.js</code></h3>
+<div class="diagram"><div class="vflow">
+  <div class="node n2">Load <code>.env</code> (dotenv)</div><span class="down">↓</span>
+  <div class="node dec">JWT_SECRET, DB_USER, DB_HOST, DB_NAME, DB_PASSWORD all present?</div>
+  <div class="branch"><div><span class="lbl">no</span><div class="node n5">Print "Missing X" and exit(1)<small>fail loudly, never run insecurely</small></div></div><div><span class="lbl">yes</span><div class="node n2">Create the Express app</div></div></div><span class="down">↓</span>
+  <div class="node n2">Register middleware in order (6.4)</div><span class="down">↓</span>
+  <div class="node n2"><code>app.listen(3000)</code> → <code>monitoring.start()</code></div><span class="down">↓</span>
+  <div class="node n2">On Ctrl+C (SIGINT/SIGTERM): <code>monitoring.flush()</code> → close the server</div>
+</div></div>
+
+<h3>6.4 The middleware pipeline (the order matters!)</h3>
+<p>Middleware are functions <code>(req, res, next)</code> that every request passes through in order. Each one either answers or calls <code>next()</code>.</p>
+<div class="diagram"><div class="vflow">
+  <div class="node n2"><code>cors()</code>: cross-origin headers</div><span class="down">↓</span>
+  <div class="node n2"><code>express.json()</code> / <code>urlencoded</code>: request body text → <code>req.body</code> object</div><span class="down">↓</span>
+  <div class="node n4"><code>monitoring.middleware</code>: counts 500 errors for CloudWatch</div><span class="down">↓</span>
+  <div class="node n5">Security headers: <code>nosniff</code>, <code>X-Frame-Options: DENY</code>, <code>Referrer-Policy</code></div><span class="down">↓</span>
+  <div class="node n1"><code>express.static('frontend')</code>: if the path is a file (login.html, css, js) → send it, done</div><span class="down">↓</span>
+  <div class="node n2"><code>/api/...</code> routers (each applies <code>authenticate</code> + role checks inside)</div><span class="down">↓</span>
+  <div class="node n2">Unmatched <code>/api</code> → <code>404 {"error":"Not found"}</code></div><span class="down">↓</span>
+  <div class="node n5">Error handler (4 arguments): log the stack, reply <code>500 "Something went wrong!"</code></div>
+</div></div>
+
+<h3>6.5 Routes → Controllers → Services → DB</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n2">routes/insurance.js<small>URL + method → function</small></div><span class="arrow">→</span>
+  <div class="node n2">controllers/insuranceController.js<small>read req, validate, query, reply</small></div><span class="arrow">→</span>
+  <div class="node n2">services/dueQueueService.js<small>pure logic, reusable</small></div><span class="arrow">↔</span>
+  <div class="node n3">db/index.js<small>pool, query, transaction</small></div>
+</div><div class="cap">One job per file. A route file is about 15 lines and readable at a glance.</div></div>
+<pre><code><span class="cm">// backend/routes/insurance.js (shape)</span>
+router.use(authenticate, requireStaff);           <span class="cm">// everything below needs Admin/Staff</span>
+router.get('/', insuranceController.getAllPolicies);
+router.post('/', insuranceController.createPolicy);
+router.delete('/:id', requireAdmin, insuranceController.deletePolicy);  <span class="cm">// extra gate</span>
+router.post('/:id/mark-paid', insuranceController.markPaid);</code></pre>
+
+<h3>6.6 The full API map</h3>
+<div class="tbl"><table>
+<tr><th>Area</th><th>Endpoints</th><th>Who</th></tr>
+<tr><td>Auth</td><td><code>GET /api/auth/config</code> · <code>POST /login</code> · <code>POST /cognito</code> · <code>GET /me</code> · <code>POST /change-password</code> · <code>POST /logout-everywhere</code></td><td>Public / logged-in</td></tr>
+<tr><td>Customers</td><td><code>GET / · GET /:id · POST / · PUT /:id · DELETE /:id</code>(Admin) · <code>PUT /:id/app-account</code> · <code>DELETE /:id/app-account</code>(Admin)</td><td>Admin/Staff</td></tr>
+<tr><td>Policies</td><td><code>GET / · GET /:id · POST / · PUT /:id · DELETE /:id</code>(Admin) · <code>POST /:id/mark-paid</code> · <code>GET /:id/payments</code></td><td>Admin/Staff</td></tr>
+<tr><td>Insurers</td><td><code>GET /api/insurers · POST /api/insurers</code></td><td>Admin/Staff</td></tr>
+<tr><td>Investments</td><td>Create, read, update; <code>DELETE</code> is Admin only</td><td>Admin/Staff</td></tr>
+<tr><td>Due queue</td><td><code>GET /api/due-queue</code> → <code>{missed, upcoming}</code></td><td>Admin/Staff</td></tr>
+<tr><td>Search / dashboard</td><td><code>GET /api/search?q=</code> · <code>GET /api/dashboard</code></td><td>Admin/Staff</td></tr>
+<tr><td>Team</td><td><code>GET /api/users · POST · PUT /:id</code></td><td>Admin</td></tr>
+<tr><td>Portal</td><td><code>GET /api/portal/overview</code></td><td>Customer (own data only)</td></tr>
+</table></div>
+
+<h3>6.7 Talking to the database safely</h3>
+<pre><code><span class="cm">// ❌ NEVER: user text glued into SQL → SQL injection</span>
+db.query("SELECT * FROM users WHERE username = '" + username + "'");
+<span class="cm">// username = "x' OR '1'='1"  → returns every user!</span>
+
+<span class="cm">// ✅ CloudCover: parameterized. Values travel separately from the SQL.</span>
+db.query('SELECT * FROM users WHERE username = $1', [username]);</code></pre>
+<ul>
+  <li><b>Pool</b> (<code>db/index.js</code>): keeps a few connections open and reuses them, because opening a new one per request is slow.</li>
+  <li><b>DATE as text</b>: <code>types.setTypeParser(1082, v =&gt; v)</code> keeps <code>'2026-11-07'</code> as a string. Otherwise JS converts it to a Date at UTC midnight, and with India at +5:30 the date can shift by a day.</li>
+  <li><b><code>pool.on('error')</code></b>: if the DB drops an idle connection, the app logs it instead of crashing.</li>
+  <li><b><code>db.transaction(work)</code></b>: BEGIN → your queries → COMMIT, or ROLLBACK on any error, then always release the client.</li>
+</ul>
+
+<h3>6.8 Server-side validation (<code>validators/index.js</code>)</h3>
+<p>Each <code>validate*</code> function returns <code>{ data }</code> (cleaned values) or <code>{ error }</code> (a message for the user).</p>
+<div class="tbl"><table>
+<tr><th>Check</th><th>Rule</th></tr>
+<tr><td>PAN</td><td><code>/^[A-Z]{5}[0-9]{4}[A-Z]$/</code> e.g. ABCDE1234F</td></tr>
+<tr><td>Mobile</td><td>Strips spaces, <code>+91</code> and a leading <code>0</code> → 10 digits starting 6–9</td></tr>
+<tr><td>Date</td><td>Real calendar date (rejects 2026-02-30)</td></tr>
+<tr><td>Amount</td><td>Positive, below 10¹⁰, rounded to 2 decimals</td></tr>
+<tr><td>Lists</td><td>Category, frequency, status, role must be one of the allowed values</td></tr>
+</table></div>
+<div class="box mem"><b>Remember</b>Request → middleware chain → router → controller → (service) → DB → JSON response. Always use <code>$1</code> parameters, validate on the server, use transactions for multi-step writes, and stop at startup if a secret is missing.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s7" data-title="Due Queue engine" data-n="7">
+<header><h2>Stage 7: The business brain (Due Queue and Mark Paid)</h2><span class="tag">The reason the app exists</span></header>
+
+<h3>7.1 The idea</h3>
+<p>Each policy stores just one date that matters day to day: <code>next_due_date</code>. Everything ("who missed a premium", "who's due this week") is <b>computed</b> from it and today's date. Nothing is tracked by hand.</p>
+
+<h3>7.2 Frequency → months</h3>
+<div class="tbl"><table><tr><th>Frequency</th><th>Monthly</th><th>Quarterly</th><th>Half-yearly</th><th>Yearly</th><th>Single Premium</th></tr>
+<tr><td>Months added</td><td>1</td><td>3</td><td>6</td><td>12</td><td>no next due</td></tr></table></div>
+
+<h3>7.3 <code>addMonths</code> and month-end clamping</h3>
+<pre><code>function addMonths(dateStr, months) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const target = new Date(Date.UTC(y, m - 1 + months, 1));          <span class="cm">// 1st of target month</span>
+  const lastDay = new Date(Date.UTC(target.getUTCFullYear(),
+                    target.getUTCMonth() + 1, 0)).getUTCDate();      <span class="cm">// day 0 = last day of previous month</span>
+  target.setUTCDate(Math.min(d, lastDay));                            <span class="cm">// clamp 31 → 28/29/30</span>
+  return target.toISOString().split('T')[0];
+}</code></pre>
+<div class="tbl"><table><tr><th>Input</th><th>+ months</th><th>Naive JS result</th><th>CloudCover result</th></tr>
+<tr><td>2026-01-31</td><td>1</td><td>2026-03-03 ❌</td><td>2026-02-28 ✅</td></tr>
+<tr><td>2026-08-31</td><td>3</td><td>2026-12-01 ❌</td><td>2026-11-30 ✅</td></tr>
+<tr><td>2026-03-15</td><td>12</td><td>2027-03-15</td><td>2027-03-15 ✅</td></tr></table></div>
+<p><code>calculateNextDueDate(current, frequency, premiumEndDate)</code> uses this and returns <code>null</code> when the frequency is Single Premium or the next date would pass the premium end date. A <code>null</code> means "fully paid".</p>
+
+<h3>7.4 Missed vs. upcoming</h3>
+<div class="diagram">
+<svg viewBox="0 0 860 150" role="img" aria-label="Due queue timeline">
+  <defs><marker id="c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah"/></marker></defs>
+  <path d="M20 80 H840" class="ln" marker-end="url(#c)"/>
+  <rect x="40" y="55" width="380" height="50" rx="6" class="b5" stroke-width="1.5"/><text x="230" y="85" text-anchor="middle" font-size="13" font-weight="600">MISSED: next_due_date &lt; today</text>
+  <rect x="430" y="55" width="200" height="50" rx="6" class="b3" stroke-width="1.5"/><text x="530" y="78" text-anchor="middle" font-size="13" font-weight="600">UPCOMING</text><text x="530" y="96" text-anchor="middle" font-size="11">today … today + 5 days</text>
+  <text x="730" y="85" text-anchor="middle" font-size="12" class="t-m">later: not shown yet</text>
+  <path d="M430 40 V120" stroke="var(--c2)" stroke-width="2.5"/><text x="430" y="30" text-anchor="middle" font-size="12" font-weight="700">TODAY</text>
+  <text x="430" y="140" text-anchor="middle" font-size="11" class="t-m">Only rows still "Pending" and not Lapsed / Matured / Cancelled</text>
+</svg></div>
+<pre><code>WHERE p.next_due_date &lt; CURRENT_DATE                         <span class="cm">-- missed</span>
+WHERE p.next_due_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '5 days'  <span class="cm">-- upcoming</span>
+  AND (p.current_payment_state = 'Pending' OR p.current_payment_state IS NULL)
+  AND p.policy_status NOT IN ('Lapsed','Matured','Cancelled')</code></pre>
+<p>Both queries run at the same time with <code>Promise.all</code> and JOIN <code>customers</code>, so staff see the name and phone number to call.</p>
+
+<h3>7.5 Mark Paid, step by step</h3>
+<div class="diagram"><div class="vflow">
+  <div class="node n1">Staff clicks "Mark Paid" on policy 7</div><span class="down">↓</span>
+  <div class="node n2"><code>POST /api/policies/7/mark-paid</code> → authenticate → requireStaff → <code>markPaid</code></div><span class="down">↓</span>
+  <div class="node n3"><b>BEGIN</b> transaction</div><span class="down">↓</span>
+  <div class="node n3"><code>SELECT … FOR UPDATE</code>: locks the row so two clicks can't pay twice at the same moment</div><span class="down">↓</span>
+  <div class="node n3"><code>INSERT INTO premium_payments</code> (due_date, amount, recorded_by = this user)</div><span class="down">↓</span>
+  <div class="node n2"><code>calculateNextDueDate(old due, frequency, end date)</code></div>
+  <div class="branch"><div><span class="lbl">date returned</span><div class="node n2">state = Pending<small>new cycle starts</small></div></div><div><span class="lbl">null</span><div class="node n2">state = Paid<small>no more premiums</small></div></div></div><span class="down">↓</span>
+  <div class="node n3"><code>UPDATE insurance_policies SET next_due_date, current_payment_state</code></div><span class="down">↓</span>
+  <div class="node n3"><b>COMMIT</b> (if anything failed: ROLLBACK, nothing saved)</div><span class="down">↓</span>
+  <div class="node n2"><code>logAudit('MARK_PAID', before, after)</code> → reply with the updated policy</div><span class="down">↓</span>
+  <div class="node n1">Dashboard reloads the queue: the row moves out of Missed/Upcoming</div>
+</div></div>
+<div class="box mem"><b>Remember</b>One stored date (<code>next_due_date</code>) plus today = the whole queue. Mark Paid = lock → record payment → move the date forward (clamped) → commit → audit.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s8" data-title="Login & security" data-n="8">
+<header><h2>Stage 8: Login and security</h2><span class="tag">middleware/auth.js · authController.js</span></header>
+
+<h3>8.1 Authentication vs. authorization</h3>
+<div class="grid2">
+  <div class="card"><h4>Authentication: "who are you?"</h4>Password check (bcrypt) → token (JWT) → <code>authenticate</code> middleware. Failure → <b>401</b>.</div>
+  <div class="card"><h4>Authorization: "are you allowed?"</h4><code>requireAdmin</code>, <code>requireStaff</code>, <code>requireCustomer</code>. Failure → <b>403</b>.</div>
+</div>
+
+<h3>8.2 Passwords with bcrypt</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node">"password123"</div><span class="arrow">+ random salt → slow hash →</span><div class="node n5"><code>$2a$10$N9qo8u…</code><small>stored in password_hash</small></div>
+</div>
+<div class="flow" style="justify-content:center;margin-top:8px">
+  <div class="node">typed password</div><span class="arrow">→</span><div class="node n5"><code>bcrypt.compare(typed, stored)</code></div><span class="arrow">→</span><div class="node">true / false</div>
+</div></div>
+<ul>
+  <li><b>One-way</b>: you can't turn a hash back into the password. Even the database owner never sees passwords.</li>
+  <li><b>Salt</b>: the same password gives different hashes for different users, which defeats pre-computed tables.</li>
+  <li><b>Slow on purpose</b> (cost factor): a few milliseconds for one login, years for billions of guesses.</li>
+</ul>
+
+<h3>8.3 JWT: the login token</h3>
+<pre><code>eyJhbGciOiJIUzI1NiJ9 . eyJraW5kIjoic3RhZmYiLCJpZCI6MSwicm9sZSI6IkFkbWluIiwidHYiOjB9 . 5f3c…
+└──── header ───────┘   └────────────────────── payload (base64, readable!) ─────────┘   └ signature ┘
+
+payload = { kind:'staff', id:1, username:'admin_father', role:'Admin', name:'…', tv:0, exp:… }</code></pre>
+<ul>
+  <li>The payload is <b>readable by anyone</b> (it's only base64), so never put secrets in it.</li>
+  <li>The <b>signature</b> = HMAC(header + payload, <code>JWT_SECRET</code>). Changing one letter of the payload breaks it, and only the server knows the secret.</li>
+  <li><b>exp</b>: office tokens last <b>10h</b> (a work day), customer tokens <b>30d</b> (a phone app).</li>
+</ul>
+
+<h3>8.4 The login flow (local mode)</h3>
+<table class="seq">
+<tr><td>1</td><td class="who">Browser → Server</td><td><code>POST /api/auth/login {type:'staff', username, password}</code> (or <code>{type:'customer', phone, password}</code>)</td></tr>
+<tr><td>2</td><td class="who">Rate limiter</td><td>This IP has too many recent failures? → <b>429</b> + <code>Retry-After</code></td></tr>
+<tr><td>3</td><td class="who">Server → DB</td><td><code>SELECT * FROM users WHERE username=$1</code> (lowercased)</td></tr>
+<tr><td>4</td><td class="who">Server</td><td>No user, inactive, or <code>bcrypt.compare</code> false → <b>401 "Invalid login details"</b> (same message for every case)</td></tr>
+<tr><td>5</td><td class="who">Server → DB</td><td><code>UPDATE … last_login_at</code></td></tr>
+<tr><td>6</td><td class="who">Server → Browser</td><td><code>{ token: signToken({...profile, tv: token_version}, '10h'), user }</code></td></tr>
+<tr><td>7</td><td class="who">Browser</td><td><code>saveSession()</code> → localStorage → redirect by role: dashboard.html or portal.html</td></tr>
+</table>
+
+<h3>8.5 Every protected request: <code>authenticate</code></h3>
+<div class="diagram"><div class="vflow">
+  <div class="node dec">Header <code>Authorization: Bearer …</code> present?</div><span class="lbl">no → 401 "Authentication required"</span><span class="down">↓ yes</span>
+  <div class="node dec"><code>jwt.verify(token, JWT_SECRET)</code>: signature OK and not expired?</div><span class="lbl">no → 401 "Invalid or expired session"</span><span class="down">↓ yes</span>
+  <div class="node n3">Re-read the login from the DB (users or customer_accounts)</div><span class="down">↓</span>
+  <div class="node dec">Exists AND is_active AND token_version === payload.tv ?</div><span class="lbl">no → 401 "Your session has ended"</span><span class="down">↓ yes</span>
+  <div class="node n2"><code>req.user = { kind, id, role (fresh from DB), name }</code> → <code>next()</code></div><span class="down">↓</span>
+  <div class="node dec">Role check, e.g. requireAdmin: role in allowed list?</div><span class="lbl">no → 403 "You do not have permission"</span><span class="down">↓ yes</span>
+  <div class="node n2">Controller runs</div>
+</div></div>
+
+<h3>8.6 Instant logout with <code>token_version</code></h3>
+<p>A plain JWT stays valid until it expires, even if you change your password. CloudCover fixes this:</p>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node">PC token tv=0</div><div class="node">Phone token tv=0</div><span class="arrow">→ password change / reset / "log out everywhere" / account turned off →</span>
+  <div class="node n3">DB token_version = 1</div><span class="arrow">→</span><div class="node n5">old tokens: 0 ≠ 1 → 401</div><div class="node n2">this device gets a new token tv=1</div>
+</div></div>
+
+<h3>8.7 Other defences</h3>
+<div class="tbl"><table>
+<tr><th>Threat</th><th>Defence in CloudCover</th></tr>
+<tr><td>Password guessing</td><td><code>rateLimit</code>: counts only <b>failed</b> (400/401) attempts per IP, then blocks with 429 until the window ends. Expired entries are swept with <code>setInterval(...).unref()</code>.</td></tr>
+<tr><td>Username discovery</td><td>The same "Invalid login details" message for an unknown user or a wrong password</td></tr>
+<tr><td>SQL injection</td><td><code>$1</code> parameters everywhere</td></tr>
+<tr><td>XSS (script in a name)</td><td><code>esc()</code> escapes <code>&lt; &gt; &amp; " '</code> before inserting into HTML</td></tr>
+<tr><td>Clickjacking</td><td><code>X-Frame-Options: DENY</code></td></tr>
+<tr><td>MIME sniffing</td><td><code>X-Content-Type-Options: nosniff</code></td></tr>
+<tr><td>Leaked secrets</td><td><code>.env</code> in <code>.gitignore</code>, and the server won't start without <code>JWT_SECRET</code></td></tr>
+<tr><td>Staff deleting data</td><td><code>requireAdmin</code> on the server (hidden buttons are just tidiness)</td></tr>
+<tr><td>Customer seeing others' data</td><td>Portal queries use <code>req.user.customerId</code> from the token, <b>never</b> an id sent by the client</td></tr>
+<tr><td>Who changed what?</td><td><code>audit_logs</code> with old/new JSON</td></tr>
+</table></div>
+<div class="box mem"><b>Remember</b>bcrypt stores hashes, not passwords. A JWT is a signed note saying "I am X with role Y". <code>authenticate</code> = verify signature + re-check the DB (active, token_version). 401 = who are you? 403 = not allowed. The server decides; the browser only displays.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s9" data-title="Frontend app & portal" data-n="9">
+<header><h2>Stage 9: The frontend (office dashboard and customer portal)</h2><span class="tag">frontend/</span></header>
+
+<h3>9.1 Pages and modules</h3>
+<div class="diagram"><div class="grid2">
+  <div class="card"><h4>login.html + auth.js + cognito.js</h4>Customer / Office tabs. Asks <code>/api/auth/config</code> whether to show the password form or the "Log in with MFA" button.</div>
+  <div class="card"><h4>dashboard.html + dashboard.js</h4>Office shell: sidebar, cards, Due Queue. Imports customers.js, policies.js, investments.js, team.js, account.js, search.js.</div>
+  <div class="card"><h4>portal.html + portal.js</h4>Mobile-first, read-only customer view: dues, policies, investments, payments, profile.</div>
+  <div class="card"><h4>auth-callback.html</h4>Cognito returns here with a one-time code, which this page passes to the server.</div>
+  <div class="card"><h4>app.js (shared)</h4><code>fetchAPI</code>, <code>saveSession</code>, <code>clearSession</code>, <code>getUser</code>, <code>isAdmin</code>, <code>esc</code>, <code>formatDate</code>, <code>formatMoney</code> (₹), <code>todayISO</code></div>
+  <div class="card"><h4>CSS files</h4><code>style.css</code> (base) · <code>components.css</code> (buttons, modals, badges) · <code>dashboard.css</code> · <code>portal.css</code></div>
+</div></div>
+
+<h3>9.2 ES modules</h3>
+<pre><code><span class="cm">// app.js</span>
+export async function fetchAPI(endpoint, options = {}) { … }
+<span class="cm">// customers.js</span>
+import { fetchAPI, esc } from './app.js';
+<span class="cm">// dashboard.html</span>
+&lt;script type="module" src="js/dashboard.js"&gt;&lt;/script&gt;</code></pre>
+<p>Each file declares what it shares (<code>export</code>) and what it needs (<code>import</code>). There are no global variables and no build step.</p>
+
+<h3>9.3 <code>fetchAPI</code>: every server call goes through here</h3>
+<div class="diagram"><div class="vflow">
+  <div class="node n1"><code>fetchAPI('/customers', {method:'POST', body})</code></div><span class="down">↓</span>
+  <div class="node n1">Adds <code>Content-Type: application/json</code> + <code>Authorization: Bearer &lt;token from localStorage&gt;</code></div><span class="down">↓</span>
+  <div class="node n2"><code>fetch('/api/customers')</code>: same origin, so no CORS</div><span class="down">↓</span>
+  <div class="node dec">response.ok?</div>
+  <div class="branch"><div><span class="lbl">yes</span><div class="node n1">return the parsed JSON</div></div><div><span class="lbl">401</span><div class="node n5">clearSession() → go to login.html</div></div><div><span class="lbl">other error</span><div class="node n5">throw Error(data.error) → UI shows the message</div></div></div>
+</div></div>
+
+<h3>9.4 The render pattern used on every screen</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n1">loadPolicies()</div><span class="arrow">→</span><div class="node n2">fetchAPI('/policies')</div><span class="arrow">→</span><div class="node n1">applyFilters()<small>category, status, due state</small></div><span class="arrow">→</span><div class="node n1">renderPolicies(list)<small>map → HTML with esc()</small></div><span class="arrow">→</span><div class="node n1">tbody.innerHTML = …</div>
+</div></div>
+<p>Forms open in a modal. On submit: <code>preventDefault()</code> → collect fields → <code>fetchAPI</code> POST or PUT → close → reload the list. The server's error message (e.g. "PAN must look like ABCDE1234F") is shown as-is.</p>
+
+<h3>9.5 Dashboard sections</h3>
+<p><code>showSection(id)</code> hides all sections, shows one, and <code>loadSectionData(id)</code> fetches only what that section needs, so nothing loads before it's opened.</p>
+<div class="tbl"><table>
+<tr><th>Section</th><th>Module</th><th>Highlights</th></tr>
+<tr><td>Dashboard</td><td>dashboard.js</td><td>Cards from <code>/api/dashboard</code>; Missed + Upcoming tables with Mark Paid</td></tr>
+<tr><td>Customers</td><td>customers.js</td><td>Create/read/update; "App login" button creates or resets the portal account</td></tr>
+<tr><td>Policies</td><td>policies.js</td><td>Filters, insurer dropdown, payment history</td></tr>
+<tr><td>Investments</td><td>investments.js</td><td>SIP / Lumpsum, customer dropdown</td></tr>
+<tr><td>Team (Admin)</td><td>team.js</td><td>Add user, <code>generatePassword()</code>, change role, turn off</td></tr>
+<tr><td>My account</td><td>account.js</td><td>Change password, log out everywhere</td></tr>
+<tr><td>Global search</td><td>search.js</td><td>Waits for a short pause in typing, then <code>/api/search?q=</code> → grouped results</td></tr>
+</table></div>
+<div class="box warn"><b>Hidden ≠ protected</b><code>isAdmin()</code> hides Delete buttons for Staff, but a Staff member could still send a DELETE request by hand. The server's <code>requireAdmin</code> is what actually blocks it. The UI is only a reflection of the rules.</div>
+<div class="box mem"><b>Remember</b>4 pages, many modules. All calls go through <code>fetchAPI</code> (adds the token, handles 401). Pattern: load → filter → render with esc() → attach events. The portal shows only the logged-in customer's data.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s10" data-title="PWA: installable app" data-n="10">
+<header><h2>Stage 10: PWA (installable on phones)</h2><span class="tag">manifest · sw.js</span></header>
+<p class="lead">A Progressive Web App is a website that can be installed to the home screen and opens like an app, with no Play Store needed.</p>
+
+<h3>10.1 The three ingredients</h3>
+<div class="grid2">
+  <div class="card"><h4>1. Manifest</h4><code>manifest.webmanifest</code>: name, <code>short_name</code>, icons (192, 512, maskable, svg), <code>theme_color #1f4e79</code>, <code>display: standalone</code> (no browser bar).</div>
+  <div class="card"><h4>2. Service worker</h4><code>sw.js</code>: a script that sits between the page and the network and can answer from a cache.</div>
+  <div class="card"><h4>3. HTTPS</h4>Required for service workers in production. <code>localhost</code> is allowed for development.</div>
+</div>
+
+<h3>10.2 Service worker lifecycle</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n1">register('sw.js')</div><span class="arrow">→</span>
+  <div class="node n1">install<small>cache SHELL files in "cloudcover-v3"</small></div><span class="arrow">→</span>
+  <div class="node n1">activate<small>delete caches ≠ v3</small></div><span class="arrow">→</span>
+  <div class="node n1">fetch events<small>every request passes through</small></div>
+</div></div>
+
+<h3>10.3 The fetch decision</h3>
+<div class="diagram"><div class="vflow">
+  <div class="node dec">Not a GET, other origin, <code>/api/…</code>, or <code>/auth-callback.html</code>?</div>
+  <div class="branch"><div><span class="lbl">yes</span><div class="node n5">Don't touch it: browser handles it normally<small>customer data and one-time codes are never cached</small></div></div>
+  <div><span class="lbl">no (page shell file)</span><div class="node n1">Network first</div><span class="down">↓</span>
+  <div class="branch"><div><span class="lbl">online</span><div class="node n1">Use the fresh file + update the cache</div></div><div><span class="lbl">offline</span><div class="node n1">Serve the cached copy</div></div></div></div></div>
+</div></div>
+<div class="box why"><b>Why network-first and why bump the version?</b>Network-first means users always get your latest code when online. Changing <code>CACHE = 'cloudcover-v3'</code> to v4 makes <code>activate</code> delete old caches, so nobody gets stuck on old JS.</div>
+<p><code>scripts/make-icons.js</code> draws the PNG icons from code, so the icons can be regenerated at any time.</p>
+<div class="box mem"><b>Remember</b>PWA = manifest + service worker + HTTPS. Cache the shell, never the data. Network-first, version the cache.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s11" data-title="Cognito MFA (code + PKCE)" data-n="11">
+<header><h2>Stage 11: AWS Cognito MFA login (authorization code + PKCE)</h2><span class="tag">22 Oct 2026</span></header>
+
+<h3>11.1 AWS setup basics</h3>
+<ul>
+  <li><b>AWS CLI + <code>aws login --profile cloudcover</code></b>: browser-based sign-in. Credentials last 12h and renew for up to 90 days. <b>No access keys</b> in files.</li>
+  <li><b>Project / account</b> <code>448592647758</code>, in the new AWS experience. The <b>selected Region</b> is <code>ap-southeast-2</code> (Sydney). Other Regions, including Mumbai, are blocked by the project's policy, so all Regional resources are in Sydney.</li>
+  <li>The user pool <code>cloudcover-office</code> has <b>MFA required</b> (authenticator app / TOTP). SMS was avoided because of per-message cost and DLT registration in India. Admins create users and there's no public sign-up. Passwords need 12+ characters with mixed types.</li>
+  <li>The app client <code>cloudcover-web</code> is <b>public, with no secret</b>, because a browser can't keep secrets. PKCE replaces the secret.</li>
+</ul>
+
+<h3>11.2 What PKCE is</h3>
+<p><b>PKCE</b> (Proof Key for Code Exchange): the browser makes a random secret (<b>verifier</b>) and sends only its SHA-256 hash (<b>challenge</b>) to Cognito. Later, only someone holding the original verifier can swap the login code for tokens. A thief who steals the code from the URL can't use it.</p>
+
+<h3>11.3 The full sequence</h3>
+<table class="seq">
+<tr><td>1</td><td class="who">login.html → Server</td><td><code>GET /api/auth/config</code> → <code>{provider:'cognito', cognito:{domain, clientId, redirectUri}}</code> (none of it secret)</td></tr>
+<tr><td>2</td><td class="who">Browser</td><td><code>verifier = random 32 bytes</code>, <code>state = random 16 bytes</code>, <code>challenge = base64url(SHA-256(verifier))</code> → saved in <b>sessionStorage</b></td></tr>
+<tr><td>3</td><td class="who">Browser → Cognito</td><td>Redirect to <code>/oauth2/authorize?response_type=code&amp;client_id&amp;redirect_uri&amp;scope=openid profile&amp;state&amp;code_challenge&amp;code_challenge_method=S256</code></td></tr>
+<tr><td>4</td><td class="who">User ↔ Cognito</td><td>Password + 6-digit authenticator code on AWS's managed login page (first time: set a new password + scan the QR code)</td></tr>
+<tr><td>5</td><td class="who">Cognito → Browser</td><td>Redirect to <code>/auth-callback.html?code=…&amp;state=…</code></td></tr>
+<tr><td>6</td><td class="who">auth-callback</td><td><code>readCallback()</code>: <code>state</code> must equal the saved state (blocks forged callbacks). Read and <b>delete</b> the verifier.</td></tr>
+<tr><td>7</td><td class="who">Browser → Server</td><td><code>POST /api/auth/cognito {code, codeVerifier}</code> (rate limited)</td></tr>
+<tr><td>8</td><td class="who">Server → Cognito</td><td>Token endpoint: code + verifier → ID/access/refresh tokens</td></tr>
+<tr><td>9</td><td class="who">Server</td><td><code>aws-jwt-verify</code> checks the ID token: signature (pool's public keys), issuer, audience = our client, token_use = id, expiry</td></tr>
+<tr><td>10</td><td class="who">Server → Cognito</td><td><b>Revoke</b> the refresh token straight away. CloudCover's own session takes over.</td></tr>
+<tr><td>11</td><td class="who">Server → DB</td><td>Find the user by <code>cognito:username</code>. Must exist and be active. First login saves <code>cognito_sub</code>; later logins must match it (a mismatch is audited and gets 403).</td></tr>
+<tr><td>12</td><td class="who">Server → Browser</td><td>CloudCover JWT (10h, with tv) → same session as a local login → dashboard</td></tr>
+</table>
+
+<h3>11.4 Why hand over to CloudCover's own JWT?</h3>
+<p>Roles, <code>is_active</code>, <code>token_version</code> (instant logout) and audit all live in PostgreSQL. Cognito proves <b>identity + MFA</b>, then CloudCover's existing session system handles everything else, so <code>authenticate</code> didn't need to change at all.</p>
+
+<h3>11.5 The on/off switch</h3>
+<div class="diagram"><div class="branch">
+  <div><div class="node n2"><code>AUTH_PROVIDER=local</code></div><span class="down">↓</span><div class="node">Office: username + password<small>/api/auth/cognito → 404</small></div></div>
+  <div><div class="node n4"><code>AUTH_PROVIDER=cognito</code></div><span class="down">↓</span><div class="node">Office: "Log in with MFA" only<small>password login → 403, so MFA can't be skipped</small></div></div>
+</div><div class="cap">Customers always use the mobile-number login. If Cognito is on but a COGNITO_* value is missing, the server refuses to start.</div></div>
+<p><code>scripts/cognito-add-user.ps1</code> creates the Cognito user with a temporary password. The <b>username must match</b> the Team page username. <code>docs/aws-cognito-setup.md</code> records every setting, the reason for it, and how to remove it all.</p>
+<div class="box mem"><b>Remember</b>Code + PKCE: verifier stays in the tab, only its hash is sent. state blocks forgery. The server verifies the ID token, revokes the refresh token, links <code>cognito_sub</code>, then issues CloudCover's own JWT.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s12" data-title="AWS monitoring" data-n="12">
+<header><h2>Stage 12: AWS monitoring (CloudWatch, Lambda, Scheduler, SNS, IAM)</h2><span class="tag">22 Oct 2026</span></header>
+
+<div class="diagram">
+<svg viewBox="0 0 880 330" role="img" aria-label="Monitoring flow">
+  <defs><marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah"/></marker></defs>
+  <g font-size="12">
+  <rect x="10" y="40" width="190" height="90" rx="10" class="b2" stroke-width="1.5"/><text x="105" y="66" text-anchor="middle" font-weight="700">CloudCover server</text><text x="105" y="86" text-anchor="middle" class="t-m">monitoringService.js</text><text x="105" y="104" text-anchor="middle" class="t-m">counters + log buffer</text><text x="105" y="120" text-anchor="middle" class="t-m">(office PC)</text>
+  <rect x="270" y="20" width="200" height="60" rx="8" class="b4"/><text x="370" y="45" text-anchor="middle" font-weight="600">CloudWatch Metrics</text><text x="370" y="64" text-anchor="middle" class="t-m">namespace CloudCover</text>
+  <rect x="270" y="100" width="200" height="60" rx="8" class="b4"/><text x="370" y="125" text-anchor="middle" font-weight="600">CloudWatch Logs</text><text x="370" y="144" text-anchor="middle" class="t-m">/cloudcover/app · 14 days</text>
+  <rect x="540" y="20" width="150" height="60" rx="8" class="b4"/><text x="615" y="45" text-anchor="middle" font-weight="600">3 Alarms</text><text x="615" y="64" text-anchor="middle" class="t-m">errors · failed logins</text>
+  <rect x="540" y="100" width="150" height="60" rx="8" class="b4"/><text x="615" y="135" text-anchor="middle" font-weight="600">Dashboard</text>
+  <rect x="740" y="20" width="130" height="60" rx="8" class="b4"/><text x="805" y="45" text-anchor="middle" font-weight="600">SNS topic</text><text x="805" y="64" text-anchor="middle" class="t-m">cloudcover-alerts</text>
+  <rect x="740" y="130" width="130" height="50" rx="8" class="b1"/><text x="805" y="160" text-anchor="middle" font-weight="600">📧 Owner email</text>
+  <rect x="270" y="230" width="200" height="60" rx="8" class="b4"/><text x="370" y="255" text-anchor="middle" font-weight="600">EventBridge Scheduler</text><text x="370" y="274" text-anchor="middle" class="t-m">cron(0 8 * * ? *) IST</text>
+  <rect x="540" y="230" width="180" height="60" rx="8" class="b4"/><text x="630" y="255" text-anchor="middle" font-weight="600">Lambda</text><text x="630" y="274" text-anchor="middle" class="t-m">cloudcover-daily-summary</text>
+  </g>
+  <g font-size="10">
+  <path d="M200 70 L270 50" class="ln" marker-end="url(#d)"/><text x="205" y="45" class="t-m">every 5 min</text>
+  <path d="M200 105 L270 130" class="ln" marker-end="url(#d)"/><text x="205" y="138" class="t-m">every 1 min</text>
+  <path d="M470 50 H540" class="ln" marker-end="url(#d)"/>
+  <path d="M470 60 L540 120" class="ln" marker-end="url(#d)"/>
+  <path d="M690 50 H740" class="ln" marker-end="url(#d)"/>
+  <path d="M805 80 V130" class="ln" marker-end="url(#d)"/>
+  <path d="M470 260 H540" class="ln" marker-end="url(#d)"/><text x="478" y="252" class="t-m">invokes 8:00</text>
+  <path d="M600 230 L420 82" class="ln" marker-end="url(#d)"/><text x="470" y="200" class="t-m">GetMetricData</text>
+  <path d="M720 255 Q790 230 800 82" class="ln" marker-end="url(#d)"/><text x="760" y="215" class="t-m">Publish</text>
+  </g>
+</svg>
+<div class="cap">The Lambda never touches the database. It only reads CloudWatch, so it works even while the app runs on a PC that AWS can't reach.</div></div>
+
+<h3>12.1 What the server sends</h3>
+<div class="tbl"><table>
+<tr><th>Metric</th><th>Type</th><th>Meaning</th></tr>
+<tr><td>MissedDues, UpcomingDues</td><td>Latest value</td><td>Queue sizes right now (from <code>statsService.getSummary()</code>)</td></tr>
+<tr><td>CollectedThisMonth</td><td>Latest value</td><td>₹ recorded via Mark Paid this month</td></tr>
+<tr><td>Logins, LoginFailures, ServerErrors</td><td>Count since the last report</td><td>Activity and problems</td></tr>
+</table></div>
+<p>Log events are small JSON lines like <code>{"level":"warn","event":"login_failed"}</code>. They're buffered in memory (max 1000) and sent every minute.</p>
+<div class="box warn"><b>Privacy rule</b>Only counts and event names leave the office. Never names, PAN, phone numbers or passwords.</div>
+<div class="box why"><b>Fail-safe</b>If AWS is unreachable or the login expired, the app keeps working and prints at most <b>one warning every 10 minutes</b>. <code>AWS_MONITORING=on/off</code> controls everything. On shutdown, <code>flush()</code> sends the last numbers.</div>
+
+<h3>12.2 Alarms</h3>
+<div class="tbl"><table>
+<tr><th>Alarm</th><th>Fires when</th><th>Why</th></tr>
+<tr><td>cloudcover-server-errors</td><td>Any 500 error in 5 minutes</td><td>A bug happened. Also emails again when it recovers.</td></tr>
+<tr><td>cloudcover-many-failed-logins</td><td>10+ failures in 15 minutes</td><td>Possible password guessing</td></tr>
+<tr><td>cloudcover-daily-summary-failed</td><td>The Lambda errored</td><td>The 8 AM email didn't go out</td></tr>
+</table></div>
+
+<h3>12.3 The daily Lambda</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n4">8:00 IST Scheduler<small>2 retries</small></div><span class="arrow">→</span>
+  <div class="node n4">handler()<small>Node 22 · arm64 · 128 MB · 30 s</small></div><span class="arrow">→</span>
+  <div class="node n4">GetMetricData<small>last 24h, newest first</small></div><span class="arrow">→</span>
+  <div class="node n4">Build text<small>₹ formatted en-IN</small></div><span class="arrow">→</span>
+  <div class="node n4">SNS Publish</div><span class="arrow">→</span><div class="node n1">📧</div>
+</div></div>
+
+<h3>12.4 IAM: who may do what</h3>
+<p>Every AWS action needs permission. A <b>role</b> has two policies:</p>
+<div class="grid2">
+<div class="card"><h4>Trust policy: who can wear the role</h4>
+<pre><code>"Principal": { "Service": "lambda.amazonaws.com" },
+"Action": "sts:AssumeRole",
+"Condition": { "StringEquals":
+  { "aws:SourceAccount": "448592647758" } }</code></pre>
+The SourceAccount condition stops other accounts from tricking AWS into using your role (the "confused deputy" problem).</div>
+<div class="card"><h4>Permissions policy: what the role can do</h4>
+<ul style="margin:0;padding-left:18px">
+<li>Lambda role: write <b>its own</b> log group, <code>cloudwatch:GetMetricData</code>, <code>sns:Publish</code> to <b>one</b> topic.</li>
+<li>Scheduler role: <code>lambda:InvokeFunction</code> on <b>one</b> function only.</li></ul>
+This is <b>least privilege</b>: the minimum needed, so a bug or leak can do little harm.</div>
+</div>
+
+<h3>12.5 Cost control</h3>
+<p>Everything fits in the free allowances (about 30 Lambda runs, 6 metrics, 3 alarms, 1 dashboard). The AWS Budget <code>cloudcover-monthly-50-inr</code> (about $0.60) emails at 50%, 100% and forecast 100%. Every resource is tagged <code>Project=CloudCover</code> so it's easy to find and delete.</p>
+<div class="box mem"><b>Remember</b>Server → CloudWatch (metrics every 5 min, logs every 1 min) → alarms → SNS → email. Scheduler → Lambda → reads metrics → SNS → 8 AM email. IAM role = trust (who) + permissions (what), always least privilege. No personal data leaves the office.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="s13" data-title="Docs, Git & hygiene" data-n="13">
+<header><h2>Stage 13: Documentation, Git and project hygiene</h2><span class="tag">Professional habits</span></header>
+<div class="tbl"><table>
+<tr><th>File / practice</th><th>Purpose</th></tr>
+<tr><td><code>README.md</code></td><td>The front page: features, stack, folder tree, install, sample logins, config, roadmap</td></tr>
+<tr><td><code>docs/prd.md</code></td><td>What and why: the product definition and build phases</td></tr>
+<tr><td><code>docs/aws-cognito-setup.md</code>, <code>docs/aws-monitoring-setup.md</code></td><td>What exists in AWS, every setting and its reason, commands, cost, and <b>how to remove it</b></td></tr>
+<tr><td><code>setup.md</code></td><td>Setting up the AWS CLI login and the agent toolkit on a PC</td></tr>
+<tr><td><code>CLAUDE.md</code></td><td>Rules for the AI assistant (Region limits, terms, help level)</td></tr>
+<tr><td><code>.env.example</code></td><td>Documents every setting without exposing secrets</td></tr>
+<tr><td><code>LEARNING-PROGRESS.md</code> + this page</td><td>Your learning tracker and guide</td></tr>
+<tr><td><code>VIT-CLOUD-ARCH/</code></td><td>Research paper and patent drafts (not committed yet)</td></tr>
+</table></div>
+<h3>Commit messages: before and after</h3>
+<div class="grid2">
+  <div class="card"><h4>Early</h4><code>fixed major issue</code> · <code>fixed critical bug</code> · <code>updated project</code>. Six months later, nobody knows what changed.</div>
+  <div class="card"><h4>Now</h4><code>Add optional AWS Cognito MFA login for office users</code>. Says what and where, and the body explains why.</div>
+</div>
+<h3>Folder structure = architecture</h3>
+<pre><code>backend/   controllers · db · middleware · routes · services · validators · server.js
+database/  schema.sql · seed.sql · migrations/
+frontend/  css · js · icons · *.html · manifest.webmanifest · sw.js
+aws/       cloudwatch/dashboard.json · iam/*.json · lambda/daily-summary/index.mjs
+scripts/   reset-db.ps1 · cognito-add-user.ps1 · make-icons.js
+docs/      prd.md · aws-*-setup.md</code></pre>
+<p>Someone new can guess where any code lives just from the folder names. That's the goal of good structure.</p>
+<div class="box mem"><b>Remember</b>Docs say what exists, why, and how to remove it. Commits say what changed and why. Folders mirror the architecture. Secrets never enter Git.</div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="journeys" data-title="End-to-end journeys" data-n="∞">
+<header><h2>Integrated view: complete journeys through every layer</h2><span class="tag">How it all connects</span></header>
+<p class="lead">These walk-throughs connect all the stages. Trace each one on the big-picture diagram.</p>
+
+<h3>Journey A: Staff opens the app and marks a premium paid</h3>
+<table class="seq">
+<tr><td>1</td><td class="who">Browser</td><td>Opens <code>http://localhost:3000/login.html</code> → the service worker (if installed) passes the request on → <code>express.static</code> sends the file <span class="cm">[S0, S6, S10]</span></td></tr>
+<tr><td>2</td><td class="who">login.html</td><td><code>GET /api/auth/config</code> → local mode → shows the username/password form <span class="cm">[S9, S11]</span></td></tr>
+<tr><td>3</td><td class="who">Browser → Server</td><td><code>POST /api/auth/login</code> → rate limiter → bcrypt.compare → JWT (tv) <span class="cm">[S8]</span></td></tr>
+<tr><td>4</td><td class="who">Server → AWS</td><td>Monitoring counts <code>Logins+1</code>, logs a "login" event (if on) <span class="cm">[S12]</span></td></tr>
+<tr><td>5</td><td class="who">Browser</td><td>Saves token + user in localStorage → role Staff → <code>dashboard.html</code> <span class="cm">[S9]</span></td></tr>
+<tr><td>6</td><td class="who">dashboard.js</td><td><code>fetchAPI('/dashboard')</code> and <code>('/due-queue')</code> with <code>Authorization: Bearer</code> <span class="cm">[S9]</span></td></tr>
+<tr><td>7</td><td class="who">Server</td><td>Middleware chain → authenticate (verify + DB re-check of is_active/tv) → requireStaff <span class="cm">[S6, S8]</span></td></tr>
+<tr><td>8</td><td class="who">Server → DB</td><td>Missed + upcoming queries in parallel, JOINed with customers, using the next_due_date index <span class="cm">[S5, S7]</span></td></tr>
+<tr><td>9</td><td class="who">Browser</td><td>renderDueQueue → rows escaped with <code>esc()</code> → table on screen <span class="cm">[S8, S9]</span></td></tr>
+<tr><td>10</td><td class="who">Staff</td><td>Calls the customer, collects the premium, clicks <b>Mark Paid</b></td></tr>
+<tr><td>11</td><td class="who">Server → DB</td><td>Transaction: lock row → insert payment → addMonths (clamped) → update policy → commit <span class="cm">[S5, S7]</span></td></tr>
+<tr><td>12</td><td class="who">Server → DB</td><td><code>audit_logs</code> row with before/after JSON <span class="cm">[S7, S8]</span></td></tr>
+<tr><td>13</td><td class="who">Browser</td><td>Reloads the queue: the row is gone. Payment history now shows it. <span class="cm">[S9]</span></td></tr>
+<tr><td>14</td><td class="who">Within 5 min</td><td>Monitoring sends new MissedDues / CollectedThisMonth to CloudWatch <span class="cm">[S12]</span></td></tr>
+<tr><td>15</td><td class="who">Next 8:00 AM</td><td>Scheduler → Lambda → reads metrics → SNS → summary email shows the new numbers <span class="cm">[S12]</span></td></tr>
+</table>
+
+<h3>Journey B: A customer checks dues on their phone</h3>
+<table class="seq">
+<tr><td>1</td><td class="who">Office</td><td>Staff opens the customer → "App login" → <code>PUT /api/customers/:id/app-account</code> → bcrypt hash saved in <code>customer_accounts</code></td></tr>
+<tr><td>2</td><td class="who">Phone</td><td>Opens the site → manifest → "Add to Home Screen" → service worker caches the shell</td></tr>
+<tr><td>3</td><td class="who">Phone → Server</td><td>Customer tab: mobile number (normalised to 10 digits) + password → JWT kind=customer, 30 days</td></tr>
+<tr><td>4</td><td class="who">portal.js</td><td><code>GET /api/portal/overview</code> → authenticate → requireCustomer</td></tr>
+<tr><td>5</td><td class="who">Server → DB</td><td>Every query uses <code>WHERE customer_id = req.user.customerId</code> from the <b>token</b>, so other customers' data is unreachable</td></tr>
+<tr><td>6</td><td class="who">Phone</td><td>Shows dues, policies, investments, payments. Offline next time: the shell opens, data shows an error (never stale cached data).</td></tr>
+<tr><td>7</td><td class="who">Lost phone</td><td>Admin turns off the app login or resets it → token_version+1 → the phone's token gets 401 immediately</td></tr>
+</table>
+
+<h3>Journey C: An Admin logs in with MFA (Cognito mode)</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n1">login.html<small>config: cognito</small></div><span class="arrow">→ PKCE →</span>
+  <div class="node n4">Cognito page<small>password + 6-digit code</small></div><span class="arrow">→ code →</span>
+  <div class="node n1">auth-callback<small>state check</small></div><span class="arrow">→</span>
+  <div class="node n2">/api/auth/cognito<small>exchange, verify, revoke</small></div><span class="arrow">→</span>
+  <div class="node n3">users<small>cognito_sub link</small></div><span class="arrow">→</span>
+  <div class="node n5">CloudCover JWT</div><span class="arrow">→</span><div class="node n1">dashboard</div>
+</div></div>
+
+<h3>Journey D: Something breaks at night</h3>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node n2">Bug throws in a controller</div><span class="arrow">→</span>
+  <div class="node n2">Error handler → 500</div><span class="arrow">→</span>
+  <div class="node n4">ServerErrors+1, log event</div><span class="arrow">→</span>
+  <div class="node n4">Alarm ≥1 in 5 min</div><span class="arrow">→</span>
+  <div class="node n4">SNS</div><span class="arrow">→</span><div class="node n1">📧 "ALARM"</div><span class="arrow">→</span>
+  <div class="node">You read /cloudcover/app logs, fix, deploy</div><span class="arrow">→</span><div class="node n1">📧 "OK"</div>
+</div></div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="glossary" data-title="Glossary" data-n="Aa">
+<header><h2>Glossary (A–Z)</h2><span class="tag">Quick lookup</span></header>
+<div class="tbl"><table>
+<tr><th>Term</th><th>Plain meaning</th><th>Where</th></tr>
+<tr><td>ACID</td><td>Transaction guarantees: Atomic, Consistent, Isolated, Durable</td><td>S5</td></tr>
+<tr><td>API</td><td>A set of URLs a program can call to get or change data</td><td>S6</td></tr>
+<tr><td>Audit log</td><td>A record of who changed what, with old and new values</td><td>S5, S7</td></tr>
+<tr><td>bcrypt</td><td>A slow, salted, one-way password hash</td><td>S8</td></tr>
+<tr><td>Cascade</td><td>Deleting a parent row deletes its child rows</td><td>S5</td></tr>
+<tr><td>CloudWatch</td><td>AWS service for metrics, logs, alarms and dashboards</td><td>S12</td></tr>
+<tr><td>Cognito</td><td>AWS service for user accounts and login pages</td><td>S4, S11</td></tr>
+<tr><td>Controller</td><td>Function that handles one API request</td><td>S6</td></tr>
+<tr><td>CORS</td><td>Browser rule for calls between different origins</td><td>S4</td></tr>
+<tr><td>DOM</td><td>The browser's live object tree of the page</td><td>S1</td></tr>
+<tr><td>dotenv / .env</td><td>A file of settings and secrets loaded into <code>process.env</code></td><td>S6</td></tr>
+<tr><td>EventBridge Scheduler</td><td>AWS cron: runs a target on a schedule</td><td>S12</td></tr>
+<tr><td>ES module</td><td>A JS file with import/export</td><td>S9</td></tr>
+<tr><td>Foreign key</td><td>A column that points to a row in another table</td><td>S5</td></tr>
+<tr><td>IAM role</td><td>An AWS identity with a trust policy + a permissions policy</td><td>S12</td></tr>
+<tr><td>Idempotent</td><td>Safe to run more than once with the same result</td><td>S5</td></tr>
+<tr><td>Index</td><td>A sorted lookup that speeds up searches</td><td>S5</td></tr>
+<tr><td>JWT</td><td>A signed token: header.payload.signature</td><td>S8</td></tr>
+<tr><td>Lambda</td><td>A function AWS runs on demand</td><td>S4, S12</td></tr>
+<tr><td>Least privilege</td><td>Give only the permissions that are needed</td><td>S12</td></tr>
+<tr><td>Manifest</td><td>JSON describing an installable web app</td><td>S10</td></tr>
+<tr><td>MFA / TOTP</td><td>Second login factor / a 6-digit code that changes every 30 s</td><td>S11</td></tr>
+<tr><td>Middleware</td><td>A function every request passes through in order</td><td>S6</td></tr>
+<tr><td>Migration</td><td>A script that upgrades an existing database</td><td>S5</td></tr>
+<tr><td>Parameterized query</td><td>SQL with <code>$1</code> placeholders, which prevents injection</td><td>S6</td></tr>
+<tr><td>PKCE</td><td>Verifier/challenge pair that protects the login code</td><td>S11</td></tr>
+<tr><td>Pool</td><td>Reused database connections</td><td>S6</td></tr>
+<tr><td>PWA</td><td>A website installable like an app</td><td>S10</td></tr>
+<tr><td>Rate limiting</td><td>Blocking too many attempts in a time window</td><td>S8</td></tr>
+<tr><td>REST</td><td>API style: noun URLs + HTTP verbs</td><td>S6</td></tr>
+<tr><td>Salt</td><td>Random data mixed into a hash</td><td>S8</td></tr>
+<tr><td>Service worker</td><td>A background script that can serve requests from a cache</td><td>S10</td></tr>
+<tr><td>SNS</td><td>AWS pub/sub service that sends messages such as email</td><td>S12</td></tr>
+<tr><td>SPA</td><td>Single Page App: JS swaps the content without reloading</td><td>S3</td></tr>
+<tr><td>SQL injection</td><td>An attack using user text as SQL code</td><td>S6</td></tr>
+<tr><td>state (OAuth)</td><td>A random value that proves a login callback is genuine</td><td>S11</td></tr>
+<tr><td>token_version</td><td>A counter that ends all old sessions when increased</td><td>S8</td></tr>
+<tr><td>Transaction</td><td>A group of queries that all succeed or none do</td><td>S5, S7</td></tr>
+<tr><td>Trigger</td><td>Database code that runs automatically on a change</td><td>S5</td></tr>
+<tr><td>XSS</td><td>An attack that injects script into a page; prevented by escaping</td><td>S8</td></tr>
+</table></div>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="cheat" data-title="Revision cheat sheet" data-n="⚡">
+<header><h2>Revision cheat sheet: CloudCover in 15 lines</h2><span class="tag">Memorize</span></header>
+<ol>
+  <li><b>Web</b>: Browser ⇄ HTTP(JSON) ⇄ Express :3000 ⇄ SQL ⇄ PostgreSQL :5432.</li>
+  <li><b>Page</b>: HTML structure, CSS look, JS behaviour. JS edits the DOM.</li>
+  <li><b>History</b>: static pages → SPA → AWS serverless prototype → Node + Postgres rewrite → PWA + MFA + monitoring.</li>
+  <li><b>Data</b>: customer → many policies (→ many payments), many investments, one login. Users = office. audit_logs = who changed what.</li>
+  <li><b>DB rules</b>: PK, FK, UNIQUE, CHECK, CASCADE, NUMERIC money, index on next_due_date, updated_at trigger.</li>
+  <li><b>Server</b>: .env check → middleware (cors, json, monitoring, headers, static) → routes → controllers → services → db → 404 → 500 handler.</li>
+  <li><b>Safety in code</b>: $1 params, server-side validators, transactions, DATE as text.</li>
+  <li><b>Due queue</b>: missed = due &lt; today, upcoming = today…+5, pending and not closed.</li>
+  <li><b>Mark Paid</b>: BEGIN → FOR UPDATE → insert payment → addMonths (clamped) → update → COMMIT → audit.</li>
+  <li><b>Login</b>: bcrypt compare → JWT {kind, id, role, tv}, 10h office / 30d customer.</li>
+  <li><b>authenticate</b>: Bearer → verify → re-read DB (active, tv) → role check. 401 vs 403.</li>
+  <li><b>Instant logout</b>: token_version+1 kills every old token.</li>
+  <li><b>PWA</b>: manifest + network-first service worker. Never cache /api.</li>
+  <li><b>MFA</b>: code + PKCE + state → server verifies ID token → revoke refresh → link cognito_sub → own JWT.</li>
+  <li><b>Monitoring</b>: metrics 5 min, logs 1 min → alarms → SNS email. 8 AM Scheduler → Lambda → summary. IAM least privilege, budget, no personal data.</li>
+</ol>
+</section>
+
+<!-- ============================================================ -->
+<section class="stage" id="next" data-title="What comes next" data-n="→">
+<header><h2>What comes next (before January 2027)</h2><span class="tag">Roadmap</span></header>
+<div class="diagram"><div class="flow" style="justify-content:center">
+  <div class="node">Automated tests<small>due-date maths, auth, roles</small></div><span class="arrow">→</span>
+  <div class="node">Dev / live split</div><span class="arrow">→</span>
+  <div class="node">Hosting + HTTPS + domain</div><span class="arrow">→</span>
+  <div class="node n3">Managed Postgres + backups<small>and a restore test</small></div><span class="arrow">→</span>
+  <div class="node">CI/CD pipeline</div><span class="arrow">→</span>
+  <div class="node n4">Infrastructure as Code<small>or remove AWS cleanly</small></div><span class="arrow">→</span>
+  <div class="node n1">Staff guide + training</div>
+</div></div>
+<p>Each of these will be a new stage in this guide once you build it.</p>
+</section>
+
+<footer>CloudCover Learning Guide · Kush Aghera · generated from the project code on 7 Nov 2026</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var KEY='cloudcover-guide-revised';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+  function save(v){try{localStorage.setItem(KEY,JSON.stringify(v))}catch(e){}}
+  var revised=load();
+  var toc=document.getElementById('toc');
+  var sections=[].slice.call(document.querySelectorAll('section.stage'));
+  sections.forEach(function(s){
+    var li=document.createElement('li');
+    var a=document.createElement('a');
+    a.href='#'+s.id;
+    a.innerHTML='<span class="n">'+s.dataset.n+'</span><span>'+s.dataset.title+'</span><span class="tick"></span>';
+    li.appendChild(a);toc.appendChild(li);s._link=a;
+    var lab=document.createElement('label');lab.className='revised';
+    var cb=document.createElement('input');cb.type='checkbox';cb.checked=!!revised[s.id];
+    lab.appendChild(cb);lab.appendChild(document.createTextNode('Revised'));
+    s.querySelector('header').appendChild(lab);
+    function mark(){a.querySelector('.tick').textContent=cb.checked?'✓':''}
+    mark();
+    cb.addEventListener('change',function(){revised[s.id]=cb.checked;save(revised);mark()});
+    a.addEventListener('click',function(){document.getElementById('side').classList.remove('open')});
+  });
+  // active section highlight
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){sections.forEach(function(s){s._link.classList.remove('active')});e.target._link.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});
+    sections.forEach(function(s){io.observe(s)});
+  }
+  // filter
+  document.getElementById('filter').addEventListener('input',function(){
+    var q=this.value.trim().toLowerCase();
+    sections.forEach(function(s){
+      var hit=!q||s.textContent.toLowerCase().indexOf(q)>-1;
+      s.classList.toggle('hide',!hit);s._link.parentNode.classList.toggle('hide',!hit);
+    });
+  });
+  // theme
+  var root=document.documentElement;
+  try{var t=localStorage.getItem('cloudcover-guide-theme');if(t)root.setAttribute('data-theme',t)}catch(e){}
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var dark=cur?cur==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next=dark?'light':'dark';root.setAttribute('data-theme',next);
+    try{localStorage.setItem('cloudcover-guide-theme',next)}catch(e){}
+  });
+  document.getElementById('expandBtn').addEventListener('click',function(){window.print()});
+  document.getElementById('menuBtn').addEventListener('click',function(){document.getElementById('side').classList.toggle('open')});
+})();
+</script>
+</body>
+</html>
